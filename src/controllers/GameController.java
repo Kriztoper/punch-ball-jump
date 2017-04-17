@@ -2,12 +2,19 @@ package controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
 
+import network.entities.GameClient;
+import network.entities.GameServer;
 import views.GameFrame;
+import views.GamePanel;
+import views.MenuPanel;
+import views.PromptRolePanel;
 
 public class GameController {
 
 	private GameFrame gameFrame;
+	private GameManager gameManager;
 	
 	public GameController(GameFrame gameFrame) {
 		this.gameFrame = gameFrame;
@@ -19,8 +26,11 @@ public class GameController {
 	}
 	
 	public void addButtonListeners() {
+		MenuPanel menuPanel = gameFrame.getMenuPanel();
+		GamePanel gamePanel = gameFrame.getGamePanel();
+		PromptRolePanel promptRolePanel = gameFrame.getPromptRolePanel();
 		
-		gameFrame.getMenuPanel().getPlayButton().
+		menuPanel.getPlayButton().
 			addActionListener(new ActionListener() {
 			
 			@Override
@@ -29,21 +39,29 @@ public class GameController {
 			}
 		});
 		
-		gameFrame.getPromptRolePanel().getServerButton().
+		promptRolePanel.getServerButton().
 			addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("gamePanel");
+				gameManager = new GameManager(
+						new GameServer());
+				gameManager.start();
 			}
 		});
 		
-		gameFrame.getPromptRolePanel().getClientButton().
+		promptRolePanel.getClientButton().
 			addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				InetAddress serverIPAddress = 
+						promptRolePanel.promptServerIPAddress();
 				gameFrame.setCurrentPanel("gamePanel");
+				gameManager = new GameManager(
+						new GameClient(serverIPAddress));
+				gameManager.start();
 			}
 		});
 	}

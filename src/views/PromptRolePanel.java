@@ -2,9 +2,12 @@ package views;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class PromptRolePanel extends JPanel{
@@ -17,6 +20,19 @@ public class PromptRolePanel extends JPanel{
 		initPanel();
 		initComponents();
 		addComponents();
+	}
+
+	public InetAddress promptServerIPAddress() {
+		String ipAddress = JOptionPane.showInputDialog(
+				this, "Enter Server IP Address: ");
+		
+		try {
+			return (InetAddress.getByName(ipAddress));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 	public void initPanel() {
