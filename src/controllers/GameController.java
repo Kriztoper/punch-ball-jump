@@ -25,10 +25,26 @@ public class GameController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("promptRolePanel");
+			}
+		});
+		
+		gameFrame.getPromptRolePanel().getServerButton().
+			addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("gamePanel");
 			}
 		});
 		
-		
+		gameFrame.getPromptRolePanel().getClientButton().
+			addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("gamePanel");
+			}
+		});
 	}
 }

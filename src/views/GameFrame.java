@@ -10,6 +10,7 @@ public class GameFrame {
 	private CardLayout cards;
 	private JPanel cardsPanel;
 	private MenuPanel menuPanel;
+	private PromptRolePanel promptRolePanel;
 	private GamePanel gamePanel;
 	
 	public GameFrame() {
@@ -25,9 +26,14 @@ public class GameFrame {
 	public GamePanel getGamePanel() {
 		return gamePanel;
 	}
+
+	public PromptRolePanel getPromptRolePanel() {
+		return promptRolePanel;
+	}
 	
 	public void setCurrentPanel(String panelName) {
 		cards.show(cardsPanel, panelName);
+		frame.repaint();
 	}
 	
 	public void initPanels() {
@@ -37,11 +43,14 @@ public class GameFrame {
 		
 		gamePanel = new GamePanel();
 		
+		promptRolePanel = new PromptRolePanel();
+		
 		cardsPanel = new JPanel();
 		cardsPanel.setLayout(cards);
 		
 		cardsPanel.add(menuPanel, "menuPanel");
 		cardsPanel.add(gamePanel, "gamePanel");
+		cardsPanel.add(promptRolePanel, "promptRolePanel");
 		cards.show(cardsPanel, "menuPanel");
 	}
 	

@@ -8,6 +8,6 @@ public class GamePanel extends JPanel {
 
 	public GamePanel() {
 		setLayout(null);
-		setBackground(Color.BLUE);
+		setBackground(new Color(204, 255, 255));
 	}
 }

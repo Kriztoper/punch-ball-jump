@@ -20,7 +20,7 @@ public class MenuPanel extends JPanel {
 	
 	public void initPanel() {
 		setLayout(new FlowLayout());
-		setBackground(Color.ORANGE);
+		setBackground(new Color(100, 149, 237));
 	}
 	
 	public void initComponents() {
