@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class GameServer {
+public class GameServer implements PeerInterface {
 
 	private ServerSocket serverSocket;
 	private static final int PORT = 2048;

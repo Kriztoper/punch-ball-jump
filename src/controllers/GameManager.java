@@ -1,19 +1,13 @@
 package controllers;
 
-import network.entities.GameClient;
-import network.entities.GameServer;
+import network.entities.PeerInterface;
 
 public class GameManager extends Thread {
 
-	private GameServer gameServer;
-	private GameClient gameClient;
+	private PeerInterface gameNetworkEntity;
 	
-	public GameManager(GameServer gameServer) {
-		this.gameServer = gameServer;
-	}
-	
-	public GameManager(GameClient gameClient) {
-		this.gameClient = gameClient;
+	public GameManager(PeerInterface gameNetworkEntity) {
+		this.gameNetworkEntity = gameNetworkEntity;
 	}
 	
 	@Override

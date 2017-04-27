@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class GameClient {
+public class GameClient implements PeerInterface {
 
 	private Socket socket;
 	private ObjectOutputStream outputStream;
