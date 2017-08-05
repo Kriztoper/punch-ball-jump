@@ -1,17 +1,23 @@
 package controllers;
 
-import network.entities.PeerInterface;
-
 public class GameManager extends Thread {
 
-	private PeerInterface gameNetworkEntity;
+	private boolean isPlaying;
 	
-	public GameManager(PeerInterface gameNetworkEntity) {
-		this.gameNetworkEntity = gameNetworkEntity;
+	public GameManager() {
+		isPlaying = false;
 	}
 	
 	@Override
 	public void run() {
-		
+		isPlaying = true;
+	}
+
+	public boolean isPlaying() {
+		return isPlaying;
+	}
+	
+	public void setIsPlaying(boolean isPlaying) {
+		this.isPlaying = isPlaying;
 	}
 }

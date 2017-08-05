@@ -6,14 +6,18 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import controllers.GameManager;
+
 public class GameClient implements PeerInterface {
 
 	private Socket socket;
 	private ObjectOutputStream outputStream;
 	private ObjectInputStream inputStream;
 	private static final int PORT = 2048;
+	private GameManager gameManager;
 	
-	public GameClient(InetAddress serverIPAddress) {
+	public GameClient(InetAddress serverIPAddress, GameManager gameManager) {
+		this.gameManager = gameManager;
 		accessServer(serverIPAddress);
 	}
 	
@@ -26,12 +30,21 @@ public class GameClient implements PeerInterface {
 			outputStream.flush();
 			inputStream = new ObjectInputStream(
 					socket.getInputStream());
-
-			Receiver receiver = new Receiver(inputStream);
+			
+			//Sender sender = new Sender(outputStream, gameManager);
+			//sender.start();
+			
+			Receiver receiver = new Receiver(inputStream, gameManager);
 			receiver.start();
 			
-			Sender sender = new Sender(outputStream);
-			sender.start();
+			
+			
+			
+			
+			
+			while(gameManager.isPlaying());
+			receiver.terminate();
+			//sender.terminate();
 		} catch (IOException e) {
 			System.out.println("Can't connect to server!");
 			e.printStackTrace();

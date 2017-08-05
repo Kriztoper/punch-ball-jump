@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import controllers.GameManager;
+
 public class GameServer implements PeerInterface {
 
 	private ServerSocket serverSocket;
@@ -14,8 +16,10 @@ public class GameServer implements PeerInterface {
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
 	private boolean listening;
+	private GameManager gameManager;
 	
-	public GameServer() {
+	public GameServer(GameManager gameManager) {
+		this.gameManager = gameManager;
 		try {
 			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
@@ -59,11 +63,20 @@ public class GameServer implements PeerInterface {
 			inputStream = new ObjectInputStream(
 					client.getInputStream());
 
-			Receiver receiver = new Receiver(inputStream);
+			Receiver receiver = new Receiver(inputStream, gameManager);
 			receiver.start();
 			
-			Sender sender = new Sender(outputStream);
-			sender.start();
+			//Sender sender  = new Sender(outputStream, gameManager);
+			//sender.start();
+			
+			
+			
+			
+			
+			
+			while(gameManager.isPlaying());
+			receiver.terminate();
+			//sender.terminate();
 		} catch (IOException e) {
 			
 			e.printStackTrace();

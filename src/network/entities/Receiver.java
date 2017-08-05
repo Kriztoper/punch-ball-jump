@@ -3,19 +3,24 @@ package network.entities;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import controllers.GameManager;
+
 public class Receiver extends Thread {
 	
 	private ObjectInputStream inputStream;
 	private boolean terminate;
+	private GameManager gameManager;
 	
-	public Receiver(ObjectInputStream inputStream) {
+	public Receiver(ObjectInputStream inputStream, GameManager gameManager) {
 		this.inputStream = inputStream;
+		this.gameManager = gameManager;
 		terminate = false;
 	}
 	
 	@Override
 	public void run() {
-		while (!terminate) {
+		int i = 0;
+		while (i++ < 5) {//!terminate) {
 			try {
 				Message message = 
 						(Message) inputStream.readObject();
@@ -29,5 +34,10 @@ public class Receiver extends Thread {
 				e.printStackTrace();
 			}
 		}
+		gameManager.setIsPlaying(false);
+	}
+	
+	public void terminate() {
+		terminate = true;
 	}
 }

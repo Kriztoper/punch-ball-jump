@@ -45,9 +45,8 @@ public class GameController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("gamePanel");
-				gameManager = new GameManager(
-						new GameServer());
-				gameManager.start();
+				new GameServer(new GameManager());
+				//gameManager.start();
 			}
 		});
 		
@@ -59,9 +58,8 @@ public class GameController {
 				InetAddress serverIPAddress = 
 						promptRolePanel.promptServerIPAddress();
 				gameFrame.setCurrentPanel("gamePanel");
-				gameManager = new GameManager(
-						new GameClient(serverIPAddress));
-				gameManager.start();
+				new GameClient(serverIPAddress, new GameManager());
+				//gameManager.start();
 			}
 		});
 	}
