@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -130,8 +129,8 @@ public class Board extends JPanel implements Commons {
 			player.move();
 //			ball.move();
 //			paddle.move();
-//			checkCollision();
 			repaint();
+			checkCollision(); // Note: checkCollision must be after repaint and it must be assigned to the Timer with the smallest period
 		}
 	}
 	
@@ -141,8 +140,8 @@ public class Board extends JPanel implements Commons {
 //			player.move();
 			ball.move();
 //			paddle.move();
-//			checkCollision();
 			repaint();
+//			checkCollision();
 		}
 	}
 	
@@ -153,7 +152,13 @@ public class Board extends JPanel implements Commons {
 	}
 	
 	private void checkCollision() {
-		if (ball.getRect().getMaxY() > Commons.BOTTOM_EDGE) {
+		if (ball.getRect().intersects(player.getRect())) {
+			System.out.println("Game Over");
+			message = "Victory!";
+			stopGame();
+		}
+		
+/*		if (ball.getRect().getMaxY() > Commons.BOTTOM_EDGE) {
 			stopGame();
 		}
 		
@@ -234,5 +239,5 @@ public class Board extends JPanel implements Commons {
                 }
             }
         }
-    }
+*/    }
 }

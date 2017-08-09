@@ -38,7 +38,7 @@ public class Sprite {
 		return image;
 	}
 	
-	Rectangle getRect() {
+	public Rectangle getRect() {
 		return new Rectangle(x, y, image.getWidth(null)
 				, image.getHeight(null));
 	}

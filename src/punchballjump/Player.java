@@ -23,11 +23,11 @@ public class Player extends Sprite implements Commons {
 		
 		if (jumping) {
 			y -= 2;
-		} else if (y <= 200 && !jumping){
+		} else if (y <= 150 && !jumping){
 			y += 2;
 		}
 		
-		if (y <= 140) {
+		if (y <= 80) {
 			jumping = false;
 		}
 		
@@ -47,7 +47,7 @@ public class Player extends Sprite implements Commons {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		
-		if (key == KeyEvent.VK_A && y >= 196) {
+		if (key == KeyEvent.VK_A && y >= 146) {
 			jumping = true;
 			//dy = 1;
 		}
