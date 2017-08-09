@@ -10,9 +10,11 @@ public class Ball extends Sprite implements Commons {
 	private int ydir;
 	private ArrayList<Point> points;
 	private int pointsIndex;
+	private int direction;
 	
 	public Ball() {
 		pointsIndex = 0;
+		direction = 1;
 		
 		xdir = 1;
 		ydir = -1;
@@ -80,11 +82,17 @@ public class Ball extends Sprite implements Commons {
         }
     }
 	
+	public void reverseDirection() {
+		direction = ((direction == 1) ? (-1) : (1));
+	}
+	
 	public Point getCurrentPoint() {
 		int p = pointsIndex;
-		pointsIndex++;
+		pointsIndex += direction;
 		if (pointsIndex == points.size()) {
 			pointsIndex = 0;
+		} else if (pointsIndex == -1) {
+			pointsIndex = points.size() - 1;
 		}
 		return points.get(p);
 	}

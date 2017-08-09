@@ -1,12 +1,16 @@
 package punchballjump;
 
 import java.awt.event.KeyEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 
 public class Player extends Sprite implements Commons {
 	private int dy;
 	private boolean jumping;
+	private boolean punching;
+	private Timer punchTimer;
 	
 	public Player() {
 		ImageIcon ii = new ImageIcon("images/star.png");
@@ -23,11 +27,11 @@ public class Player extends Sprite implements Commons {
 		
 		if (jumping) {
 			y -= 2;
-		} else if (y <= 150 && !jumping){
+		} else if (y <= 80 && !jumping){
 			y += 2;
 		}
 		
-		if (y <= 80) {
+		if (y <= 10) {
 			jumping = false;
 		}
 		
@@ -47,10 +51,20 @@ public class Player extends Sprite implements Commons {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		
-		if (key == KeyEvent.VK_A && y >= 146) {
+		if (key == KeyEvent.VK_S && !isPunching() &&
+				!jumping) {
+			System.out.println("Hello OWlr");
+			punching = true;
+			punchTimer = new Timer();
+			punchTimer.scheduleAtFixedRate(new ScheduleTaskForPunch(), 
+					1000, 10000);
+		} else if (key == KeyEvent.VK_A && y >= 76 &&
+				!isPunching() && !jumping) {
 			jumping = true;
 			//dy = 1;
 		}
+		
+		
 		
 /*		if (key == KeyEvent.VK_LEFT) {
 			dx = -1;
@@ -60,6 +74,20 @@ public class Player extends Sprite implements Commons {
 			dx = 1;
 		}
 */	}
+	
+	private class ScheduleTaskForPunch extends TimerTask {
+		@Override
+		public void run() {
+			punching = false;
+			punchTimer.cancel();
+			System.out.println("done punching");
+			
+		}
+	}
+	
+	public boolean isPunching() {
+		return punching;
+	}
 	
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -78,5 +106,6 @@ public class Player extends Sprite implements Commons {
 		y = INIT_PADDLE_Y;
 		
 		jumping = false;
+		punching = false;
 	}
 }

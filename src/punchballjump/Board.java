@@ -23,6 +23,7 @@ public class Board extends JPanel implements Commons {
 	private Brick bricks[];
 	private Player player;
 	private boolean ingame = true;
+	private boolean reversing;
 	
 	public Board() {
 		initBoard();
@@ -51,6 +52,7 @@ public class Board extends JPanel implements Commons {
 	private void gameInit() {
 		player = new Player();
 		ball = new Ball();
+		reversing = false;
 /*		paddle = new Paddle();
 		
 		int k = 0;
@@ -152,11 +154,21 @@ public class Board extends JPanel implements Commons {
 	}
 	
 	private void checkCollision() {
-		if (ball.getRect().intersects(player.getRect())) {
+		if (ball.getRect().intersects(player.getRect()) &&
+				player.isPunching() && !reversing) {
+			System.out.println("Reversing ball!");
+			reversing = true;
+			ball.reverseDirection();
+		} else if (ball.getRect().intersects(player.getRect()) &&
+				!player.isPunching()) {
 			System.out.println("Game Over");
 			message = "Victory!";
 			stopGame();
-		}
+		} else if (!ball.getRect().intersects(player.getRect()) &&
+				player.isPunching() && reversing) {
+			System.out.println("End reversing");
+			reversing = false;
+		} 
 		
 /*		if (ball.getRect().getMaxY() > Commons.BOTTOM_EDGE) {
 			stopGame();
