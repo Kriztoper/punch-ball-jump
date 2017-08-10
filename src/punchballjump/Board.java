@@ -24,6 +24,7 @@ public class Board extends JPanel implements Commons {
 	private Player player;
 	private boolean ingame = true;
 	private boolean reversing;
+	private long ballPeriod;
 	
 	public Board() {
 		initBoard();
@@ -38,9 +39,15 @@ public class Board extends JPanel implements Commons {
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new ScheduleTask(), 
 				DELAY, PERIOD);
+		ballPeriod = 100;
+		initBallTimer(ballPeriod);
+	}
+	
+	public void initBallTimer(long period) {
+		System.out.println("Init ball timer");
 		ballTimer = new Timer();
 		ballTimer.scheduleAtFixedRate(new ScheduleTaskForBall(), 
-				1000, 100);
+				1000, period);
 	}
 	
 	@Override
@@ -144,9 +151,24 @@ public class Board extends JPanel implements Commons {
 //			paddle.move();
 			repaint();
 //			checkCollision();
+			checkBallTimer();
 		}
 	}
 	
+	private void checkBallTimer() {
+		if (ballPeriod <= 70 && ball.isSpeedDecreasable(player.x)) {
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			System.out.println("period less than ten, " + ballPeriod);
+			ballPeriod = 100;
+			ballTimer.cancel();
+			initBallTimer(ballPeriod);
+		}
+	}
 	
 	private void stopGame() {
 		ingame = false;
@@ -159,14 +181,18 @@ public class Board extends JPanel implements Commons {
 			System.out.println("Reversing ball!");
 			reversing = true;
 			ball.reverseDirection();
+			initBallTimer(ballPeriod -= 10);
 		} else if (ball.getRect().intersects(player.getRect()) &&
 				!player.isPunching()) {
 			System.out.println("Game Over");
-			message = "Victory!";
 			stopGame();
 		} else if (!ball.getRect().intersects(player.getRect()) &&
 				player.isPunching() && reversing) {
 			System.out.println("End reversing");
+			reversing = false;
+		} else if (!ball.getRect().intersects(player.getRect()) &&
+				!player.isPunching() && !reversing) {
+			//System.out.println("End reversing");
 			reversing = false;
 		} 
 		

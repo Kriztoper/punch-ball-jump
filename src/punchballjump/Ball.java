@@ -94,6 +94,18 @@ public class Ball extends Sprite implements Commons {
 		} else if (pointsIndex == -1) {
 			pointsIndex = points.size() - 1;
 		}
+		//System.out.println("Ball: " + points.get(p).x + ", " + points.get(p).y);
 		return points.get(p);
+	}
+	
+	public boolean isSpeedDecreasable(int playerX) {
+		if ((direction == 1 && 
+				x + 20 < playerX) || 
+				(direction == -1 && 
+				x + 20 > playerX)) {
+ 			return true;
+		}
+		
+		return false;
 	}
 }

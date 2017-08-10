@@ -57,7 +57,7 @@ public class Player extends Sprite implements Commons {
 			punching = true;
 			punchTimer = new Timer();
 			punchTimer.scheduleAtFixedRate(new ScheduleTaskForPunch(), 
-					1000, 10000);
+					1000, 300);
 		} else if (key == KeyEvent.VK_A && y >= 76 &&
 				!isPunching() && !jumping) {
 			jumping = true;
