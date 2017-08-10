@@ -21,8 +21,6 @@ public class Board extends JPanel implements Commons {
 	private Timer ballTimer;
 	private String message = "Game Over";
 	private Ball ball;
-	private Paddle paddle;
-	private Brick bricks[];
 	private Player player;
 	private boolean ingame = true;
 	private boolean reversing;
