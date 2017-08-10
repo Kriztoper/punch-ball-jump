@@ -7,7 +7,6 @@ import java.util.TimerTask;
 import javax.swing.ImageIcon;
 
 public class Player extends Sprite implements Commons {
-	private int dy;
 	private boolean jumping;
 	private boolean punching;
 	private Timer punchTimer;
@@ -23,30 +22,16 @@ public class Player extends Sprite implements Commons {
 	}
 	
 	public void move() {
-		
-		
 		if (jumping) {
 			y -= 2;
-		} else if (y <= 80 && !jumping){
+		} else if (y <= 130 && !jumping){
 			y += 2;
 		}
 		
-		if (y <= 10) {
+		if (y <= 30) {
 			jumping = false;
 		}
-		
-		
-		
-/*		x += dx;
-		
-		if (x <= 0) {
-			x = 0;
-		}
-		
-		if (x == WIDTH - i_width) {
-			x = WIDTH - i_width;
-		}
-*/	}
+	}
 	
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
@@ -58,22 +43,11 @@ public class Player extends Sprite implements Commons {
 			punchTimer = new Timer();
 			punchTimer.scheduleAtFixedRate(new ScheduleTaskForPunch(), 
 					1000, 300);
-		} else if (key == KeyEvent.VK_A && y >= 76 &&
+		} else if (key == KeyEvent.VK_A && y >= 126 &&
 				!isPunching() && !jumping) {
 			jumping = true;
-			//dy = 1;
 		}
-		
-		
-		
-/*		if (key == KeyEvent.VK_LEFT) {
-			dx = -1;
-		}
-		
-		if (key == KeyEvent.VK_RIGHT) {
-			dx = 1;
-		}
-*/	}
+	}
 	
 	private class ScheduleTaskForPunch extends TimerTask {
 		@Override
@@ -88,22 +62,10 @@ public class Player extends Sprite implements Commons {
 	public boolean isPunching() {
 		return punching;
 	}
-	
-	public void keyReleased(KeyEvent e) {
-		int key = e.getKeyCode();
-		
-		if (key == KeyEvent.VK_LEFT) {
-			dy = 0;
-		}
-		
-		if (key == KeyEvent.VK_RIGHT) {
-			dy = 0;
-		}
-	}
-	
+
 	private void resetState() {
-		x = INIT_PADDLE_X;
-		y = INIT_PADDLE_Y;
+		x = INIT_PLAYER_X;
+		y = INIT_PLAYER_Y;
 		
 		jumping = false;
 		punching = false;

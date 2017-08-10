@@ -7,12 +7,10 @@ import javax.swing.JFrame;
 public class PunchBallJump extends JFrame {
 
     public PunchBallJump() {
-        
         initUI();
     }
     
     private void initUI() {
-        
         add(new Board());
         setTitle("Punch Ball Jump");
         
@@ -24,7 +22,6 @@ public class PunchBallJump extends JFrame {
     }
 
     public static void main(String[] args) {
-        
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {                
