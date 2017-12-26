@@ -11,4 +11,6 @@ public interface Commons {
 	public static final int INIT_BALL_Y = 220;
 	public static final int DELAY = 1000;
 	public static final int PERIOD = 10;
+	public static final String PLAYER = "Player";
+	public static final String OPPONENT = "Opponent";
 }
