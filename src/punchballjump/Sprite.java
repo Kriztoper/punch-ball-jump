@@ -9,11 +9,11 @@ public class Sprite {
 	protected int i_width;
 	protected int i_height;
 	protected Image image;
-	
+
 	public void setX(int x) {
 		this.x = x;
 	}
-	
+
 	public int getX() {
 		return x;
 	}
@@ -25,21 +25,25 @@ public class Sprite {
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 	public int getWidth() {
 		return i_width;
 	}
-	
+
 	public int getHeight() {
 		return i_height;
 	}
-	
+
 	public Image getImage() {
 		return image;
 	}
-	
+
 	public Rectangle getRect() {
-		return new Rectangle(x, y, image.getWidth(null)
-				, image.getHeight(null));
+		return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
+	}
+
+	// must refactor getRect back
+	public Rectangle getInnerRect() {
+		return new Rectangle(x, y, image.getWidth(null) / 2, image.getHeight(null) / 2);
 	}
 }
