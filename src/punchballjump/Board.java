@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -27,6 +28,7 @@ public class Board extends JPanel implements Commons {
 	private ScheduleTaskForBall scheduleTaskForBall;
 	private Timer timerForPlayer;
 	private Timer timerForBall;
+	private Image img;
 
 	public Board() {
 		initBoard();
@@ -36,7 +38,9 @@ public class Board extends JPanel implements Commons {
 		setLayout(null);
 		addKeyListener(new TAdapter());
 		setFocusable(true);
-
+		setBackground(Color.BLUE);
+		
+		img = Toolkit.getDefaultToolkit().createImage("images/bg2.png");
 		addEarthAtCenter();
 
 		setDoubleBuffered(true);
@@ -53,11 +57,11 @@ public class Board extends JPanel implements Commons {
 
 	private void addEarthAtCenter() {
 		JLabel earthLabel = new JLabel();
-		ImageIcon ii = new ImageIcon("res/bida.png");
+		ImageIcon ii = new ImageIcon("res/moom.png");
 
 		earthLabel.setIcon(ii);
-		earthLabel.setSize(150, 150);
-		earthLabel.setLocation(275, 255);
+		earthLabel.setSize(340, 340);
+		earthLabel.setLocation(160, 170);
 		add(earthLabel);
 	}
 
@@ -88,8 +92,9 @@ public class Board extends JPanel implements Commons {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+//		super.paintComponent(g);
 
+		g.drawImage(img, 0, 0, null);
 		g.drawString(String.valueOf(players[0].getScore()), 10, 10);
 		g.drawString(String.valueOf(players[1].getScore()), 210, 10);
 
