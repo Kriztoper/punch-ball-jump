@@ -30,7 +30,7 @@ public class GameController {
 		GamePanel gamePanel = gameFrame.getGamePanel();
 		PromptRolePanel promptRolePanel = gameFrame.getPromptRolePanel();
 		
-		menuPanel.getPlayButton().
+		menuPanel.getTwoPlayersButton().
 			addActionListener(new ActionListener() {
 			
 			@Override
@@ -64,5 +64,14 @@ public class GameController {
 				gameManager.start();
 			}
 		});
+		
+		promptRolePanel.getBackButton().
+			addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					gameFrame.setCurrentPanel("menuPanel");
+				}
+				
+			});
+		
 	}
 }
