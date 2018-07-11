@@ -36,14 +36,23 @@ public class Board extends JPanel implements Commons {
 	private Timer timerForPlayerPowerups;
 	private Timer timerForOpponentPowerups;
 	private boolean pressed = false;
-	ArrayList<Powerup> powerupsList;
+	private ArrayList<Powerup> playerPowerupsList;
+	private ArrayList<Powerup> opponentPowerupsList;
+	private boolean isPlayerPowerupActivated;
+	private boolean isOpponentPowerupActivated;
+	private Color pCaptionColor;
+	private String pCaptionMsg;
+	private Color oCaptionColor;
+	private String oCaptionMsg;
 
 	public Board() {
 		// init Powerups only once
 		String[] powerupsArr = { RESTORE, INVINCIBLE, SWAP };
-		powerupsList = new ArrayList<Powerup>();
+		playerPowerupsList = new ArrayList<Powerup>();
+		opponentPowerupsList = new ArrayList<Powerup>();
 		for (int i = 0; i < powerupsArr.length; i++) {
-			powerupsList.add(new Powerup(INIT_PLAYER_POWERUP_X, INIT_PLAYER_POWERUP_Y, powerupsArr[i]));
+			playerPowerupsList.add(new Powerup(INIT_PLAYER_POWERUP_X, INIT_PLAYER_POWERUP_Y, powerupsArr[i]));
+			opponentPowerupsList.add(new Powerup(INIT_OPPONENT_POWERUP_X, INIT_OPPONENT_POWERUP_Y, powerupsArr[i]));
 		}
 		powerups = new Powerup[2];
 
@@ -126,7 +135,9 @@ public class Board extends JPanel implements Commons {
 		opponentReversing = false;
 
 		// Prints the values of the lists setup, used for debugging
-		for (Powerup x : powerupsList)
+		for (Powerup x : playerPowerupsList)
+			System.out.println(x.getName());
+		for (Powerup x : opponentPowerupsList)
 			System.out.println(x.getName());
 
 		// Assign timer for time when powerups will appear
@@ -141,31 +152,33 @@ public class Board extends JPanel implements Commons {
 		timerForOpponentPowerups = new Timer();
 		TimerTask timerTaskForPlayerPowerups;
 		TimerTask timerTaskForOpponentPowerups;
-		if (random.nextInt(4) > 0 && !powerupsList.isEmpty()) {
+		if (random.nextInt(4) > 0 && !playerPowerupsList.isEmpty()) {
 			System.out.println("Planting powerups for player");
 			timerTaskForPlayerPowerups = new TimerTask() {
 
 				@Override
 				public void run() {
-					powerups[0] = powerupsList.get(random.nextInt(3));
+					powerups[0] = playerPowerupsList.get(random.nextInt(3));
 				}
 			};
 			timerForPlayerPowerups.schedule(timerTaskForPlayerPowerups,
 					ThreadLocalRandom.current().nextInt(13, 19) * 1000);
 		}
-		if (random.nextInt(4) > 0 && !powerupsList.isEmpty()) {
+		if (random.nextInt(4) > 0 && !opponentPowerupsList.isEmpty()) {
 			System.out.println("Planting powerups for opponent");
 			timerTaskForOpponentPowerups = new TimerTask() {
 
 				@Override
 				public void run() {
-					powerups[1] = powerupsList.get(random.nextInt(3));
+					powerups[1] = opponentPowerupsList.get(random.nextInt(3));
 				}
 
 			};
 			timerForOpponentPowerups.schedule(timerTaskForOpponentPowerups,
 					ThreadLocalRandom.current().nextInt(13, 19) * 1000);
 		}
+		isPlayerPowerupActivated = false;
+		isOpponentPowerupActivated = false;
 	}
 
 	@Override
@@ -197,6 +210,39 @@ public class Board extends JPanel implements Commons {
 				g2d.drawImage(powerup.getImage(), powerup.getX(), powerup.getY(), powerup.getWidth(),
 						powerup.getHeight(), this);
 			}
+		}
+
+		// draw player powerups activated caption
+		// TODO: Improve caption design
+		if (isPlayerPowerupActivated) {
+			g2d.setColor(pCaptionColor);
+			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 16));
+			g2d.drawString(pCaptionMsg, 30, 30);
+			Timer timerForCaption = new Timer();
+			TimerTask timerTaskForCaption = new TimerTask() {
+
+				@Override
+				public void run() {
+					isPlayerPowerupActivated = false;
+				}
+			};
+			timerForCaption.schedule(timerTaskForCaption, 5000);
+		}
+		// draw opponent powerups activated caption
+		// TODO: Improve caption design
+		if (isOpponentPowerupActivated) {
+			g2d.setColor(oCaptionColor);
+			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 16));
+			g2d.drawString(oCaptionMsg, 350, 30);
+			Timer timerForCaption = new Timer();
+			TimerTask timerTaskForCaption = new TimerTask() {
+
+				@Override
+				public void run() {
+					isOpponentPowerupActivated = false;
+				}
+			};
+			timerForCaption.schedule(timerTaskForCaption, 5000);
 		}
 
 		for (Player player : players) {
@@ -300,6 +346,17 @@ public class Board extends JPanel implements Commons {
 				gameInit();
 
 			} else if (powerups[0] != null && player.getRect().intersects(powerups[0].getRect())) { // player powerups
+				isPlayerPowerupActivated = true;
+				if (powerups[0].getName().equals(RESTORE)) {
+					pCaptionColor = Color.RED;
+					pCaptionMsg = "+1 Heart";
+				} else if (powerups[0].getName().equals(INVINCIBLE)) {
+					pCaptionColor = Color.GREEN;
+					pCaptionMsg = "INVINCIBLE for 10 sec";
+				} else if (powerups[0].getName().equals(SWAP)) {
+					pCaptionColor = Color.YELLOW;
+					pCaptionMsg = "Swap hearts";
+				}
 				Powerup powerup = powerups[0];
 				powerups[0] = null;
 				if (powerup.getName().equals(RESTORE)) {
@@ -324,6 +381,17 @@ public class Board extends JPanel implements Commons {
 					players[1].setHearts(playerHearts);
 				}
 			} else if (powerups[1] != null && player.getRect().intersects(powerups[1].getRect())) { // opponent powerups
+				isOpponentPowerupActivated = true;
+				if (powerups[1].getName().equals(RESTORE)) {
+					oCaptionColor = Color.RED;
+					oCaptionMsg = "+1 Heart";
+				} else if (powerups[1].getName().equals(INVINCIBLE)) {
+					oCaptionColor = Color.GREEN;
+					oCaptionMsg = "INVINCIBLE for 10 sec";
+				} else if (powerups[1].getName().equals(SWAP)) {
+					oCaptionColor = Color.YELLOW;
+					oCaptionMsg = "Swap hearts";
+				}
 				Powerup powerup = powerups[1];
 				powerups[1] = null;
 				if (powerup.getName().equals(RESTORE)) {
