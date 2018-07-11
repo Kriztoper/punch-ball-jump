@@ -20,11 +20,12 @@ public class Player extends Sprite implements Commons {
 	private int punchDelay;
 	public final boolean isComputer;
 	private Random random;
+	private boolean invincible;
 
 	public Player(int initX, int initY, String name, int hearts, boolean isComputer) {
 		INIT_X = initX;
 		INIT_Y = initY;
-		this.setName(name);
+		setName(name);
 
 		ImageIcon ii = new ImageIcon("images/star.png");
 		image = ii.getImage();
@@ -154,6 +155,12 @@ public class Player extends Sprite implements Commons {
 		punching = false;
 
 		setHearts(hearts);
+
+		setInvincible(false);
+	}
+
+	public void incHearts() {
+		this.hearts++;
 	}
 
 	public void decHearts() {
@@ -182,5 +189,13 @@ public class Player extends Sprite implements Commons {
 
 	public void setSuspendOnAir(int suspendOnAir) {
 		this.suspendOnAir = suspendOnAir;
+	}
+
+	public boolean isInvincible() {
+		return invincible;
+	}
+
+	public void setInvincible(boolean invincible) {
+		this.invincible = invincible;
 	}
 }

@@ -9,8 +9,11 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -20,6 +23,7 @@ public class Board extends JPanel implements Commons {
 	private String message = "Game Over";
 	private Ball ball;
 	private Player[] players;
+	private Powerup[] powerups;
 	private boolean ingame = true;
 	private boolean playerReversing;
 	private boolean opponentReversing;
@@ -29,9 +33,20 @@ public class Board extends JPanel implements Commons {
 	private Timer timerForPlayer;
 	private Timer timerForBall;
 	private Timer timerForBallReset;
+	private Timer timerForPlayerPowerups;
+	private Timer timerForOpponentPowerups;
 	private boolean pressed = false;
+	ArrayList<Powerup> powerupsList;
 
 	public Board() {
+		// init Powerups only once
+		String[] powerupsArr = { RESTORE, INVINCIBLE, SWAP };
+		powerupsList = new ArrayList<Powerup>();
+		for (int i = 0; i < powerupsArr.length; i++) {
+			powerupsList.add(new Powerup(INIT_PLAYER_POWERUP_X, INIT_PLAYER_POWERUP_Y, powerupsArr[i]));
+		}
+		powerups = new Powerup[2];
+
 		initBoard();
 	}
 
@@ -76,7 +91,13 @@ public class Board extends JPanel implements Commons {
 		} else {
 			System.out.println(">>>>>>>>>>>>>>>Reseting ballPeriod to 100");
 			timerForBallReset = new Timer();
-			ScheduleTaskForBallReset scheduleTaskForBallReset = new ScheduleTaskForBallReset();
+			TimerTask scheduleTaskForBallReset = new TimerTask() {
+
+				@Override
+				public void run() {
+					ballPeriod = 100;
+				}
+			};
 			timerForBallReset.schedule(scheduleTaskForBallReset, 20000);
 		}
 	}
@@ -103,6 +124,46 @@ public class Board extends JPanel implements Commons {
 		ball = new Ball();
 		playerReversing = false;
 		opponentReversing = false;
+
+		// Prints the values of the lists setup, used for debugging
+		for (Powerup x : powerupsList)
+			System.out.println(x.getName());
+
+		// Assign timer for time when powerups will appear
+		Random random = new Random();
+		if (timerForPlayerPowerups != null) {
+			timerForPlayerPowerups.cancel();
+		}
+		if (timerForOpponentPowerups != null) {
+			timerForOpponentPowerups.cancel();
+		}
+		timerForPlayerPowerups = new Timer();
+		timerForOpponentPowerups = new Timer();
+		TimerTask timerTaskForPlayerPowerups;
+		TimerTask timerTaskForOpponentPowerups;
+		if (random.nextBoolean() && !powerupsList.isEmpty()) {
+			timerTaskForPlayerPowerups = new TimerTask() {
+
+				@Override
+				public void run() {
+					powerups[0] = powerupsList.get(random.nextInt(3));
+				}
+			};
+			timerForPlayerPowerups.schedule(timerTaskForPlayerPowerups,
+					ThreadLocalRandom.current().nextInt(23, 34) * 1000);
+		}
+		if (random.nextBoolean() && powerupsList.isEmpty()) {
+			timerTaskForOpponentPowerups = new TimerTask() {
+
+				@Override
+				public void run() {
+					powerups[1] = powerupsList.get(random.nextInt(3));
+				}
+
+			};
+			timerForOpponentPowerups.schedule(timerTaskForOpponentPowerups,
+					ThreadLocalRandom.current().nextInt(23, 34) * 1000);
+		}
 	}
 
 	@Override
@@ -128,6 +189,14 @@ public class Board extends JPanel implements Commons {
 	}
 
 	private void drawObjects(Graphics2D g2d) {
+		// draw powerups
+		for (Powerup powerup : powerups) {
+			if (powerup != null) {
+				g2d.drawImage(powerup.getImage(), powerup.getX(), powerup.getY(), powerup.getWidth(),
+						powerup.getHeight(), this);
+			}
+		}
+
 		for (Player player : players) {
 			// Draw bigger rect around image which is used for visualization, debugging, etc
 			// NOTE: Uncomment to draw
@@ -137,6 +206,15 @@ public class Board extends JPanel implements Commons {
 			// int y = player.getY() - player.getHeight();
 			// g2d.setColor(Color.RED);
 			// g2d.fillRect(x, y, width, height);
+			if (player.isInvincible()) {
+				// TODO: Display indicator like forcefield if player is invincible
+				int w1 = player.getSlightlyBiggerRect().width;
+				int h1 = player.getSlightlyBiggerRect().height;
+				int x1 = player.getSlightlyBiggerRect().x;
+				int y1 = player.getSlightlyBiggerRect().y;
+				g2d.setColor(Color.RED);
+				g2d.fillRect(x1, y1, w1, h1);
+			}
 
 			g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(), player.getHeight(), this);
 			// System.out.printf("x=%d, y=%d, w=%d, h=%d\n", x, y, width, height);
@@ -193,24 +271,20 @@ public class Board extends JPanel implements Commons {
 		}
 	}
 
-	private class ScheduleTaskForBallReset extends TimerTask {
-		@Override
-		public void run() {
-			ballPeriod = 100;
-		}
-	}
-
 	private void checkCollision() {
 		// check on both players if ball hits them
 		for (Player player : players) {
-			if (ball.getRect().intersects(player.getRect()) && !player.isPunching()) {
+			if (ball.getRect().intersects(player.getRect()) && !player.isPunching() && !player.isInvincible()) {
 				// player is hit by ball and is not punching
 
-				if (player.getName().equals("Player")) {
+				if (player.getName().equals(PLAYER)) {
 					players[0].decHearts();
 				} else {
 					players[1].decHearts();
 				}
+				// clear all displayed powerups
+				powerups[0] = null;
+				powerups[1] = null;
 
 				System.out.println("Game Over");
 				// all 5 hearts have been consumed by a player therefore that player loses
@@ -223,6 +297,54 @@ public class Board extends JPanel implements Commons {
 				initBoard();
 				gameInit();
 
+			} else if (powerups[0] != null && player.getRect().intersects(powerups[0].getRect())) { // player powerups
+				Powerup powerup = powerups[0];
+				powerups[0] = null;
+				if (powerup.getName().equals(RESTORE)) {
+					if (player.getHearts() < 5) {
+						player.incHearts();
+					}
+				} else if (powerup.getName().equals(INVINCIBLE)) {
+					player.setInvincible(true);
+					Timer timerForInvincibility = new Timer();
+					TimerTask timerTaskForInvincibility = new TimerTask() {
+
+						@Override
+						public void run() {
+							player.setInvincible(false);
+						}
+					};
+					timerForInvincibility.schedule(timerTaskForInvincibility, 10000);
+				} else if (powerup.getName().equals(SWAP)) {
+					int playerHearts = players[0].getHearts();
+					int opponentHearts = players[1].getHearts();
+					players[0].setHearts(opponentHearts);
+					players[1].setHearts(playerHearts);
+				}
+			} else if (powerups[1] != null && player.getRect().intersects(powerups[1].getRect())) { // opponent powerups
+				Powerup powerup = powerups[1];
+				powerups[1] = null;
+				if (powerup.getName().equals(RESTORE)) {
+					if (player.getHearts() < 5) {
+						player.incHearts();
+					}
+				} else if (powerup.getName().equals(INVINCIBLE)) {
+					player.setInvincible(true);
+					Timer timerForInvincibility = new Timer();
+					TimerTask timerTaskForInvincibility = new TimerTask() {
+
+						@Override
+						public void run() {
+							player.setInvincible(false);
+						}
+					};
+					timerForInvincibility.schedule(timerTaskForInvincibility, 10000);
+				} else if (powerup.getName().equals(SWAP)) {
+					int playerHearts = players[0].getHearts();
+					int opponentHearts = players[1].getHearts();
+					players[0].setHearts(opponentHearts);
+					players[1].setHearts(playerHearts);
+				}
 			}
 		}
 

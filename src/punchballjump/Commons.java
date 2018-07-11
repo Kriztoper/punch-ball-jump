@@ -16,4 +16,11 @@ public interface Commons {
 	public static final boolean IS_COMPUTER = true;
 	public static final String PLAYER = "Player";
 	public static final String OPPONENT = "Opponent";
+	public static final String RESTORE = "RESTORE";
+	public static final String INVINCIBLE = "INVINCIBLE";
+	public static final String SWAP = "SWAP";
+	public static final int INIT_PLAYER_POWERUP_X = 305;
+	public static final int INIT_PLAYER_POWERUP_Y = 55;
+	public static final int INIT_OPPONENT_POWERUP_X = 305;
+	public static final int INIT_OPPONENT_POWERUP_Y = 570;
 }
