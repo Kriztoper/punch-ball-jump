@@ -14,6 +14,7 @@ public interface Commons {
 	public static final int DELAY = 1000;
 	public static final int PERIOD = 10;
 	public static final boolean IS_COMPUTER = true;
+	public static final boolean IS_NOT_COMPUTER = false;
 	public static final String PLAYER = "Player";
 	public static final String OPPONENT = "Opponent";
 	public static final String RESTORE = "RESTORE";
@@ -23,4 +24,8 @@ public interface Commons {
 	public static final int INIT_PLAYER_POWERUP_Y = 55;
 	public static final int INIT_OPPONENT_POWERUP_X = 305;
 	public static final int INIT_OPPONENT_POWERUP_Y = 570;
+	public static final int HUMAN = -1;
+	public static final int EASY = 27;
+	public static final int NORMAL = 28;
+	public static final int HARD = 29;
 }

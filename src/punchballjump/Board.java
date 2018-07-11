@@ -119,8 +119,8 @@ public class Board extends JPanel implements Commons {
 			hearts[0] = 5;
 			hearts[1] = 5;
 		}
-		players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER, hearts[0], false);
-		players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], IS_COMPUTER);
+		players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN);
+		players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], IS_COMPUTER, HARD);
 		ball = new Ball();
 		playerReversing = false;
 		opponentReversing = false;
@@ -141,7 +141,8 @@ public class Board extends JPanel implements Commons {
 		timerForOpponentPowerups = new Timer();
 		TimerTask timerTaskForPlayerPowerups;
 		TimerTask timerTaskForOpponentPowerups;
-		if (random.nextBoolean() && !powerupsList.isEmpty()) {
+		if (random.nextInt(4) > 0 && !powerupsList.isEmpty()) {
+			System.out.println("Planting powerups for player");
 			timerTaskForPlayerPowerups = new TimerTask() {
 
 				@Override
@@ -150,9 +151,10 @@ public class Board extends JPanel implements Commons {
 				}
 			};
 			timerForPlayerPowerups.schedule(timerTaskForPlayerPowerups,
-					ThreadLocalRandom.current().nextInt(23, 34) * 1000);
+					ThreadLocalRandom.current().nextInt(13, 19) * 1000);
 		}
-		if (random.nextBoolean() && powerupsList.isEmpty()) {
+		if (random.nextInt(4) > 0 && !powerupsList.isEmpty()) {
+			System.out.println("Planting powerups for opponent");
 			timerTaskForOpponentPowerups = new TimerTask() {
 
 				@Override
@@ -162,7 +164,7 @@ public class Board extends JPanel implements Commons {
 
 			};
 			timerForOpponentPowerups.schedule(timerTaskForOpponentPowerups,
-					ThreadLocalRandom.current().nextInt(23, 34) * 1000);
+					ThreadLocalRandom.current().nextInt(13, 19) * 1000);
 		}
 	}
 

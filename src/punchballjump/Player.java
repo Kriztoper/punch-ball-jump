@@ -21,8 +21,9 @@ public class Player extends Sprite implements Commons {
 	public final boolean isComputer;
 	private Random random;
 	private boolean invincible;
+	private int difficulty;
 
-	public Player(int initX, int initY, String name, int hearts, boolean isComputer) {
+	public Player(int initX, int initY, String name, int hearts, boolean isComputer, int difficulty) {
 		INIT_X = initX;
 		INIT_Y = initY;
 		setName(name);
@@ -40,6 +41,7 @@ public class Player extends Sprite implements Commons {
 		this.isComputer = isComputer;
 		if (isComputer) {
 			random = new Random();
+			this.difficulty = difficulty;
 		}
 	}
 
@@ -77,17 +79,21 @@ public class Player extends Sprite implements Commons {
 		// getRect().getY(), getRect().getWidth(), getRect().getHeight());
 		Rectangle initRectPos = new Rectangle(INIT_OPPONENT_X, INIT_OPPONENT_Y, (int) getRect().getWidth(), 10);
 		if (!jumping) {
-			if (getName().equals(OPPONENT) && ball.getRect().intersects(getSlightlyBiggerRect())) {
+			if (random.nextBoolean() && getName().equals(OPPONENT)
+					&& ball.getRect().intersects(getSlightlyBiggerRect())) {
+				// punch
 				punching = true;
-			} else if (getName().equals(OPPONENT) && ball.getRect().intersects(this.getBiggerRect())
-					&& !getRect().intersects(initRectPos)) {
+			} else if (random.nextBoolean() && getName().equals(OPPONENT)
+					&& ball.getRect().intersects(this.getBiggerRect()) && !getRect().intersects(initRectPos)) {
+				// not jump
 				jumping = false;
 			} else if (getName().equals(OPPONENT) && ball.getRect().intersects(this.getBiggerRect())
 					&& getRect().intersects(new Rectangle(INIT_OPPONENT_X, INIT_OPPONENT_Y, (int) getRect().getWidth(),
 							(int) getRect().getHeight()))) {
+
 				// System.out.println(">>>>>>>> Ball intersects with Computer!");
 				int randInt = random.nextInt(30);
-				if (randInt >= 29) {
+				if (randInt >= difficulty) {
 					System.out.println("randInt is " + randInt);
 					this.jumping = true;
 				}
