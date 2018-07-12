@@ -2,7 +2,6 @@ package punchballjump;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -201,21 +200,20 @@ public class Board extends JPanel implements Commons {
 		g.drawString(String.valueOf(players[0].getHearts()), 10, 10);
 		g.drawString(String.valueOf(players[1].getHearts()), 210, 10);
 
-		if (ingame) {
-			drawObjects(g2d);
-			// countdown
-			if (countdown > 0) {
-				g.setColor(Color.RED);
-				g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
-				g.drawString("ROUND " + round, 160, 350);
-				g.setColor(new Color(0f, 0f, 0f, .25f));
-				g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
-			} else if (countdown == 0) {
-				g.setColor(Color.RED);
-				g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
-				g.drawString("START!", 210, 350);
-			}
-		} else {
+		drawObjects(g2d);
+		// countdown
+		if (countdown > 0) {
+			g.setColor(Color.RED);
+			g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
+			g.drawString("ROUND " + round, 160, 350);
+			g.setColor(new Color(0f, 0f, 0f, .25f));
+			g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
+		} else if (countdown == 0) {
+			g.setColor(Color.RED);
+			g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
+			g.drawString("START!", 210, 350);
+		}
+		if (!ingame) {
 			gameFinished(g2d);
 		}
 
@@ -291,12 +289,12 @@ public class Board extends JPanel implements Commons {
 	}
 
 	private void gameFinished(Graphics2D g2d) {
-		Font font = new Font("Verdana", Font.BOLD, 18);
-		FontMetrics metr = this.getFontMetrics(font);
-
-		g2d.setColor(Color.BLACK);
-		g2d.setFont(font);
-		g2d.drawString(message, (Commons.WIDTH - metr.stringWidth(message)) / 2, Commons.WIDTH / 2);
+		int winner = players[0].getHearts() <= 0 ? 2 : 1;
+		g2d.setColor(Color.RED);
+		g2d.setFont(new Font("TimesRoman", Font.PLAIN, 64));
+		g2d.drawString("PLAYER " + winner + " WINS!", 50, 350);
+		g2d.setColor(new Color(0f, 0f, 0f, .25f));
+		g2d.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
 	}
 
 	private class TAdapter extends KeyAdapter {
@@ -356,14 +354,17 @@ public class Board extends JPanel implements Commons {
 				System.out.println("Game Over");
 				// all 5 hearts have been consumed by a player therefore that player loses
 				if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
-					System.exit(1); // TODO: Change this to code for returning back to menu panel
+					ingame = false;
+					timerForBall.cancel();
+					timerForPlayer.cancel();
+					// TODO: Add code for returning back to menu panel
+				} else {
+					timerForBall.cancel();
+					timerForPlayer.cancel();
+
+					initBoard();
+					gameInit();
 				}
-				timerForBall.cancel();
-				timerForPlayer.cancel();
-
-				initBoard();
-				gameInit();
-
 			} else if (powerups[0] != null && player.getRect().intersects(powerups[0].getRect())) { // player powerups
 				isPlayerPowerupActivated = true;
 				if (powerups[0].getName().equals(RESTORE)) {
