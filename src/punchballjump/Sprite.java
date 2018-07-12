@@ -42,8 +42,15 @@ public class Sprite {
 		return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
 	}
 
-	// must refactor getRect back
-	public Rectangle getInnerRect() {
-		return new Rectangle(x, y, image.getWidth(null) / 2, image.getHeight(null) / 2);
+	public Rectangle getBiggerRect() {
+		int width = image.getWidth(null);
+		int height = image.getHeight(null);
+		return new Rectangle(x - width, y - height, width * 3, height * 3);
+	}
+
+	public Rectangle getSlightlyBiggerRect() {
+		int width = image.getWidth(null);
+		int height = image.getHeight(null);
+		return new Rectangle(x - 20, y - 20, width + 40, height + 40);
 	}
 }

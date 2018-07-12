@@ -22,13 +22,17 @@ public class Board extends JPanel implements Commons {
 	private Ball ball;
 	private Player[] players;
 	private boolean ingame = true;
-	private boolean reversing;
+	private boolean playerReversing;
+	private boolean opponentReversing;
 	private long ballPeriod;
 	private ScheduleTaskForPlayer scheduleTaskForPlayer;
 	private ScheduleTaskForBall scheduleTaskForBall;
 	private Timer timerForPlayer;
 	private Timer timerForBall;
 	private Image img;
+	private Timer timerForBallReset;
+	private boolean pressed = false;
+
 
 	public Board() {
 		initBoard();
@@ -52,6 +56,7 @@ public class Board extends JPanel implements Commons {
 		ballPeriod = 100;
 		scheduleTaskForBall = new ScheduleTaskForBall();
 		timerForBall = new Timer();
+		// TODO: Graphics should display a countdown from 3 2 1
 		timerForBall.schedule(scheduleTaskForBall, 3000, ballPeriod);
 	}
 
@@ -67,12 +72,17 @@ public class Board extends JPanel implements Commons {
 
 	public void initBallTimer(long period, Player player) {
 		System.out.println("Init ball timer");
-		if (period >= 10) {
+		if (period >= 20) {
 			System.out.println("ballPeriod adjusting to " + period);
 			timerForBall.cancel();
 			timerForBall = new Timer();
 			scheduleTaskForBall = new ScheduleTaskForBall();
 			timerForBall.schedule(scheduleTaskForBall, 0, period);
+		} else {
+			System.out.println(">>>>>>>>>>>>>>>Reseting ballPeriod to 100");
+			timerForBallReset = new Timer();
+			ScheduleTaskForBallReset scheduleTaskForBallReset = new ScheduleTaskForBallReset();
+			timerForBallReset.schedule(scheduleTaskForBallReset, 20000);
 		}
 	}
 
@@ -83,20 +93,31 @@ public class Board extends JPanel implements Commons {
 	}
 
 	private void gameInit() {
-		players = new Player[2];
-		players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER);
-		players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT);
+		int[] hearts = new int[2];
+		if (players != null && players[0] != null && players[1] != null) {
+			System.out.println("Players 1 & 2 not null so hearts maintain!");
+			hearts[0] = players[0].getHearts();
+			hearts[1] = players[1].getHearts();
+		} else {
+			players = new Player[2];
+			hearts[0] = 5;
+			hearts[1] = 5;
+		}
+		players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER, hearts[0], false);
+		players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], IS_COMPUTER);
 		ball = new Ball();
-		reversing = false;
+		playerReversing = false;
+		opponentReversing = false;
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 //		super.paintComponent(g);
 
+
 		g.drawImage(img, 0, 0, null);
-		g.drawString(String.valueOf(players[0].getScore()), 10, 10);
-		g.drawString(String.valueOf(players[1].getScore()), 210, 10);
+		g.drawString(String.valueOf(players[0].getHearts()), 10, 10);
+		g.drawString(String.valueOf(players[1].getHearts()), 210, 10);
 
 		Graphics2D g2d = (Graphics2D) g;
 
@@ -115,9 +136,20 @@ public class Board extends JPanel implements Commons {
 
 	private void drawObjects(Graphics2D g2d) {
 		for (Player player : players) {
+			// Draw bigger rect around image which is used for visualization, debugging, etc
+			// NOTE: Uncomment to draw
+			// int width = player.getWidth() * 3;
+			// int height = player.getHeight() * 3;
+			// int x = player.getX() - player.getWidth();
+			// int y = player.getY() - player.getHeight();
+			// g2d.setColor(Color.RED);
+			// g2d.fillRect(x, y, width, height);
+
 			g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(), player.getHeight(), this);
+			// System.out.printf("x=%d, y=%d, w=%d, h=%d\n", x, y, width, height);
 		}
 		g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight(), this);
+
 	}
 
 	private void gameFinished(Graphics2D g2d) {
@@ -132,15 +164,26 @@ public class Board extends JPanel implements Commons {
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			for (Player player : players) {
-				player.keyPressed(e);
+			if (!pressed) {
+				for (Player player : players) {
+					player.keyPressed(e);
+				}
+				pressed = true;
 			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			pressed = false;
 		}
 	}
 
 	private class ScheduleTaskForPlayer extends TimerTask {
 		@Override
 		public void run() {
+			if (players[1].isComputer) {
+				players[1].generateMove(ball);
+			}
 			for (Player player : players)
 				player.move();
 			repaint();
@@ -157,45 +200,81 @@ public class Board extends JPanel implements Commons {
 		}
 	}
 
-	private void checkCollision() {
-		for (Player player : players) {
-			if (ball.getRect().intersects(player.getRect()) && player.isPunching() && !reversing) {
-				// ball is hit by punching
+	private class ScheduleTaskForBallReset extends TimerTask {
+		@Override
+		public void run() {
+			ballPeriod = 100;
+		}
+	}
 
-				System.out.println("Reversing ball!");
-				reversing = true;
-				ball.reverseDirection();
-				if (ballPeriod >= 30) {
-					if (player.getPunchDelay() <= 896) {
-						player.setPunchDelay(player.getPunchDelay() + 112);
-					} else {
-						player.setPunchDelay(0);
-					}
-					ballPeriod -= 10;
-					initBallTimer(ballPeriod, player);
-				}
-				System.out.println("ball perdio => " + ballPeriod);
-			} else if (ball.getRect().intersects(player.getRect()) && !player.isPunching()) {
+	private void checkCollision() {
+		// check on both players if ball hits them
+		for (Player player : players) {
+			if (ball.getRect().intersects(player.getRect()) && !player.isPunching()) {
 				// player is hit by ball and is not punching
 
 				if (player.getName().equals("Player")) {
-					players[1].incScore();
+					players[0].decHearts();
 				} else {
-					players[0].incScore();
+					players[1].decHearts();
 				}
 
 				System.out.println("Game Over");
+				// all 5 hearts have been consumed by a player therefore that player loses
+				if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
+					System.exit(1); // TODO: Change this to code for returning back to menu panel
+				}
 				timerForBall.cancel();
 				timerForPlayer.cancel();
+
 				initBoard();
 				gameInit();
-			} else if (!ball.getRect().intersects(player.getRect()) && player.isPunching() && reversing) {
-				System.out.println("End reversing");
-				reversing = false;
-			} else if (!ball.getRect().intersects(player.getRect()) && !player.isPunching() && !reversing) {
-				reversing = false;
-			}
 
+			}
+		}
+
+		// check player
+		if (ball.getRect().intersects(players[0].getRect()) && players[0].isPunching() && !playerReversing) {
+			// ball is hit by punching
+
+			System.out.println("Reversing ball!");
+			playerReversing = true;
+			ball.reverseDirection();
+			if (ballPeriod >= 20) {
+				if (players[0].getPunchDelay() <= 900) {
+					players[0].setPunchDelay(players[0].getPunchDelay() + 100);
+				} else {
+					players[0].setPunchDelay(0);
+				}
+				ballPeriod -= 10;
+				initBallTimer(ballPeriod, players[0]);
+			}
+			System.out.println("ball perdio => " + ballPeriod);
+		} else if (!ball.getRect().intersects(players[0].getBiggerRect())) {
+			// System.out.println("End reversing");
+			playerReversing = false;
+		}
+
+		// check opponent
+		if (ball.getRect().intersects(players[1].getRect()) && players[1].isPunching() && !opponentReversing) {
+			// ball is hit by punching
+
+			System.out.println("Reversing ball!");
+			opponentReversing = true;
+			ball.reverseDirection();
+			if (ballPeriod >= 20) {
+				if (players[1].getPunchDelay() <= 900) {
+					players[1].setPunchDelay(players[1].getPunchDelay() + 100);
+				} else {
+					players[1].setPunchDelay(0);
+				}
+				ballPeriod -= 10;
+				initBallTimer(ballPeriod, players[1]);
+			}
+			System.out.println("ball perdio => " + ballPeriod);
+		} else if (!ball.getRect().intersects(players[1].getBiggerRect())) {
+			// System.out.println("End reversing");
+			opponentReversing = false;
 		}
 	}
 }
