@@ -16,7 +16,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Board extends JPanel implements Commons {
@@ -44,6 +43,9 @@ public class Board extends JPanel implements Commons {
 	private String pCaptionMsg;
 	private Color oCaptionColor;
 	private String oCaptionMsg;
+	private int countdown;
+	private ImageIcon earth = new ImageIcon("res/bida.png");
+	private int round = 1;
 
 	public Board() {
 		// init Powerups only once
@@ -64,8 +66,6 @@ public class Board extends JPanel implements Commons {
 		addKeyListener(new TAdapter());
 		setFocusable(true);
 
-		addEarthAtCenter();
-
 		setDoubleBuffered(true);
 
 		scheduleTaskForPlayer = new ScheduleTaskForPlayer();
@@ -77,16 +77,6 @@ public class Board extends JPanel implements Commons {
 		timerForBall = new Timer();
 		// TODO: Graphics should display a countdown from 3 2 1
 		timerForBall.schedule(scheduleTaskForBall, 3000, ballPeriod);
-	}
-
-	private void addEarthAtCenter() {
-		JLabel earthLabel = new JLabel();
-		ImageIcon ii = new ImageIcon("res/bida.png");
-
-		earthLabel.setIcon(ii);
-		earthLabel.setSize(150, 150);
-		earthLabel.setLocation(275, 255);
-		add(earthLabel);
 	}
 
 	public void initBallTimer(long period, Player player) {
@@ -179,14 +169,25 @@ public class Board extends JPanel implements Commons {
 		}
 		isPlayerPowerupActivated = false;
 		isOpponentPowerupActivated = false;
+		countdown = 3;
+		Timer timerForCountdown = new Timer();
+		TimerTask timerTaskForCountdown = new TimerTask() {
+
+			@Override
+			public void run() {
+				countdown--;
+				if (countdown < 0) {
+					timerForCountdown.cancel();
+				}
+			}
+
+		};
+		timerForCountdown.schedule(timerTaskForCountdown, 0, 1000);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
-		g.drawString(String.valueOf(players[0].getHearts()), 10, 10);
-		g.drawString(String.valueOf(players[1].getHearts()), 210, 10);
 
 		Graphics2D g2d = (Graphics2D) g;
 
@@ -194,8 +195,26 @@ public class Board extends JPanel implements Commons {
 
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
+		// draw Earth at the middle
+		g2d.drawImage(earth.getImage(), 275, 255, earth.getIconWidth(), earth.getIconHeight(), this);
+
+		g.drawString(String.valueOf(players[0].getHearts()), 10, 10);
+		g.drawString(String.valueOf(players[1].getHearts()), 210, 10);
+
 		if (ingame) {
 			drawObjects(g2d);
+			// countdown
+			if (countdown > 0) {
+				g.setColor(Color.RED);
+				g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
+				g.drawString("ROUND " + round, 160, 350);
+				g.setColor(new Color(0f, 0f, 0f, .25f));
+				g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
+			} else if (countdown == 0) {
+				g.setColor(Color.RED);
+				g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
+				g.drawString("START!", 210, 350);
+			}
 		} else {
 			gameFinished(g2d);
 		}
@@ -324,7 +343,7 @@ public class Board extends JPanel implements Commons {
 		for (Player player : players) {
 			if (ball.getRect().intersects(player.getRect()) && !player.isPunching() && !player.isInvincible()) {
 				// player is hit by ball and is not punching
-
+				round++;
 				if (player.getName().equals(PLAYER)) {
 					players[0].decHearts();
 				} else {
