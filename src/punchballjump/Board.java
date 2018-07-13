@@ -29,10 +29,12 @@ public class Board extends JPanel implements Commons {
 	private ScheduleTaskForBall scheduleTaskForBall;
 	private Timer timerForPlayer;
 	private Timer timerForBall;
+//<<<<<<< HEAD
 	private Image img;
+//=======
 	private Timer timerForBallReset;
 	private boolean pressed = false;
-
+//>>>>>>> 6e64ff495bca8311f2c7a2487130ac5564969a99
 
 	public Board() {
 		initBoard();
@@ -44,7 +46,7 @@ public class Board extends JPanel implements Commons {
 		setFocusable(true);
 		setBackground(Color.BLUE);
 		
-		img = Toolkit.getDefaultToolkit().createImage("images/bg2.png");
+		img = Toolkit.getDefaultToolkit().createImage("images/test.png");
 		addEarthAtCenter();
 
 		setDoubleBuffered(true);
@@ -62,11 +64,11 @@ public class Board extends JPanel implements Commons {
 
 	private void addEarthAtCenter() {
 		JLabel earthLabel = new JLabel();
-		ImageIcon ii = new ImageIcon("res/moom.png");
+		ImageIcon ii = new ImageIcon("res/earth.png");
 
 		earthLabel.setIcon(ii);
 		earthLabel.setSize(340, 340);
-		earthLabel.setLocation(160, 170);
+		earthLabel.setLocation(160, 165);
 		add(earthLabel);
 	}
 
@@ -116,8 +118,12 @@ public class Board extends JPanel implements Commons {
 
 
 		g.drawImage(img, 0, 0, null);
+//		g.drawString(String.valueOf(players[0].getScore()), 10, 10);
+//		g.drawString(String.valueOf(players[1].getScore()), 210, 10);
+
 		g.drawString(String.valueOf(players[0].getHearts()), 10, 10);
 		g.drawString(String.valueOf(players[1].getHearts()), 210, 10);
+
 
 		Graphics2D g2d = (Graphics2D) g;
 
