@@ -9,6 +9,9 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -199,8 +202,9 @@ public class Board extends JPanel implements Commons {
 		g.drawImage(bg, 0, 0, null);
 
 		// draw Earth at the middle
-		g2d.drawImage(earth.getImage(), 275, 255, earth.getIconWidth(), earth.getIconHeight(), this);
+		g2d.drawImage(earth.getImage(), 160, 170, earth.getIconWidth(), earth.getIconHeight(), this);
 
+		g.setColor(Color.WHITE);
 		g.drawString(String.valueOf(players[0].getHearts()), 10, 10);
 		g.drawString(String.valueOf(players[1].getHearts()), 210, 10);
 
@@ -222,6 +226,30 @@ public class Board extends JPanel implements Commons {
 		}
 
 		Toolkit.getDefaultToolkit().sync();
+	}
+
+	/**
+	 * Converts a given Image into a BufferedImage
+	 *
+	 * @param img
+	 *            The Image to be converted
+	 * @return The converted BufferedImage
+	 */
+	public static BufferedImage toBufferedImage(Image img) {
+		if (img instanceof BufferedImage) {
+			return (BufferedImage) img;
+		}
+
+		// Create a buffered image with transparency
+		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+		// Draw the image on to the buffered image
+		Graphics2D bGr = bimage.createGraphics();
+		bGr.drawImage(img, 0, 0, null);
+		bGr.dispose();
+
+		// Return the buffered image
+		return bimage;
 	}
 
 	private void drawObjects(Graphics2D g2d) {
@@ -281,11 +309,23 @@ public class Board extends JPanel implements Commons {
 				int h1 = player.getSlightlyBiggerRect().height;
 				int x1 = player.getSlightlyBiggerRect().x;
 				int y1 = player.getSlightlyBiggerRect().y;
-				g2d.setColor(Color.RED);
-				g2d.fillRect(x1, y1, w1, h1);
+				g2d.setColor(new Color(0f, 1f, 0f, 0.5f));
+				g2d.fillOval(x1, y1, w1, h1);
 			}
 
-			g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(), player.getHeight(), this);
+			if (player.getName().equals(OPPONENT)) {
+				BufferedImage image = toBufferedImage(player.getImage());
+				double rotationRequired = Math.toRadians(180);
+				double locationX = image.getWidth(null) / 2;
+				double locationY = image.getHeight(null) / 2;
+				AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+
+				g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), null);
+			} else {
+				g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(), player.getHeight(),
+						this);
+			}
 			// System.out.printf("x=%d, y=%d, w=%d, h=%d\n", x, y, width, height);
 		}
 		g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight(), this);
