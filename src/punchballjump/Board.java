@@ -43,7 +43,7 @@ public class Board extends JPanel implements Commons {
 	private Color oCaptionColor;
 	private String oCaptionMsg;
 	private int countdown;
-	private ImageIcon earth = new ImageIcon("res/bida.png");
+	private ImageIcon earth = new ImageIcon("res/earth.png");
 	private int round = 1;
 
 	public Board() {

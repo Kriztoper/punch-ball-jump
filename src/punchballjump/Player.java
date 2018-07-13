@@ -28,7 +28,7 @@ public class Player extends Sprite implements Commons {
 		INIT_Y = initY;
 		setName(name);
 
-		ImageIcon ii = new ImageIcon("images/star.png");
+		ImageIcon ii = new ImageIcon("images/player.png");
 		image = ii.getImage();
 
 		i_width = image.getWidth(null);
