@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -43,6 +44,7 @@ public class Board extends JPanel implements Commons {
 	private Color oCaptionColor;
 	private String oCaptionMsg;
 	private int countdown;
+	private Image bg = Toolkit.getDefaultToolkit().createImage("images/test.png");
 	private ImageIcon earth = new ImageIcon("res/earth.png");
 	private int round = 1;
 
@@ -193,6 +195,8 @@ public class Board extends JPanel implements Commons {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+		g.drawImage(bg, 0, 0, null);
 
 		// draw Earth at the middle
 		g2d.drawImage(earth.getImage(), 275, 255, earth.getIconWidth(), earth.getIconHeight(), this);
