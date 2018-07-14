@@ -16,6 +16,7 @@ public class PromptRolePanel extends JPanel{
 	private JButton serverButton;
 	private JButton clientButton;
 	private JButton backButton;
+	private JButton playButton;
 	
 	public PromptRolePanel() {
 		initPanel();
@@ -44,6 +45,7 @@ public class PromptRolePanel extends JPanel{
 	public void initComponents() {
 		promptLabel = new JLabel("Choose role:");
 		backButton = new JButton("Back");
+		playButton = new JButton("Play");
 		setServerButton(new JButton("Server"));
 		setClientButton(new JButton("Client"));
 	}
@@ -51,6 +53,7 @@ public class PromptRolePanel extends JPanel{
 	public void addComponents() {
 		add(promptLabel);
 		add(backButton);
+		add(playButton);
 		add(getServerButton());
 		add(getClientButton());
 	}
@@ -75,7 +78,16 @@ public class PromptRolePanel extends JPanel{
 		return backButton;
 	}
 	
-	public void setBackButton() {
+	public void setBackButton(JButton backButton) {
 		this.backButton = backButton;
 	}
+	
+	public JButton getPlayButton() {
+		return playButton;
+	}
+	
+	public void setPlayButton(JButton playButton) {
+		this.playButton = playButton;
+	}
+	
 }

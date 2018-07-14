@@ -32,9 +32,9 @@ public class MenuPanel extends JPanel {
 		
 		creditsButton = new JButton("Credits");
 		onePlayerButton = new JButton("One Player");
-		twoPlayersButton = new JButton("Two Players");
+		setTwoPlayersButton(new JButton("Two Players"));
 		onePlayerButton.setBounds(Constants.WIDTH/2-100,100,200,60);
-		twoPlayersButton.setBounds(Constants.WIDTH/2-100,160,200,60);
+		getTwoPlayersButton().setBounds(Constants.WIDTH/2-100,160,200,60);
 		howToPlayButton.setBounds(Constants.WIDTH/2-100, 220, 200, 60);
 		creditsButton.setBounds(Constants.WIDTH/2-100,280,200,60);
 	}
@@ -86,5 +86,6 @@ public class MenuPanel extends JPanel {
 	public void setTwoPlayersButton(JButton twoPlayersButton) {
 		this.twoPlayersButton = twoPlayersButton;
 	}
+
 	
 }

@@ -12,6 +12,7 @@ public class GameFrame {
 	private MenuPanel menuPanel;
 	private PromptRolePanel promptRolePanel;
 	private GamePanel gamePanel;
+	private CountdownPanel countdownPanel;
 	
 	public GameFrame() {
 		frame = new Frame();
@@ -44,6 +45,7 @@ public class GameFrame {
 		gamePanel = new GamePanel();
 		
 		promptRolePanel = new PromptRolePanel();
+		countdownPanel = new CountdownPanel();
 		
 		cardsPanel = new JPanel();
 		cardsPanel.setLayout(cards);
@@ -51,6 +53,7 @@ public class GameFrame {
 		cardsPanel.add(menuPanel, "menuPanel");
 		cardsPanel.add(gamePanel, "gamePanel");
 		cardsPanel.add(promptRolePanel, "promptRolePanel");
+		cardsPanel.add(countdownPanel, "countdownPanel");
 		cards.show(cardsPanel, "menuPanel");
 	}
 	

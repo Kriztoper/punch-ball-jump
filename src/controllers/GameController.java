@@ -3,6 +3,7 @@ package controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
+import java.util.Timer;
 
 import network.entities.GameClient;
 import network.entities.GameServer;
@@ -15,6 +16,7 @@ public class GameController {
 
 	private GameFrame gameFrame;
 	private GameManager gameManager;
+	private Timer timer;
 	
 	public GameController(GameFrame gameFrame) {
 		this.gameFrame = gameFrame;
@@ -31,13 +33,12 @@ public class GameController {
 		PromptRolePanel promptRolePanel = gameFrame.getPromptRolePanel();
 		
 		menuPanel.getTwoPlayersButton().
-			addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				gameFrame.setCurrentPanel("promptRolePanel");
-			}
+			addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					gameFrame.setCurrentPanel("promptRolePanel");
+			}		
 		});
+		
 		
 		promptRolePanel.getServerButton().
 			addActionListener(new ActionListener() {
@@ -69,9 +70,15 @@ public class GameController {
 			addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
 					gameFrame.setCurrentPanel("menuPanel");
-				}
-				
-			});
+			}		
+		});
+		
+		promptRolePanel.getPlayButton().
+			addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					gameFrame.setCurrentPanel("countdownPanel");
+			}
+		});
 		
 	}
 }
