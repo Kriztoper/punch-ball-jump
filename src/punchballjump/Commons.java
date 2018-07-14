@@ -25,7 +25,7 @@ public interface Commons {
 	public static final int INIT_OPPONENT_POWERUP_X = 305;
 	public static final int INIT_OPPONENT_POWERUP_Y = 570;
 	public static final int HUMAN = -1;
-	public static final int EASY = 27;
-	public static final int NORMAL = 28;
-	public static final int HARD = 29;
+	public static final int EASY = 100;
+	public static final int NORMAL = 50;
+	public static final int HARD = 0;
 }
