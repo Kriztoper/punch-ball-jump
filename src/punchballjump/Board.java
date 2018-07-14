@@ -305,26 +305,56 @@ public class Board extends JPanel implements Commons {
 			// g2d.fillRect(x, y, width, height);
 			if (player.isInvincible()) {
 				// TODO: Display indicator like forcefield if player is invincible
-				int w1 = player.getSlightlyBiggerRect().width;
-				int h1 = player.getSlightlyBiggerRect().height;
-				int x1 = player.getSlightlyBiggerRect().x;
-				int y1 = player.getSlightlyBiggerRect().y;
+				int x = player.getSlightlyBiggerRect().x;
+				int y = player.getSlightlyBiggerRect().y;
+				int w = player.getSlightlyBiggerRect().width;
+				int h = player.getSlightlyBiggerRect().height;
 				g2d.setColor(new Color(0f, 1f, 0f, 0.5f));
-				g2d.fillOval(x1, y1, w1, h1);
+				g2d.fillOval(x, y, w, h);
 			}
 
 			if (player.getName().equals(OPPONENT)) {
-				BufferedImage image = toBufferedImage(player.getImage());
+				BufferedImage image = toBufferedImage(
+						player.isPunching() ? player.getPunchingImage() : player.getImage());
 				double rotationRequired = Math.toRadians(180);
 				double locationX = image.getWidth(null) / 2;
 				double locationY = image.getHeight(null) / 2;
 				AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
 				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
-				g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), null);
+				if (player.getX() < ball.getX()) {
+					// punch right
+					g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
+							-player.getWidth(), player.getHeight(), null);
+				} else {
+					// punch left
+					g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
+							player.getHeight(), this);
+				}
+				// Draw bigger rect around image which is used for visualization, debugging, etc
+				// NOTE: Uncomment to draw
+				// int x = player.getX() - player.getWidth() - (int) player.rectBorder;
+				// int y = player.getY() - player.getHeight() * 3;
+				// int width = player.getWidth() * 3 + 2 * (int) player.rectBorder;
+				// int height = player.getHeight() * 5;
+				// g2d.setColor(new Color(1f, 0f, 0f, 0.5f));
+				// g2d.fillRect(x, y, width, height);
 			} else {
-				g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(), player.getHeight(),
-						this);
+				if (player.isPunching()) {
+					if (player.getX() < ball.getX()) {
+						// punch right
+						g2d.drawImage(player.getPunchingImage(), player.getX(), player.getY(), player.getWidth(),
+								player.getHeight(), this);
+					} else {
+						// punch left
+						g2d.drawImage(player.getPunchingImage(), player.getX() + player.getWidth(), player.getY(),
+								-player.getWidth(), player.getHeight(), null);
+					}
+				} else {
+					// stand still
+					g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(),
+							player.getHeight(), this);
+				}
 			}
 			// System.out.printf("x=%d, y=%d, w=%d, h=%d\n", x, y, width, height);
 		}
@@ -362,7 +392,7 @@ public class Board extends JPanel implements Commons {
 		@Override
 		public void run() {
 			if (players[1].isComputer) {
-				players[1].generateMove(ball);
+				players[1].generateMove(ball, ballPeriod);
 			}
 			for (Player player : players)
 				player.move();

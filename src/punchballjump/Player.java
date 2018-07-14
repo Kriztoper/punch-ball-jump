@@ -1,6 +1,6 @@
 package punchballjump;
 
-import java.awt.Rectangle;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 import java.util.Timer;
@@ -22,6 +22,9 @@ public class Player extends Sprite implements Commons {
 	private Random random;
 	private boolean invincible;
 	private int difficulty;
+	private Image punchingImage;
+	private boolean isMoving = false;
+	public long rectBorder;
 
 	public Player(int initX, int initY, String name, int hearts, boolean isComputer, int difficulty) {
 		INIT_X = initX;
@@ -30,6 +33,10 @@ public class Player extends Sprite implements Commons {
 
 		ImageIcon ii = new ImageIcon("images/player.png");
 		image = ii.getImage();
+
+		// punching image
+		ii = new ImageIcon("images/player_punch.png");
+		punchingImage = ii.getImage();
 
 		i_width = image.getWidth(null);
 		i_height = image.getHeight(null);
@@ -43,6 +50,10 @@ public class Player extends Sprite implements Commons {
 			random = new Random();
 			this.difficulty = difficulty;
 		}
+	}
+
+	public Image getPunchingImage() {
+		return punchingImage;
 	}
 
 	public void move() {
@@ -69,7 +80,7 @@ public class Player extends Sprite implements Commons {
 		}
 	}
 
-	public void generateMove(Ball ball) {
+	public void generateMove(Ball ball, long ballPeriod) {
 		// Prints pos and dim of ball and players and is used for debugging
 		// NOTE: Uncomment to print
 		// System.out.printf("ball = %f, %f, %f, %f\nplayer = %f, %f, %f, %f\n",
@@ -77,27 +88,38 @@ public class Player extends Sprite implements Commons {
 		// ball.getRect().getY(), ball.getRect().getWidth(), ball.getRect().getHeight(),
 		// getRect().getX(),
 		// getRect().getY(), getRect().getWidth(), getRect().getHeight());
-		Rectangle initRectPos = new Rectangle(INIT_OPPONENT_X, INIT_OPPONENT_Y, (int) getRect().getWidth(), 10);
-		if (!jumping) {
-			if (random.nextBoolean() && getName().equals(OPPONENT)
-					&& ball.getRect().intersects(getSlightlyBiggerRect())) {
+		boolean isJump = random.nextBoolean();// move <= 14 ? true : false;
+		rectBorder = (110 - ballPeriod) / 2;
+		if (getLongBiggerRect(rectBorder).intersects(ball.getRect()) && !isMoving) {
+			Timer timer = new Timer();
+			TimerTask timerTask;
+			if (!isJump) {
 				// punch
-				punching = true;
-			} else if (random.nextBoolean() && getName().equals(OPPONENT)
-					&& ball.getRect().intersects(this.getBiggerRect()) && !getRect().intersects(initRectPos)) {
-				// not jump
-				jumping = false;
-			} else if (getName().equals(OPPONENT) && ball.getRect().intersects(this.getBiggerRect())
-					&& getRect().intersects(new Rectangle(INIT_OPPONENT_X, INIT_OPPONENT_Y, (int) getRect().getWidth(),
-							(int) getRect().getHeight()))) {
+				timerTask = new TimerTask() {
 
-				// System.out.println(">>>>>>>> Ball intersects with Computer!");
-				int randInt = random.nextInt(30);
-				if (randInt >= difficulty) {
-					System.out.println("randInt is " + randInt);
-					this.jumping = true;
-				}
+					@Override
+					public void run() {
+						jumping = false;
+						punching = true;
+						punchTimer = new Timer();
+						punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
+					}
+				};
+			} else {
+				// jump
+				timerTask = new TimerTask() {
+
+					@Override
+					public void run() {
+						punching = false;
+						jumping = true;
+					}
+				};
 			}
+			timer.schedule(timerTask, difficulty);
+			isMoving = true;
+		} else if (!getLongBiggerRect(ballPeriod).intersects(ball.getRect()) && isMoving) {
+			isMoving = false;
 		}
 	}
 
