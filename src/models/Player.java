@@ -30,4 +30,5 @@ public class Player {
 		//TODO: player must virtually punch using sprite
 		return false;
 	}
+
 }
