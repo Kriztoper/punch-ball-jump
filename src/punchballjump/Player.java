@@ -23,6 +23,7 @@ public class Player extends Sprite implements Commons {
 	private boolean invincible;
 	private int difficulty;
 	private Image punchingImage;
+	private Image jumpingImage;
 	private boolean isMoving = false;
 	public long rectBorder;
 
@@ -31,12 +32,29 @@ public class Player extends Sprite implements Commons {
 		INIT_Y = initY;
 		setName(name);
 
-		ImageIcon ii = new ImageIcon("images/player1.png");
-		image = ii.getImage();
+		if (name.equals(PLAYER)) {
+			ImageIcon ii = new ImageIcon("images/player1.png");
+			image = ii.getImage();
 
-		// punching image
-		ii = new ImageIcon("images/player_punch.png");
-		punchingImage = ii.getImage();
+			// punching image
+			ii = new ImageIcon("images/player1_kick.png");
+			punchingImage = ii.getImage();
+
+			// jumping image
+			ii = new ImageIcon("images/player1_jump.png");
+			jumpingImage = ii.getImage();
+		} else if (name.equals(OPPONENT)) {
+			ImageIcon ii = new ImageIcon("images/player2.png");
+			image = ii.getImage();
+
+			// punching image
+			ii = new ImageIcon("images/player2_kick.png");
+			punchingImage = ii.getImage();
+
+			// jumping image
+			ii = new ImageIcon("images/player2_jump.png");
+			jumpingImage = ii.getImage();
+		}
 
 		i_width = image.getWidth(null);
 		i_height = image.getHeight(null);
@@ -54,6 +72,10 @@ public class Player extends Sprite implements Commons {
 
 	public Image getPunchingImage() {
 		return punchingImage;
+	}
+
+	public Image getJumpingImage() {
+		return jumpingImage;
 	}
 
 	public void move() {
@@ -173,6 +195,10 @@ public class Player extends Sprite implements Commons {
 
 	public boolean isPunching() {
 		return punching;
+	}
+
+	public boolean isJumping() {
+		return jumping;
 	}
 
 	private void resetState(int hearts) {
