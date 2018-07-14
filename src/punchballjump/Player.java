@@ -28,8 +28,9 @@ public class Player extends Sprite implements Commons {
 	private boolean isMoving = false;
 	public long rectBorder;
 	private boolean isAlive;
+	private boolean isTop;
 
-	public Player(int initX, int initY, String name, int hearts, boolean isComputer, int difficulty) {
+	public Player(int initX, int initY, String name, int hearts, boolean isComputer, int difficulty, boolean isTop) {
 		INIT_X = initX;
 		INIT_Y = initY;
 		setName(name);
@@ -71,7 +72,7 @@ public class Player extends Sprite implements Commons {
 
 		punchDelay = 0;
 
-		resetState(hearts);
+		resetState(hearts, isTop);
 
 		this.isComputer = isComputer;
 		if (isComputer) {
@@ -93,7 +94,7 @@ public class Player extends Sprite implements Commons {
 	}
 
 	public void move() {
-		if (getName().equals(PLAYER)) {
+		if (isTop) {
 			if (jumping) {
 				y -= 2;
 			} else if (y <= INIT_PLAYER_Y && !jumping) {
@@ -103,7 +104,7 @@ public class Player extends Sprite implements Commons {
 			if (y <= 5) {
 				jumping = false;
 			}
-		} else if (getName().equals(OPPONENT)) {
+		} else if (!isTop) {
 			if (jumping) {
 				y += 2;
 			} else if (y >= INIT_OPPONENT_Y && !jumping) {
@@ -162,7 +163,7 @@ public class Player extends Sprite implements Commons {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 
-		if (getName().equals(PLAYER)) {
+		if (isTop && getName().equals(PLAYER)) {// && !isComputer) {
 			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
 				System.out.println("Player punch");
 				punching = true;
@@ -172,13 +173,35 @@ public class Player extends Sprite implements Commons {
 				System.out.println("Player jump");
 				jumping = true;
 			}
-		} else if (getName().equals(OPPONENT) && isComputer == false) {
-			if (key == KeyEvent.VK_L && !isPunching() && !jumping) {
-				System.out.println("Opponent punch");
+		}
+		// else if (!isTop && getName().equals(OPPONENT) && isComputer) {
+		// if (key == KeyEvent.VK_L && !isPunching() && !jumping) {
+		// System.out.println("Opponent punch");
+		// punching = true;
+		// punchTimer = new Timer();
+		// punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
+		// } else if (key == KeyEvent.VK_K && y <= 500 && !isPunching() && !jumping) {
+		// System.out.println("JUMPIIIIIINGGGGG!!!!!");
+		// jumping = true;
+		// }
+		// } else if (isTop && getName().equals(OPPONENT) && isComputer) {
+		// if (key == KeyEvent.VK_L && !isPunching() && !jumping) {
+		// System.out.println("Opponent punch");
+		// punching = true;
+		// punchTimer = new Timer();
+		// punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
+		// } else if (key == KeyEvent.VK_K && y >= 120 && !isPunching() && !jumping) {
+		// System.out.println("Opponent jump");
+		// jumping = true;
+		// }
+		// }
+		else if (!isTop && getName().equals(PLAYER)) {// && !isComputer) {
+			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
+				System.out.println("Player punch");
 				punching = true;
 				punchTimer = new Timer();
 				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
-			} else if (key == KeyEvent.VK_K && y <= 500 && !isPunching() && !jumping) {
+			} else if (key == KeyEvent.VK_A && y <= 500 && !isPunching() && !jumping) {
 				System.out.println("JUMPIIIIIINGGGGG!!!!!");
 				jumping = true;
 			}
@@ -215,7 +238,7 @@ public class Player extends Sprite implements Commons {
 		return jumping;
 	}
 
-	private void resetState(int hearts) {
+	private void resetState(int hearts, boolean isTop) {
 		x = INIT_X;
 		y = INIT_Y;
 
@@ -224,6 +247,7 @@ public class Player extends Sprite implements Commons {
 
 		setHearts(hearts);
 		setAlive(true);
+		setTop(isTop);
 
 		setInvincible(false);
 	}
@@ -274,5 +298,13 @@ public class Player extends Sprite implements Commons {
 
 	public void setAlive(boolean isAlive) {
 		this.isAlive = isAlive;
+	}
+
+	public boolean isTop() {
+		return isTop;
+	}
+
+	public void setTop(boolean isTop) {
+		this.isTop = isTop;
 	}
 }

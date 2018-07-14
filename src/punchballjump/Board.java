@@ -50,6 +50,7 @@ public class Board extends JPanel implements Commons {
 	private Image bg = Toolkit.getDefaultToolkit().createImage("images/test.png");
 	private ImageIcon earth = new ImageIcon("res/earth.png");
 	private int round = 1;
+	private boolean playerTop;
 
 	public Board() {
 		// init Powerups only once
@@ -122,8 +123,16 @@ public class Board extends JPanel implements Commons {
 			hearts[0] = 5;
 			hearts[1] = 5;
 		}
-		players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN);
-		players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], IS_COMPUTER, HARD);
+		playerTop = playerTop ? false : true;
+		if (playerTop) {
+			players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN, playerTop);
+			players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], IS_COMPUTER, HARD,
+					!playerTop);
+		} else {
+			players[0] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN,
+					playerTop);
+			players[1] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, OPPONENT, hearts[1], IS_COMPUTER, HARD, !playerTop);
+		}
 		ball = new Ball();
 		playerReversing = false;
 		opponentReversing = false;
@@ -314,7 +323,7 @@ public class Board extends JPanel implements Commons {
 					g2d.fillOval(x, y, w, h);
 				}
 
-				if (player.getName().equals(OPPONENT)) {
+				if (!player.isTop()) {
 					BufferedImage image = toBufferedImage(player.isPunching() ? player.getPunchingImage()
 							: (player.isJumping() ? player.getJumpingImage() : player.getImage()));
 					double rotationRequired = Math.toRadians(180);
@@ -385,7 +394,7 @@ public class Board extends JPanel implements Commons {
 					}
 				}
 			} else {
-				if (player.getName().equals(OPPONENT)) {
+				if (!player.isTop()) {
 					BufferedImage image = toBufferedImage(player.getDeadImage());
 					double rotationRequired = Math.toRadians(180);
 					double locationX = image.getWidth(null) / 2;
@@ -491,8 +500,16 @@ public class Board extends JPanel implements Commons {
 					timerForBall.cancel();
 					timerForPlayer.cancel();
 
-					initBoard();
-					gameInit();
+					Timer timerForReset = new Timer();
+					TimerTask timerTaskForReset = new TimerTask() {
+
+						@Override
+						public void run() {
+							initBoard();
+							gameInit();
+						}
+					};
+					timerForReset.schedule(timerTaskForReset, 1000);
 				}
 			} else if (powerups[0] != null && player.getRect().intersects(powerups[0].getRect())) { // player powerups
 				isPlayerPowerupActivated = true;
