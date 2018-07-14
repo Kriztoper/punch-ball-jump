@@ -24,8 +24,10 @@ public class Player extends Sprite implements Commons {
 	private int difficulty;
 	private Image punchingImage;
 	private Image jumpingImage;
+	private Image deadImage;
 	private boolean isMoving = false;
 	public long rectBorder;
+	private boolean isAlive;
 
 	public Player(int initX, int initY, String name, int hearts, boolean isComputer, int difficulty) {
 		INIT_X = initX;
@@ -43,6 +45,10 @@ public class Player extends Sprite implements Commons {
 			// jumping image
 			ii = new ImageIcon("images/player1_jump.png");
 			jumpingImage = ii.getImage();
+
+			// dead image
+			ii = new ImageIcon("images/player1_dead.png");
+			deadImage = ii.getImage();
 		} else if (name.equals(OPPONENT)) {
 			ImageIcon ii = new ImageIcon("images/player2.png");
 			image = ii.getImage();
@@ -54,6 +60,10 @@ public class Player extends Sprite implements Commons {
 			// jumping image
 			ii = new ImageIcon("images/player2_jump.png");
 			jumpingImage = ii.getImage();
+
+			// dead image
+			ii = new ImageIcon("images/player2_dead.png");
+			deadImage = ii.getImage();
 		}
 
 		i_width = image.getWidth(null);
@@ -76,6 +86,10 @@ public class Player extends Sprite implements Commons {
 
 	public Image getJumpingImage() {
 		return jumpingImage;
+	}
+
+	public Image getDeadImage() {
+		return deadImage;
 	}
 
 	public void move() {
@@ -209,6 +223,7 @@ public class Player extends Sprite implements Commons {
 		punching = false;
 
 		setHearts(hearts);
+		setAlive(true);
 
 		setInvincible(false);
 	}
@@ -251,5 +266,13 @@ public class Player extends Sprite implements Commons {
 
 	public void setInvincible(boolean invincible) {
 		this.invincible = invincible;
+	}
+
+	public boolean isAlive() {
+		return isAlive;
+	}
+
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
 	}
 }
