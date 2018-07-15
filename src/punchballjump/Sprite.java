@@ -46,7 +46,7 @@ public class Sprite {
 		int width = image.getWidth(null);
 		int height = image.getHeight(null);
 		return new Rectangle(x - width - (int) rectBorder, y - 3 * height, width * 3 + 2 * (int) rectBorder,
-				height * 5);
+				height * 7);
 	}
 
 	public Rectangle getBiggerRect() {

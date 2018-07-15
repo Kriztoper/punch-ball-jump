@@ -323,6 +323,17 @@ public class Board extends JPanel implements Commons {
 					g2d.fillOval(x, y, w, h);
 				}
 
+				// Draw bigger rect around image which is used for visualization, debugging, etc
+				// NOTE: Uncomment to draw
+				// if (player.getName().equals(OPPONENT)) {
+				// int x = player.getX() - player.getWidth() - (int) player.rectBorder;
+				// int y = player.getY() - player.getHeight() * 3;
+				// int width = player.getWidth() * 3 + 2 * (int) player.rectBorder;
+				// int height = player.getHeight() * 7;
+				// g2d.setColor(new Color(1f, 0f, 0f, 0.5f));
+				// g2d.fillRect(x, y, width, height);
+				// }
+
 				if (!player.isTop()) {
 					BufferedImage image = toBufferedImage(player.isPunching() ? player.getPunchingImage()
 							: (player.isJumping() ? player.getJumpingImage() : player.getImage()));
@@ -353,14 +364,6 @@ public class Board extends JPanel implements Commons {
 									-player.getWidth(), player.getHeight(), null);
 						}
 					}
-					// Draw bigger rect around image which is used for visualization, debugging, etc
-					// NOTE: Uncomment to draw
-					// int x = player.getX() - player.getWidth() - (int) player.rectBorder;
-					// int y = player.getY() - player.getHeight() * 3;
-					// int width = player.getWidth() * 3 + 2 * (int) player.rectBorder;
-					// int height = player.getHeight() * 5;
-					// g2d.setColor(new Color(1f, 0f, 0f, 0.5f));
-					// g2d.fillRect(x, y, width, height);
 				} else {
 					if (player.isPunching()) {
 						if (player.getX() < ball.getX()) {
