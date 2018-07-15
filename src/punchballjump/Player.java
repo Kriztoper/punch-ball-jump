@@ -1,6 +1,6 @@
 package punchballjump;
 
-import java.awt.Rectangle;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 import java.util.Timer;
@@ -22,14 +22,49 @@ public class Player extends Sprite implements Commons {
 	private Random random;
 	private boolean invincible;
 	private int difficulty;
+	private Image punchingImage;
+	private Image jumpingImage;
+	private Image deadImage;
+	private boolean isMoving = false;
+	public long rectBorder;
+	private boolean isAlive;
 
 	public Player(int initX, int initY, String name, int hearts, boolean isComputer, int difficulty) {
 		INIT_X = initX;
 		INIT_Y = initY;
 		setName(name);
 
-		ImageIcon ii = new ImageIcon("images/player1.png");
-		image = ii.getImage();
+		if (name.equals(PLAYER)) {
+			ImageIcon ii = new ImageIcon("images/player1.png");
+			image = ii.getImage();
+
+			// punching image
+			ii = new ImageIcon("images/player1_kick.png");
+			punchingImage = ii.getImage();
+
+			// jumping image
+			ii = new ImageIcon("images/player1_jump.png");
+			jumpingImage = ii.getImage();
+
+			// dead image
+			ii = new ImageIcon("images/player1_dead.png");
+			deadImage = ii.getImage();
+		} else if (name.equals(OPPONENT)) {
+			ImageIcon ii = new ImageIcon("images/player2.png");
+			image = ii.getImage();
+
+			// punching image
+			ii = new ImageIcon("images/player2_kick.png");
+			punchingImage = ii.getImage();
+
+			// jumping image
+			ii = new ImageIcon("images/player2_jump.png");
+			jumpingImage = ii.getImage();
+
+			// dead image
+			ii = new ImageIcon("images/player2_dead.png");
+			deadImage = ii.getImage();
+		}
 
 		i_width = image.getWidth(null);
 		i_height = image.getHeight(null);
@@ -43,6 +78,18 @@ public class Player extends Sprite implements Commons {
 			random = new Random();
 			this.difficulty = difficulty;
 		}
+	}
+
+	public Image getPunchingImage() {
+		return punchingImage;
+	}
+
+	public Image getJumpingImage() {
+		return jumpingImage;
+	}
+
+	public Image getDeadImage() {
+		return deadImage;
 	}
 
 	public void move() {
@@ -69,7 +116,7 @@ public class Player extends Sprite implements Commons {
 		}
 	}
 
-	public void generateMove(Ball ball) {
+	public void generateMove(Ball ball, long ballPeriod) {
 		// Prints pos and dim of ball and players and is used for debugging
 		// NOTE: Uncomment to print
 		// System.out.printf("ball = %f, %f, %f, %f\nplayer = %f, %f, %f, %f\n",
@@ -77,27 +124,38 @@ public class Player extends Sprite implements Commons {
 		// ball.getRect().getY(), ball.getRect().getWidth(), ball.getRect().getHeight(),
 		// getRect().getX(),
 		// getRect().getY(), getRect().getWidth(), getRect().getHeight());
-		Rectangle initRectPos = new Rectangle(INIT_OPPONENT_X, INIT_OPPONENT_Y, (int) getRect().getWidth(), 10);
-		if (!jumping) {
-			if (random.nextBoolean() && getName().equals(OPPONENT)
-					&& ball.getRect().intersects(getSlightlyBiggerRect())) {
+		boolean isJump = random.nextBoolean();// move <= 14 ? true : false;
+		rectBorder = (110 - ballPeriod) / 2;
+		if (getLongBiggerRect(rectBorder).intersects(ball.getRect()) && !isMoving) {
+			Timer timer = new Timer();
+			TimerTask timerTask;
+			if (!isJump) {
 				// punch
-				punching = true;
-			} else if (random.nextBoolean() && getName().equals(OPPONENT)
-					&& ball.getRect().intersects(this.getBiggerRect()) && !getRect().intersects(initRectPos)) {
-				// not jump
-				jumping = false;
-			} else if (getName().equals(OPPONENT) && ball.getRect().intersects(this.getBiggerRect())
-					&& getRect().intersects(new Rectangle(INIT_OPPONENT_X, INIT_OPPONENT_Y, (int) getRect().getWidth(),
-							(int) getRect().getHeight()))) {
+				timerTask = new TimerTask() {
 
-				// System.out.println(">>>>>>>> Ball intersects with Computer!");
-				int randInt = random.nextInt(30);
-				if (randInt >= difficulty) {
-					System.out.println("randInt is " + randInt);
-					this.jumping = true;
-				}
+					@Override
+					public void run() {
+						jumping = false;
+						punching = true;
+						punchTimer = new Timer();
+						punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
+					}
+				};
+			} else {
+				// jump
+				timerTask = new TimerTask() {
+
+					@Override
+					public void run() {
+						punching = false;
+						jumping = true;
+					}
+				};
 			}
+			timer.schedule(timerTask, difficulty);
+			isMoving = true;
+		} else if (!getLongBiggerRect(ballPeriod).intersects(ball.getRect()) && isMoving) {
+			isMoving = false;
 		}
 	}
 
@@ -153,6 +211,10 @@ public class Player extends Sprite implements Commons {
 		return punching;
 	}
 
+	public boolean isJumping() {
+		return jumping;
+	}
+
 	private void resetState(int hearts) {
 		x = INIT_X;
 		y = INIT_Y;
@@ -161,6 +223,7 @@ public class Player extends Sprite implements Commons {
 		punching = false;
 
 		setHearts(hearts);
+		setAlive(true);
 
 		setInvincible(false);
 	}
@@ -203,5 +266,13 @@ public class Player extends Sprite implements Commons {
 
 	public void setInvincible(boolean invincible) {
 		this.invincible = invincible;
+	}
+
+	public boolean isAlive() {
+		return isAlive;
+	}
+
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
 	}
 }

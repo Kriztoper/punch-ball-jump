@@ -19,7 +19,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Board extends JPanel implements Commons {
@@ -35,7 +34,6 @@ public class Board extends JPanel implements Commons {
 	private ScheduleTaskForBall scheduleTaskForBall;
 	private Timer timerForPlayer;
 	private Timer timerForBall;
-	private Image img;
 	private Timer timerForBallReset;
 	private Timer timerForPlayerPowerups;
 	private Timer timerForOpponentPowerups;
@@ -72,12 +70,6 @@ public class Board extends JPanel implements Commons {
 		addKeyListener(new TAdapter());
 		setFocusable(true);
 
-		setBackground(Color.BLUE);
-		
-		img = Toolkit.getDefaultToolkit().createImage("images/test.png");
-		addEarthAtCenter();
-
-
 		setDoubleBuffered(true);
 
 		scheduleTaskForPlayer = new ScheduleTaskForPlayer();
@@ -90,18 +82,6 @@ public class Board extends JPanel implements Commons {
 		// TODO: Graphics should display a countdown from 3 2 1
 		timerForBall.schedule(scheduleTaskForBall, 3000, ballPeriod);
 	}
-
-
-	private void addEarthAtCenter() {
-		JLabel earthLabel = new JLabel();
-		ImageIcon ii = new ImageIcon("res/earth.png");
-
-		earthLabel.setIcon(ii);
-		earthLabel.setSize(340, 340);
-		earthLabel.setLocation(160, 165);
-		add(earthLabel);
-	}
-
 
 	public void initBallTimer(long period, Player player) {
 		System.out.println("Init ball timer");
@@ -211,12 +191,7 @@ public class Board extends JPanel implements Commons {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		g.drawImage(img, 0, 0, null);
-
-
-		g.drawString(String.valueOf(players[0].getHearts()), 10, 10);
-		g.drawString(String.valueOf(players[1].getHearts()), 210, 10);
-
+		super.paintComponent(g);
 
 		Graphics2D g2d = (Graphics2D) g;
 
@@ -328,28 +303,112 @@ public class Board extends JPanel implements Commons {
 			// int y = player.getY() - player.getHeight();
 			// g2d.setColor(Color.RED);
 			// g2d.fillRect(x, y, width, height);
-			if (player.isInvincible()) {
-				// TODO: Display indicator like forcefield if player is invincible
-				int w1 = player.getSlightlyBiggerRect().width;
-				int h1 = player.getSlightlyBiggerRect().height;
-				int x1 = player.getSlightlyBiggerRect().x;
-				int y1 = player.getSlightlyBiggerRect().y;
-				g2d.setColor(new Color(0f, 1f, 0f, 0.5f));
-				g2d.fillOval(x1, y1, w1, h1);
-			}
+			if (player.isAlive()) {
+				if (player.isInvincible()) {
+					// TODO: Display indicator like forcefield if player is invincible
+					int x = player.getSlightlyBiggerRect().x;
+					int y = player.getSlightlyBiggerRect().y;
+					int w = player.getSlightlyBiggerRect().width;
+					int h = player.getSlightlyBiggerRect().height;
+					g2d.setColor(new Color(0f, 1f, 0f, 0.5f));
+					g2d.fillOval(x, y, w, h);
+				}
 
-			if (player.getName().equals(OPPONENT)) {
-				BufferedImage image = toBufferedImage(player.getImage());
-				double rotationRequired = Math.toRadians(180);
-				double locationX = image.getWidth(null) / 2;
-				double locationY = image.getHeight(null) / 2;
-				AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+				if (player.getName().equals(OPPONENT)) {
+					BufferedImage image = toBufferedImage(player.isPunching() ? player.getPunchingImage()
+							: (player.isJumping() ? player.getJumpingImage() : player.getImage()));
+					double rotationRequired = Math.toRadians(180);
+					double locationX = image.getWidth(null) / 2;
+					double locationY = image.getHeight(null) / 2;
+					AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+					AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
-				g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), null);
+					if (player.isPunching() || player.isJumping()) {
+						if (player.getX() < ball.getX()) {
+							// punch/jump right
+							g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
+									-player.getWidth(), player.getHeight(), null);
+						} else {
+							// punch/jump left
+							g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
+									player.getHeight(), this);
+						}
+					} else {
+						if (player.getX() < ball.getX()) {
+							// face right
+							g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
+									player.getHeight(), this);
+						} else {
+							// face left
+							g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
+									-player.getWidth(), player.getHeight(), null);
+						}
+					}
+					// Draw bigger rect around image which is used for visualization, debugging, etc
+					// NOTE: Uncomment to draw
+					// int x = player.getX() - player.getWidth() - (int) player.rectBorder;
+					// int y = player.getY() - player.getHeight() * 3;
+					// int width = player.getWidth() * 3 + 2 * (int) player.rectBorder;
+					// int height = player.getHeight() * 5;
+					// g2d.setColor(new Color(1f, 0f, 0f, 0.5f));
+					// g2d.fillRect(x, y, width, height);
+				} else {
+					if (player.isPunching()) {
+						if (player.getX() < ball.getX()) {
+							// punch right
+							g2d.drawImage(player.getPunchingImage(), player.getX(), player.getY(), player.getWidth(),
+									player.getHeight(), this);
+						} else {
+							// punch left
+							g2d.drawImage(player.getPunchingImage(), player.getX() + player.getWidth(), player.getY(),
+									-player.getWidth(), player.getHeight(), null);
+						}
+					} else if (player.isJumping()) {
+						if (player.getX() < ball.getX()) {
+							// punch right
+							g2d.drawImage(player.getJumpingImage(), player.getX(), player.getY(), player.getWidth(),
+									player.getHeight(), this);
+						} else {
+							// punch left
+							g2d.drawImage(player.getJumpingImage(), player.getX() + player.getWidth(), player.getY(),
+									-player.getWidth(), player.getHeight(), null);
+						}
+					} else {
+						// stand still
+						if (player.getX() < ball.getX()) {
+							g2d.drawImage(player.getImage(), player.getX() + player.getWidth(), player.getY(),
+									-player.getWidth(), player.getHeight(), null);
+						} else {
+							g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(),
+									player.getHeight(), this);
+						}
+					}
+				}
 			} else {
-				g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(), player.getHeight(),
-						this);
+				if (player.getName().equals(OPPONENT)) {
+					BufferedImage image = toBufferedImage(player.getDeadImage());
+					double rotationRequired = Math.toRadians(180);
+					double locationX = image.getWidth(null) / 2;
+					double locationY = image.getHeight(null) / 2;
+					AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+					AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+
+					if (player.getX() < ball.getX()) {
+						g2d.drawImage(op.filter(image, null), player.getX(), INIT_OPPONENT_Y - player.getHeight() / 2,
+								player.getWidth(), player.getHeight(), this);
+					} else {
+						g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(),
+								INIT_OPPONENT_Y - player.getHeight() / 2, -player.getWidth(), player.getHeight(), null);
+					}
+				} else {
+					if (player.getX() < ball.getX()) {
+						g2d.drawImage(player.getDeadImage(), player.getX() + player.getWidth(),
+								INIT_PLAYER_Y + player.getHeight() / 2, -player.getWidth(), player.getHeight(), null);
+					} else {
+						g2d.drawImage(player.getDeadImage(), player.getX(), INIT_PLAYER_Y + player.getHeight() / 2,
+								player.getWidth(), player.getHeight(), this);
+					}
+				}
 			}
 			// System.out.printf("x=%d, y=%d, w=%d, h=%d\n", x, y, width, height);
 		}
@@ -387,7 +446,7 @@ public class Board extends JPanel implements Commons {
 		@Override
 		public void run() {
 			if (players[1].isComputer) {
-				players[1].generateMove(ball);
+				players[1].generateMove(ball, ballPeriod);
 			}
 			for (Player player : players)
 				player.move();
@@ -410,6 +469,7 @@ public class Board extends JPanel implements Commons {
 		for (Player player : players) {
 			if (ball.getRect().intersects(player.getRect()) && !player.isPunching() && !player.isInvincible()) {
 				// player is hit by ball and is not punching
+				player.setAlive(false);
 				round++;
 				if (player.getName().equals(PLAYER)) {
 					players[0].decHearts();
