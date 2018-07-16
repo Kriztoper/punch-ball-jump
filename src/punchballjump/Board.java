@@ -47,8 +47,8 @@ public class Board extends JPanel implements Commons {
 	private Color oCaptionColor;
 	private String oCaptionMsg;
 	private int countdown;
-	private Image bg = Toolkit.getDefaultToolkit().createImage("images/test2.png");
-	private ImageIcon earth = new ImageIcon("images/earth2.png");
+	private Image bg;
+	private ImageIcon earth;
 	private int round = 1;
 	private boolean playerTop;
 	private ArrayList<Sprite> p1Hearts;
@@ -56,6 +56,13 @@ public class Board extends JPanel implements Commons {
 	private ArrayList<Sprite> playerHeads;
 
 	public Board() {
+		// Init bg and earth images
+		Random random = new Random();
+		String bgName = random.nextBoolean() ? "test" : "test2";
+		String earthName = random.nextBoolean() ? "earth" : "earth2";
+		bg = Toolkit.getDefaultToolkit().createImage("images/" + bgName + ".png");
+		earth = new ImageIcon("images/" + earthName + ".png");
+
 		// init Powerups only once
 		String[] powerupsArr = { RESTORE, INVINCIBLE, SWAP };
 		playerPowerupsList = new ArrayList<Powerup>();
