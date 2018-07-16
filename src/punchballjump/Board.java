@@ -289,10 +289,14 @@ public class Board extends JPanel implements Commons {
 
 		// draw player powerups activated caption
 		// TODO: Improve caption design
+		if (isPlayerPowerupActivated || isOpponentPowerupActivated) {
+			g2d.setColor(new Color(0f, 0f, 0f, 0.5f));
+			g2d.fillRect(0, 55, Commons.WIDTH, 40);
+		}
 		if (isPlayerPowerupActivated) {
 			g2d.setColor(pCaptionColor);
-			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 16));
-			g2d.drawString(pCaptionMsg, 30, 30);
+			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+			g2d.drawString(pCaptionMsg, 30, 80);
 			Timer timerForCaption = new Timer();
 			TimerTask timerTaskForCaption = new TimerTask() {
 
@@ -307,8 +311,8 @@ public class Board extends JPanel implements Commons {
 		// TODO: Improve caption design
 		if (isOpponentPowerupActivated) {
 			g2d.setColor(oCaptionColor);
-			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 16));
-			g2d.drawString(oCaptionMsg, 350, 30);
+			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+			g2d.drawString(oCaptionMsg, 400, 80);
 			Timer timerForCaption = new Timer();
 			TimerTask timerTaskForCaption = new TimerTask() {
 
@@ -542,17 +546,31 @@ public class Board extends JPanel implements Commons {
 					};
 					timerForReset.schedule(timerTaskForReset, 1000);
 				}
-			} else if (powerups[0] != null && player.getRect().intersects(powerups[0].getRect())) { // player powerups
-				isPlayerPowerupActivated = true;
-				if (powerups[0].getName().equals(RESTORE)) {
-					pCaptionColor = Color.RED;
-					pCaptionMsg = "+1 Heart";
-				} else if (powerups[0].getName().equals(INVINCIBLE)) {
-					pCaptionColor = Color.GREEN;
-					pCaptionMsg = "INVINCIBLE for 10 sec";
-				} else if (powerups[0].getName().equals(SWAP)) {
-					pCaptionColor = Color.YELLOW;
-					pCaptionMsg = "Swap hearts";
+			} else if (powerups[0] != null && player.getRect().intersects(powerups[0].getRect())) { // top powerups
+				if (player.getName().equals(PLAYER)) {
+					isPlayerPowerupActivated = true;
+					if (powerups[0].getName().equals(RESTORE)) {
+						pCaptionColor = Color.RED;
+						pCaptionMsg = "+1 Heart";
+					} else if (powerups[0].getName().equals(INVINCIBLE)) {
+						pCaptionColor = Color.GREEN;
+						pCaptionMsg = "INVINCIBLE for 10 sec";
+					} else if (powerups[0].getName().equals(SWAP)) {
+						pCaptionColor = Color.YELLOW;
+						pCaptionMsg = "Swap hearts";
+					}
+				} else {
+					isOpponentPowerupActivated = true;
+					if (powerups[0].getName().equals(RESTORE)) {
+						oCaptionColor = Color.RED;
+						oCaptionMsg = "+1 Heart";
+					} else if (powerups[0].getName().equals(INVINCIBLE)) {
+						oCaptionColor = Color.GREEN;
+						oCaptionMsg = "INVINCIBLE for 10 sec";
+					} else if (powerups[0].getName().equals(SWAP)) {
+						oCaptionColor = Color.YELLOW;
+						oCaptionMsg = "Swap hearts";
+					}
 				}
 				Powerup powerup = powerups[0];
 				powerups[0] = null;
@@ -577,17 +595,31 @@ public class Board extends JPanel implements Commons {
 					players[0].setHearts(opponentHearts);
 					players[1].setHearts(playerHearts);
 				}
-			} else if (powerups[1] != null && player.getRect().intersects(powerups[1].getRect())) { // opponent powerups
-				isOpponentPowerupActivated = true;
-				if (powerups[1].getName().equals(RESTORE)) {
-					oCaptionColor = Color.RED;
-					oCaptionMsg = "+1 Heart";
-				} else if (powerups[1].getName().equals(INVINCIBLE)) {
-					oCaptionColor = Color.GREEN;
-					oCaptionMsg = "INVINCIBLE for 10 sec";
-				} else if (powerups[1].getName().equals(SWAP)) {
-					oCaptionColor = Color.YELLOW;
-					oCaptionMsg = "Swap hearts";
+			} else if (powerups[1] != null && player.getRect().intersects(powerups[1].getRect())) { // bot powerups
+				if (player.getName().equals(PLAYER)) {
+					isPlayerPowerupActivated = true;
+					if (powerups[1].getName().equals(RESTORE)) {
+						pCaptionColor = Color.RED;
+						pCaptionMsg = "+1 Heart";
+					} else if (powerups[1].getName().equals(INVINCIBLE)) {
+						pCaptionColor = Color.GREEN;
+						pCaptionMsg = "INVINCIBLE for 10 sec";
+					} else if (powerups[1].getName().equals(SWAP)) {
+						pCaptionColor = Color.YELLOW;
+						pCaptionMsg = "Swap hearts";
+					}
+				} else {
+					isOpponentPowerupActivated = true;
+					if (powerups[1].getName().equals(RESTORE)) {
+						oCaptionColor = Color.RED;
+						oCaptionMsg = "+1 Heart";
+					} else if (powerups[1].getName().equals(INVINCIBLE)) {
+						oCaptionColor = Color.GREEN;
+						oCaptionMsg = "INVINCIBLE for 10 sec";
+					} else if (powerups[1].getName().equals(SWAP)) {
+						oCaptionColor = Color.YELLOW;
+						oCaptionMsg = "Swap hearts";
+					}
 				}
 				Powerup powerup = powerups[1];
 				powerups[1] = null;
