@@ -47,8 +47,8 @@ public class Board extends JPanel implements Commons {
 	private Color oCaptionColor;
 	private String oCaptionMsg;
 	private int countdown;
-	private Image bg = Toolkit.getDefaultToolkit().createImage("images/test.png");
-	private ImageIcon earth = new ImageIcon("res/earth.png");
+	private Image bg = Toolkit.getDefaultToolkit().createImage("images/test2.png");
+	private ImageIcon earth = new ImageIcon("images/earth2.png");
 	private int round = 1;
 	private boolean playerTop;
 	private ArrayList<Sprite> p1Hearts;
@@ -69,14 +69,14 @@ public class Board extends JPanel implements Commons {
 		// Init players' hearts
 		p1Hearts = new ArrayList<Sprite>();
 		p2Hearts = new ArrayList<Sprite>();
-		for (int i = 0, x = 5, y = 10; i < 5; i++, x += 50) {
-			p1Hearts.add(new Sprite(x + 50, y, "images/ball.png"));
-			p2Hearts.add(new Sprite(x + 345, y, "images/ball.png"));
+		for (int i = 0, x = 10, y = 13; i < 5; i++, x += 40) {
+			p1Hearts.add(new Sprite(x + 45, y, "images/heart.png"));
+			p2Hearts.add(new Sprite(x + 390, y, "images/heart.png"));
 		}
 
 		playerHeads = new ArrayList<Sprite>();
-		playerHeads.add(new Sprite(5, 10, "images/pacman/sun.png"));
-		playerHeads.add(new Sprite(605, 10, "images/pacman/sun.png"));
+		playerHeads.add(new Sprite(5, 10, "images/player1_head.png"));
+		playerHeads.add(new Sprite(600, 10, "images/player2_head.png"));
 
 		initBoard();
 	}
