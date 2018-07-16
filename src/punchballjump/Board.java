@@ -69,6 +69,7 @@ public class Board extends JPanel implements Commons {
 		// Init players' hearts
 		p1Hearts = new ArrayList<Sprite>();
 		p2Hearts = new ArrayList<Sprite>();
+
 		for (int i = 0, x = 10, y = 13; i < 5; i++, x += 40) {
 			p1Hearts.add(new Sprite(x + 45, y, "images/heart.png"));
 			p2Hearts.add(new Sprite(x + 390, y, "images/heart.png"));
