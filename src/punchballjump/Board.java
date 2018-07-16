@@ -70,13 +70,13 @@ public class Board extends JPanel implements Commons {
 		p1Hearts = new ArrayList<Sprite>();
 		p2Hearts = new ArrayList<Sprite>();
 		for (int i = 0, x = 5, y = 10; i < 5; i++, x += 50) {
-			p1Hearts.add(new Sprite(x + 50, y, "images/ball.png"));
-			p2Hearts.add(new Sprite(x + 345, y, "images/ball.png"));
+			p1Hearts.add(new Sprite(x + 50, y, "images/heart.png"));
+			p2Hearts.add(new Sprite(x + 345, y, "images/heart.png"));
 		}
 
 		playerHeads = new ArrayList<Sprite>();
-		playerHeads.add(new Sprite(5, 10, "images/pacman/sun.png"));
-		playerHeads.add(new Sprite(605, 10, "images/pacman/sun.png"));
+		playerHeads.add(new Sprite(5, 10, "images/player1_head.png"));
+		playerHeads.add(new Sprite(605, 10, "images/player2_head.png"));
 
 		initBoard();
 	}
