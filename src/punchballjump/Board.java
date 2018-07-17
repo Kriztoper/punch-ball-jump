@@ -49,7 +49,7 @@ public class Board extends JPanel implements Commons {
 	private Color oCaptionColor;
 	private String oCaptionMsg;
 	private int countdown;
-	private Image bg;
+	private ImageIcon bg;
 	private ImageIcon earth;
 	private int round = 1;
 	private boolean playerTop;
@@ -65,7 +65,7 @@ public class Board extends JPanel implements Commons {
 		Random random = new Random();
 		String bgName = random.nextBoolean() ? "test" : "test2";
 		String earthName = random.nextBoolean() ? "earth" : "earth2";
-		bg = Toolkit.getDefaultToolkit().createImage("images/" + bgName + ".png");
+		bg = new ImageIcon("images/" + bgName + ".png");
 		earth = new ImageIcon("images/" + earthName + ".png");
 
 		// init Powerups only once
@@ -235,8 +235,14 @@ public class Board extends JPanel implements Commons {
 
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-		g.drawImage(bg, 0, 0, null);
+		// draw background image
+		g2d.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
 
+		// [ESC] Back to Menu
+		g2d.setColor(Color.WHITE);
+		g2d.drawString("[ESC] Back to Menu", 500, 640);
+
+		// draw player heads
 		for (int i = 0; i < playerHeads.size(); i++) {
 			Sprite playerHead = playerHeads.get(i);
 			g2d.drawImage(playerHead.getImage(), playerHead.getX(), playerHead.getY(), playerHead.getWidth(),

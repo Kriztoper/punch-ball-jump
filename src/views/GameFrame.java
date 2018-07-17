@@ -1,6 +1,7 @@
 package views;
 
 import java.awt.CardLayout;
+import java.util.Arrays;
 
 import javax.swing.JPanel;
 
@@ -13,7 +14,8 @@ public class GameFrame {
 	private JPanel cardsPanel;
 	private MenuPanel menuPanel;
 	private PromptRolePanel promptRolePanel;
-	private GamePanel gamePanel;
+	private HowToPlayPanel howToPlayPanel;
+	private CreditsPanel creditsPanel;
 	private Board board;
 
 	public GameFrame() {
@@ -26,29 +28,29 @@ public class GameFrame {
 		return menuPanel;
 	}
 
-	public GamePanel getGamePanel() {
-		return gamePanel;
+	public HowToPlayPanel getHowToPlayPanel() {
+		return howToPlayPanel;
 	}
 
 	public PromptRolePanel getPromptRolePanel() {
 		return promptRolePanel;
 	}
 
+	public CreditsPanel getCreditsPanel() {
+		return creditsPanel;
+	}
+
 	public void setCurrentPanel(String panelName) {
 		if (panelName.equals("board")) {
+			if (Arrays.asList(cardsPanel.getComponents()).contains(board)) {
+				cardsPanel.remove(board);
+			}
 			board = new Board(this);
 			cardsPanel.add(board, "board");
-			menuPanel.setVisible(false);
-			board.setVisible(true);
+			cards.show(cardsPanel, panelName);
 			board.requestFocus();
 		} else {
 			cards.show(cardsPanel, panelName);
-			if (panelName.equals("menuPanel")) {
-				menuPanel.setVisible(true);
-			}
-			if (board != null) {
-				board.setVisible(false);
-			}
 		}
 		frame.repaint();
 	}
@@ -58,7 +60,9 @@ public class GameFrame {
 
 		menuPanel = new MenuPanel();
 
-		gamePanel = new GamePanel();
+		howToPlayPanel = new HowToPlayPanel();
+
+		creditsPanel = new CreditsPanel();
 
 		promptRolePanel = new PromptRolePanel();
 
@@ -66,7 +70,8 @@ public class GameFrame {
 		cardsPanel.setLayout(cards);
 
 		cardsPanel.add(menuPanel, "menuPanel");
-		cardsPanel.add(gamePanel, "gamePanel");
+		cardsPanel.add(howToPlayPanel, "howToPlayPanel");
+		cardsPanel.add(creditsPanel, "creditsPanel");
 		cardsPanel.add(promptRolePanel, "promptRolePanel");
 		cards.show(cardsPanel, "menuPanel");
 	}
