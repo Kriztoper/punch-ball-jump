@@ -21,6 +21,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import views.GameFrame;
+
 public class Board extends JPanel implements Commons {
 	private String message = "Game Over";
 	private Ball ball;
@@ -54,8 +56,11 @@ public class Board extends JPanel implements Commons {
 	private ArrayList<Sprite> p1Hearts;
 	private ArrayList<Sprite> p2Hearts;
 	private ArrayList<Sprite> playerHeads;
+	private GameFrame gameFrame;
 
-	public Board() {
+	public Board(GameFrame gameFrame) {
+		this.gameFrame = gameFrame;
+
 		// Init bg and earth images
 		Random random = new Random();
 		String bgName = random.nextBoolean() ? "test" : "test2";
@@ -103,7 +108,6 @@ public class Board extends JPanel implements Commons {
 		ballPeriod = 100;
 		scheduleTaskForBall = new ScheduleTaskForBall();
 		timerForBall = new Timer();
-		// TODO: Graphics should display a countdown from 3 2 1
 		timerForBall.schedule(scheduleTaskForBall, 3000, ballPeriod);
 	}
 
@@ -480,6 +484,13 @@ public class Board extends JPanel implements Commons {
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				System.out.println("Exiting to Menu");
+				System.out.println(gameFrame);
+				gameFrame.setCurrentPanel("menuPanel");
+				players[0].setHearts(0);
+				players[1].setHearts(0);
+			}
 			if (!pressed) {
 				for (Player player : players) {
 					player.keyPressed(e);
@@ -535,6 +546,7 @@ public class Board extends JPanel implements Commons {
 				System.out.println("Game Over");
 				// all 5 hearts have been consumed by a player therefore that player loses
 				if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
+					System.out.println("Exiting game!");
 					ingame = false;
 					timerForBall.cancel();
 					timerForPlayer.cancel();

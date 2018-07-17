@@ -1,42 +1,45 @@
 package views;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import punchballjump.Commons;
 import utils.Constants;
 
-public class MenuPanel extends JPanel {
+public class MenuPanel extends JPanel implements Commons {
 
 	private JButton playButton;
 	private JButton howToPlayButton;
 	private JButton creditsButton;
 	private JButton onePlayerButton;
 	private JButton twoPlayersButton;
-	
+
 	public MenuPanel() {
 		initPanel();
 		initComponents();
 		addComponents();
 	}
-	
+
 	public void initPanel() {
 		setLayout(null);
 		setBackground(new Color(100, 149, 237));
+		setSize(Commons.WIDTH, Commons.HEIGHT);
 	}
-	
+
 	public void initComponents() {
 		playButton = new JButton("Play");
-		
+
 		howToPlayButton = new JButton("How to Play");
-		
+
 		creditsButton = new JButton("Credits");
 		onePlayerButton = new JButton("One Player");
 		twoPlayersButton = new JButton("Two Players");
-		onePlayerButton.setBounds(Constants.WIDTH/2-100,100,200,60);
-		twoPlayersButton.setBounds(Constants.WIDTH/2-100,160,200,60);
-		howToPlayButton.setBounds(Constants.WIDTH/2-100, 220, 200, 60);
-		creditsButton.setBounds(Constants.WIDTH/2-100,280,200,60);
+		onePlayerButton.setBounds(Constants.WIDTH / 2 - 100, 100, 200, 60);
+		twoPlayersButton.setBounds(Constants.WIDTH / 2 - 100, 160, 200, 60);
+		howToPlayButton.setBounds(Constants.WIDTH / 2 - 100, 220, 200, 60);
+		creditsButton.setBounds(Constants.WIDTH / 2 - 100, 280, 200, 60);
 	}
 
 	public void addComponents() {
@@ -46,7 +49,7 @@ public class MenuPanel extends JPanel {
 		add(onePlayerButton);
 		add(twoPlayersButton);
 	}
-	
+
 	public JButton getPlayButton() {
 		return playButton;
 	}
@@ -86,5 +89,5 @@ public class MenuPanel extends JPanel {
 	public void setTwoPlayersButton(JButton twoPlayersButton) {
 		this.twoPlayersButton = twoPlayersButton;
 	}
-	
+
 }

@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
+import views.GameFrame;
+
 public class PunchBallJump extends JFrame {
 
 	public PunchBallJump() {
@@ -11,7 +13,7 @@ public class PunchBallJump extends JFrame {
 	}
 
 	private void initUI() {
-		add(new Board());
+		add(new Board(new GameFrame()));
 		setTitle("Punch Ball Jump");
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
