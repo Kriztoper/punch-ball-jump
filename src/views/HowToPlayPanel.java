@@ -24,7 +24,7 @@ public class HowToPlayPanel extends JPanel implements Commons {
 	public void initPanel() {
 		setLayout(new FlowLayout());
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/test2.png");
+		bg = new ImageIcon("images/test2.png"); // TODO: change with new edited how to play image bg
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class MenuPanel extends JPanel implements Commons {
 
 	public void initPanel() {
 		setLayout(null);
-		setBackground(new Color(100, 149, 237));
+		setBackground(new Color(100, 149, 237)); // TODO: change with new edited menu image bg
 		setSize(Commons.WIDTH, Commons.HEIGHT);
 	}
 

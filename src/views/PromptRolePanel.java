@@ -39,7 +39,7 @@ public class PromptRolePanel extends JPanel implements Commons {
 
 	public void initPanel() {
 		setLayout(new FlowLayout());
-		setBackground(new Color(250, 128, 114));
+		setBackground(new Color(250, 128, 114)); // TODO: change with new edited prompt role image bg
 		setSize(Commons.WIDTH, Commons.HEIGHT);
 	}
 

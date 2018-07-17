@@ -24,7 +24,7 @@ public class CreditsPanel extends JPanel implements Commons {
 	public void initPanel() {
 		setLayout(new FlowLayout());
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/test.png");
+		bg = new ImageIcon("images/test.png"); // TODO: change with new edited credits image bg
 	}
 
 	@Override

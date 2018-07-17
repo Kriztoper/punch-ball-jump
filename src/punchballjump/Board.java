@@ -91,6 +91,7 @@ public class Board extends JPanel implements Commons {
 		playerHeads.add(new Sprite(5, 10, "images/player1_head.png"));
 		playerHeads.add(new Sprite(600, 10, "images/player2_head.png"));
 
+		repaint();
 		initBoard();
 	}
 
@@ -109,6 +110,8 @@ public class Board extends JPanel implements Commons {
 		scheduleTaskForBall = new ScheduleTaskForBall();
 		timerForBall = new Timer();
 		timerForBall.schedule(scheduleTaskForBall, 3000, ballPeriod);
+
+		repaint();
 	}
 
 	public void initBallTimer(long period, Player player) {
@@ -223,6 +226,8 @@ public class Board extends JPanel implements Commons {
 
 		};
 		timerForCountdown.schedule(timerTaskForCountdown, 0, 1000);
+
+		repaint();
 	}
 
 	@Override
