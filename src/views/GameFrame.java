@@ -38,11 +38,17 @@ public class GameFrame {
 		if (panelName.equals("board")) {
 			board = new Board(this);
 			cardsPanel.add(board, "board");
+			menuPanel.setVisible(false);
 			board.setVisible(true);
 			board.requestFocus();
 		} else {
 			cards.show(cardsPanel, panelName);
-			board.setVisible(false);
+			if (panelName.equals("menuPanel")) {
+				menuPanel.setVisible(true);
+			}
+			if (board != null) {
+				board.setVisible(false);
+			}
 		}
 		frame.repaint();
 	}
