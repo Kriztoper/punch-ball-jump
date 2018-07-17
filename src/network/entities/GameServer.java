@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import controllers.GameManager;
+import punchballjump.Board;
 
 public class GameServer implements PeerInterface {
 
@@ -17,6 +18,7 @@ public class GameServer implements PeerInterface {
 	private ObjectOutputStream outputStream;
 	private boolean listening;
 	private GameManager gameManager;
+	private Board board;
 	
 	public GameServer(GameManager gameManager) {
 		this.gameManager = gameManager;
@@ -34,12 +36,11 @@ public class GameServer implements PeerInterface {
 	
 	public void acceptClient() {
 		try {
-			do {
-				client = serverSocket.accept();
-				System.out.println("New client accepted..."); // temp, delete after
-				
-				handleClient();
-			} while (listening);
+			client = serverSocket.accept();
+			System.out.println("New client accepted..."); // temp, delete after
+			
+			handleClient();
+			listening = false;
 		} catch (IOException e) {
 			System.out.println("Unable to accept a client!");
 			e.printStackTrace();
@@ -62,10 +63,10 @@ public class GameServer implements PeerInterface {
 			outputStream.flush();
 			inputStream = new ObjectInputStream(
 					client.getInputStream());
-
-			Receiver receiver = new Receiver(inputStream, gameManager);
-			receiver.start();
 			
+			/*Receiver receiver = new Receiver(inputStream, gameManager);
+			receiver.start();
+	
 			//Sender sender  = new Sender(outputStream, gameManager);
 			//sender.start();
 			
@@ -75,11 +76,15 @@ public class GameServer implements PeerInterface {
 			
 			
 			while(gameManager.isPlaying());
-			receiver.terminate();
+			receiver.terminate();*/
 			//sender.terminate();
 		} catch (IOException e) {
 			
 			e.printStackTrace();
 		}
+	}
+	
+	public Board getBoard() {
+		return board;
 	}
 }

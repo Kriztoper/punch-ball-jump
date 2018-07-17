@@ -25,6 +25,7 @@ public class GameClient implements PeerInterface {
 		try {
 			socket = new Socket(serverIPAddress, PORT);
 
+			System.out.println("Client Connected...");
 			outputStream = new ObjectOutputStream(
 					socket.getOutputStream());
 			outputStream.flush();
