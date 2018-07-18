@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 
+import network.entities.GameClient;
+import network.entities.GameServer;
 import views.CreditsPanel;
 import views.GameFrame;
 import views.HowToPlayPanel;
@@ -67,7 +69,7 @@ public class GameController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gameFrame.setCurrentPanel("gamePanel");
+				gameFrame.startGameServer();
 				// ?temp disable networking? new GameServer(new GameManager());
 				// gameManager.start();
 			}
@@ -78,7 +80,7 @@ public class GameController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				InetAddress serverIPAddress = promptRolePanel.promptServerIPAddress();
-				gameFrame.setCurrentPanel("gamePanel");
+				gameFrame.startGameClient(serverIPAddress);
 				// ?temp disable networking? new GameClient(serverIPAddress, new GameManager());
 				// gameManager.start();
 			}

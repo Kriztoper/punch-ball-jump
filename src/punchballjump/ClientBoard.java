@@ -526,9 +526,9 @@ public class ClientBoard extends JPanel implements Commons {
 
 	public void updateGraphics(int ballX, int ballY, int player1X, int player1Y, int player2X, int player2Y,
 			boolean p1IsJumping, boolean p1IsPunching, boolean p2IsJumping, boolean p2IsPunching, String p1Powerup,
-			int p1PowerupX, int p1PowerupY, String p2Powerup, int p2PowerupX, int p2PowerupY, String pUpTopMsg,
-			String pUpBotMsg, int p1Hearts, int p2Hearts, boolean p1IsAlive, boolean p2IsAlive, boolean p1IsInvincible,
-			boolean p2IsInvincible, int countdown, int round) {
+			int p1PowerupX, int p1PowerupY, String p2Powerup, int p2PowerupX, int p2PowerupY, String powUpTopMsg,
+			String powUpBotMsg, int p1Hearts, int p2Hearts, boolean p1IsAlive, boolean p2IsAlive,
+			boolean p1IsInvincible, boolean p2IsInvincible, int countdown, int round) {
 		if (ball != null) {
 			ball.setX(ballX);
 			ball.setY(ballY);
@@ -587,14 +587,14 @@ public class ClientBoard extends JPanel implements Commons {
 		} else {
 			System.exit(1);
 		}
-		if (pUpTopMsg != null) {
-			pCaptionMsg = pUpTopMsg;
+		if (powUpTopMsg != null) {
+			pCaptionMsg = powUpTopMsg;
 			System.out.println(pCaptionMsg);
 		} else {
 			pCaptionMsg = null;
 		}
-		if (pUpBotMsg != null) {
-			oCaptionMsg = pUpBotMsg;
+		if (powUpBotMsg != null) {
+			oCaptionMsg = powUpBotMsg;
 			System.out.println(oCaptionMsg);
 		} else {
 			oCaptionMsg = null;

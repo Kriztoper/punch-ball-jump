@@ -1,11 +1,12 @@
 package punchballjump;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
-public class Ball extends Sprite implements Commons {
+public class Ball extends Sprite implements Commons, Serializable {
 	private ArrayList<Point> points;
 	private int pointsIndex;
 	private int direction;

@@ -2,10 +2,13 @@ package views;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.net.InetAddress;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
 
+import network.entities.GameClient;
+import network.entities.GameServer;
 import punchballjump.Board;
 import punchballjump.ClientBoard;
 
@@ -65,6 +68,15 @@ public class GameFrame {
 		frame.repaint();
 	}
 
+	public void startGameServer() {
+		GameServer gameServer = new GameServer(this);
+	}
+
+	public void startGameClient(InetAddress serverIPAddress) {
+
+		GameClient gameClient = new GameClient(serverIPAddress, this);
+	}
+
 	public void initPanels() {
 		cards = new CardLayout();
 
@@ -88,5 +100,9 @@ public class GameFrame {
 
 	public void show() {
 		frame.setVisible(true);
+	}
+
+	public JPanel getCardsPanel() {
+		return cardsPanel;
 	}
 }

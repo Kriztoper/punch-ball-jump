@@ -159,12 +159,12 @@ public class Board extends JPanel implements Commons {
 		playerTop = playerTop ? false : true;
 		if (playerTop) {
 			players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN, playerTop);
-			players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], IS_COMPUTER, HARD,
+			players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], IS_NOT_COMPUTER, HARD,
 					!playerTop);
 		} else {
 			players[0] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN,
 					playerTop);
-			players[1] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, OPPONENT, hearts[1], IS_COMPUTER, HARD, !playerTop);
+			players[1] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, OPPONENT, hearts[1], IS_NOT_COMPUTER, HARD, !playerTop);
 		}
 		ball = new Ball();
 		playerReversing = false;
@@ -749,5 +749,17 @@ public class Board extends JPanel implements Commons {
 			// System.out.println("End reversing");
 			opponentReversing = false;
 		}
+	}
+	
+	public Ball getBall() {
+		return ball;
+	}
+	
+	public Player[] getPlayers() {
+		return players;
+	}
+	
+	public Powerup[] getPowerups() {
+		return powerups;
 	}
 }
