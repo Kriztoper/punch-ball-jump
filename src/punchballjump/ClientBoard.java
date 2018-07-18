@@ -16,14 +16,13 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import views.GameFrame;
 
-public class Board extends JPanel implements Commons {
+public class ClientBoard extends JPanel implements Commons {
 	private String message = "Game Over";
 	private Ball ball;
 	private Player[] players;
@@ -57,11 +56,9 @@ public class Board extends JPanel implements Commons {
 	private ArrayList<Sprite> p2Hearts;
 	private ArrayList<Sprite> playerHeads;
 	private GameFrame gameFrame;
-	private ClientBoard clientBoard;
 
-	public Board(GameFrame gameFrame, ClientBoard clientBoard) {
+	public ClientBoard(GameFrame gameFrame) {
 		this.gameFrame = gameFrame;
-		this.clientBoard = clientBoard;
 
 		// Init bg and earth images
 		Random random = new Random();
@@ -96,6 +93,7 @@ public class Board extends JPanel implements Commons {
 
 		repaint();
 		initBoard();
+		// gameInit();
 	}
 
 	private void initBoard() {
@@ -105,14 +103,14 @@ public class Board extends JPanel implements Commons {
 
 		setDoubleBuffered(true);
 
-		scheduleTaskForPlayer = new ScheduleTaskForPlayer();
-		timerForPlayer = new Timer();
-		timerForPlayer.schedule(scheduleTaskForPlayer, 1000, 5);
+		// scheduleTaskForPlayer = new ScheduleTaskForPlayer();
+		// timerForPlayer = new Timer();
+		// timerForPlayer.schedule(scheduleTaskForPlayer, 1000, 5);
 
-		ballPeriod = 100;
-		scheduleTaskForBall = new ScheduleTaskForBall();
-		timerForBall = new Timer();
-		timerForBall.schedule(scheduleTaskForBall, 3000, ballPeriod);
+		// ballPeriod = 100;
+		// scheduleTaskForBall = new ScheduleTaskForBall();
+		// timerForBall = new Timer();
+		// timerForBall.schedule(scheduleTaskForBall, 3000, ballPeriod);
 
 		repaint();
 	}
@@ -178,58 +176,58 @@ public class Board extends JPanel implements Commons {
 			System.out.println(x.getName());
 
 		// Assign timer for time when powerups will appear
-		Random random = new Random();
-		if (timerForPlayerPowerups != null) {
-			timerForPlayerPowerups.cancel();
-		}
-		if (timerForOpponentPowerups != null) {
-			timerForOpponentPowerups.cancel();
-		}
-		timerForPlayerPowerups = new Timer();
-		timerForOpponentPowerups = new Timer();
-		TimerTask timerTaskForPlayerPowerups;
-		TimerTask timerTaskForOpponentPowerups;
-		if (random.nextInt(4) > 0 && !playerPowerupsList.isEmpty()) {
-			System.out.println("Planting powerups for player");
-			timerTaskForPlayerPowerups = new TimerTask() {
-
-				@Override
-				public void run() {
-					powerups[0] = playerPowerupsList.get(random.nextInt(3));
-				}
-			};
-			timerForPlayerPowerups.schedule(timerTaskForPlayerPowerups,
-					ThreadLocalRandom.current().nextInt(13, 19) * 1000);
-		}
-		if (random.nextInt(4) > 0 && !opponentPowerupsList.isEmpty()) {
-			System.out.println("Planting powerups for opponent");
-			timerTaskForOpponentPowerups = new TimerTask() {
-
-				@Override
-				public void run() {
-					powerups[1] = opponentPowerupsList.get(random.nextInt(3));
-				}
-
-			};
-			timerForOpponentPowerups.schedule(timerTaskForOpponentPowerups,
-					ThreadLocalRandom.current().nextInt(13, 19) * 1000);
-		}
-		isPlayerPowerupActivated = false;
-		isOpponentPowerupActivated = false;
-		countdown = 3;
-		Timer timerForCountdown = new Timer();
-		TimerTask timerTaskForCountdown = new TimerTask() {
-
-			@Override
-			public void run() {
-				countdown--;
-				if (countdown < 0) {
-					timerForCountdown.cancel();
-				}
-			}
-
-		};
-		timerForCountdown.schedule(timerTaskForCountdown, 0, 1000);
+		// Random random = new Random();
+		// if (timerForPlayerPowerups != null) {
+		// timerForPlayerPowerups.cancel();
+		// }
+		// if (timerForOpponentPowerups != null) {
+		// timerForOpponentPowerups.cancel();
+		// }
+		// timerForPlayerPowerups = new Timer();
+		// timerForOpponentPowerups = new Timer();
+		// TimerTask timerTaskForPlayerPowerups;
+		// TimerTask timerTaskForOpponentPowerups;
+		// if (random.nextInt(4) > 0 && !playerPowerupsList.isEmpty()) {
+		// System.out.println("Planting powerups for player");
+		// timerTaskForPlayerPowerups = new TimerTask() {
+		//
+		// @Override
+		// public void run() {
+		// powerups[0] = playerPowerupsList.get(random.nextInt(3));
+		// }
+		// };
+		// timerForPlayerPowerups.schedule(timerTaskForPlayerPowerups,
+		// ThreadLocalRandom.current().nextInt(13, 19) * 1000);
+		// }
+		// if (random.nextInt(4) > 0 && !opponentPowerupsList.isEmpty()) {
+		// System.out.println("Planting powerups for opponent");
+		// timerTaskForOpponentPowerups = new TimerTask() {
+		//
+		// @Override
+		// public void run() {
+		// powerups[1] = opponentPowerupsList.get(random.nextInt(3));
+		// }
+		//
+		// };
+		// timerForOpponentPowerups.schedule(timerTaskForOpponentPowerups,
+		// ThreadLocalRandom.current().nextInt(13, 19) * 1000);
+		// }
+		// isPlayerPowerupActivated = false;
+		// isOpponentPowerupActivated = false;
+		// countdown = 3;
+		// Timer timerForCountdown = new Timer();
+		// TimerTask timerTaskForCountdown = new TimerTask() {
+		//
+		// @Override
+		// public void run() {
+		// countdown--;
+		// if (countdown < 0) {
+		// timerForCountdown.cancel();
+		// }
+		// }
+		//
+		// };
+		// timerForCountdown.schedule(timerTaskForCountdown, 0, 1000);
 
 		repaint();
 	}
@@ -246,20 +244,24 @@ public class Board extends JPanel implements Commons {
 
 		// draw background image
 		g2d.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
+		repaint();
 
 		// [ESC] Back to Menu
 		g2d.setColor(Color.WHITE);
 		g2d.drawString("[ESC] Back to Menu", 500, 640);
+		repaint();
 
 		// draw player heads
 		for (int i = 0; i < playerHeads.size(); i++) {
 			Sprite playerHead = playerHeads.get(i);
 			g2d.drawImage(playerHead.getImage(), playerHead.getX(), playerHead.getY(), playerHead.getWidth(),
 					playerHead.getHeight(), this);
+			repaint();
 		}
 
 		// draw Earth at the middle
 		g2d.drawImage(earth.getImage(), 160, 170, earth.getIconWidth(), earth.getIconHeight(), this);
+		repaint();
 
 		drawObjects(g2d);
 		// countdown
@@ -269,39 +271,18 @@ public class Board extends JPanel implements Commons {
 			g.drawString("ROUND " + round, 160, 350);
 			g.setColor(new Color(0f, 0f, 0f, .25f));
 			g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
+			repaint();
 		} else if (countdown == 0) {
 			g.setColor(Color.RED);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
 			g.drawString("START!", 210, 350);
+			repaint();
 		}
-		if (!ingame) {
+		if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
 			gameFinished(g2d);
+			repaint();
 		}
 
-		String p1Powerup = null;
-		int p1PowerupX = -1;
-		int p1PowerupY = -1;
-		String p2Powerup = null;
-		int p2PowerupX = -1;
-		int p2PowerupY = -1;
-		String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
-		String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
-		if (powerups[0] != null) {
-			p1Powerup = powerups[0].getName();
-			p1PowerupX = powerups[0].getX();
-			p1PowerupY = powerups[0].getY();
-		}
-		if (powerups[1] != null) {
-			p2Powerup = powerups[1].getName();
-			p2PowerupX = powerups[1].getX();
-			p2PowerupY = powerups[1].getY();
-		}
-
-		clientBoard.updateGraphics(ball.getX(), ball.getY(), players[0].getX(), players[0].getY(), players[1].getX(),
-				players[1].getY(), players[0].isJumping(), players[0].isPunching(), players[1].isJumping(),
-				players[1].isPunching(), p1Powerup, p1PowerupX, p1PowerupY, p2Powerup, p2PowerupX, p2PowerupY,
-				pUpTopMsg, pUpBotMsg, players[0].getHearts(), players[1].getHearts(), players[0].isAlive(),
-				players[1].isAlive(), players[0].isInvincible(), players[1].isInvincible(), countdown, round);
 		Toolkit.getDefaultToolkit().sync();
 	}
 
@@ -335,44 +316,60 @@ public class Board extends JPanel implements Commons {
 			if (powerup != null) {
 				g2d.drawImage(powerup.getImage(), powerup.getX(), powerup.getY(), powerup.getWidth(),
 						powerup.getHeight(), this);
+				repaint();
 			}
 		}
 
 		// draw player powerups activated caption
-		// TODO: Improve caption design
-		if (isPlayerPowerupActivated || isOpponentPowerupActivated) {
+		if (pCaptionMsg != null || oCaptionMsg != null) {// isPlayerPowerupActivated || isOpponentPowerupActivated) {
 			g2d.setColor(new Color(0f, 0f, 0f, 0.5f));
 			g2d.fillRect(0, 55, Commons.WIDTH, 40);
+			repaint();
 		}
-		if (isPlayerPowerupActivated) {
-			g2d.setColor(pCaptionColor);
+		if (pCaptionMsg != null) {// isPlayerPowerupActivated) {
+			// g2d.setColor(pCaptionColor);
+			if (pCaptionMsg.equals("+1 Heart")) {
+				g2d.setColor(Color.RED);
+			} else if (pCaptionMsg.equals("INVINCIBLE for 10 sec")) {
+				g2d.setColor(Color.GREEN);
+			} else if (pCaptionMsg.equals("Swap Hearts")) {
+				g2d.setColor(Color.YELLOW);
+			}
 			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 			g2d.drawString(pCaptionMsg, 30, 80);
-			Timer timerForCaption = new Timer();
-			TimerTask timerTaskForCaption = new TimerTask() {
-
-				@Override
-				public void run() {
-					isPlayerPowerupActivated = false;
-				}
-			};
-			timerForCaption.schedule(timerTaskForCaption, 5000);
+			repaint();
+			// Timer timerForCaption = new Timer();
+			// TimerTask timerTaskForCaption = new TimerTask() {
+			//
+			// @Override
+			// public void run() {
+			// isPlayerPowerupActivated = false;
+			// }
+			// };
+			// timerForCaption.schedule(timerTaskForCaption, 5000);
 		}
 		// draw opponent powerups activated caption
-		// TODO: Improve caption design
-		if (isOpponentPowerupActivated) {
-			g2d.setColor(oCaptionColor);
+		if (oCaptionMsg != null) {// isOpponentPowerupActivated) {
+			// g2d.setColor(oCaptionColor);
+			if (oCaptionMsg.equals("+1 Heart")) {
+				g2d.setColor(Color.RED);
+			} else if (oCaptionMsg.equals("INVINCIBLE for 10 sec")) {
+				g2d.setColor(Color.GREEN);
+			} else if (oCaptionMsg.equals("Swap Hearts")) {
+				g2d.setColor(Color.YELLOW);
+			}
 			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 			g2d.drawString(oCaptionMsg, 400, 80);
-			Timer timerForCaption = new Timer();
-			TimerTask timerTaskForCaption = new TimerTask() {
-
-				@Override
-				public void run() {
-					isOpponentPowerupActivated = false;
-				}
-			};
-			timerForCaption.schedule(timerTaskForCaption, 5000);
+			repaint();
+			// Timer timerForCaption = new Timer();
+			// TimerTask timerTaskForCaption = new TimerTask() {
+			//
+			// @Override
+			// public void run() {
+			// isOpponentPowerupActivated = false;
+			// }
+			// };
+			// timerForCaption.schedule(timerTaskForCaption, 5000);
 		}
 
 		for (Player player : players) {
@@ -385,6 +382,7 @@ public class Board extends JPanel implements Commons {
 					heart = p2Hearts.get(i);
 				}
 				g2d.drawImage(heart.getImage(), heart.getX(), heart.getY(), heart.getWidth(), heart.getHeight(), this);
+				repaint();
 			}
 
 			// Draw bigger rect around image which is used for visualization, debugging, etc
@@ -404,6 +402,7 @@ public class Board extends JPanel implements Commons {
 					int h = player.getSlightlyBiggerRect().height;
 					g2d.setColor(new Color(0f, 1f, 0f, 0.5f));
 					g2d.fillOval(x, y, w, h);
+					repaint();
 				}
 
 				// Draw bigger rect around image which is used for visualization, debugging, etc
@@ -417,7 +416,7 @@ public class Board extends JPanel implements Commons {
 				// g2d.fillRect(x, y, width, height);
 				// }
 
-				if (!player.isTop()) {
+				if (player.getY() >= 325) {
 					BufferedImage image = toBufferedImage(player.isPunching() ? player.getPunchingImage()
 							: (player.isJumping() ? player.getJumpingImage() : player.getImage()));
 					double rotationRequired = Math.toRadians(180);
@@ -431,20 +430,24 @@ public class Board extends JPanel implements Commons {
 							// punch/jump right
 							g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
 									-player.getWidth(), player.getHeight(), null);
+							repaint();
 						} else {
 							// punch/jump left
 							g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
 									player.getHeight(), this);
+							repaint();
 						}
 					} else {
 						if (player.getX() < ball.getX()) {
 							// face right
 							g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
 									player.getHeight(), this);
+							repaint();
 						} else {
 							// face left
 							g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
 									-player.getWidth(), player.getHeight(), null);
+							repaint();
 						}
 					}
 				} else {
@@ -453,34 +456,40 @@ public class Board extends JPanel implements Commons {
 							// punch right
 							g2d.drawImage(player.getPunchingImage(), player.getX(), player.getY(), player.getWidth(),
 									player.getHeight(), this);
+							repaint();
 						} else {
 							// punch left
 							g2d.drawImage(player.getPunchingImage(), player.getX() + player.getWidth(), player.getY(),
 									-player.getWidth(), player.getHeight(), null);
+							repaint();
 						}
 					} else if (player.isJumping()) {
 						if (player.getX() < ball.getX()) {
 							// punch right
 							g2d.drawImage(player.getJumpingImage(), player.getX(), player.getY(), player.getWidth(),
 									player.getHeight(), this);
+							repaint();
 						} else {
 							// punch left
 							g2d.drawImage(player.getJumpingImage(), player.getX() + player.getWidth(), player.getY(),
 									-player.getWidth(), player.getHeight(), null);
+							repaint();
 						}
 					} else {
 						// stand still
 						if (player.getX() < ball.getX()) {
 							g2d.drawImage(player.getImage(), player.getX() + player.getWidth(), player.getY(),
 									-player.getWidth(), player.getHeight(), null);
+							repaint();
 						} else {
 							g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(),
 									player.getHeight(), this);
+							repaint();
 						}
 					}
 				}
 			} else {
-				if (!player.isTop()) {
+				if (player.getY() >= 325) {
 					BufferedImage image = toBufferedImage(player.getDeadImage());
 					double rotationRequired = Math.toRadians(180);
 					double locationX = image.getWidth(null) / 2;
@@ -491,24 +500,108 @@ public class Board extends JPanel implements Commons {
 					if (player.getX() < ball.getX()) {
 						g2d.drawImage(op.filter(image, null), player.getX(), INIT_OPPONENT_Y - player.getHeight() / 2,
 								player.getWidth(), player.getHeight(), this);
+						repaint();
 					} else {
 						g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(),
 								INIT_OPPONENT_Y - player.getHeight() / 2, -player.getWidth(), player.getHeight(), null);
+						repaint();
 					}
 				} else {
 					if (player.getX() < ball.getX()) {
 						g2d.drawImage(player.getDeadImage(), player.getX() + player.getWidth(),
 								INIT_PLAYER_Y + player.getHeight() / 2, -player.getWidth(), player.getHeight(), null);
+						repaint();
 					} else {
 						g2d.drawImage(player.getDeadImage(), player.getX(), INIT_PLAYER_Y + player.getHeight() / 2,
 								player.getWidth(), player.getHeight(), this);
+						repaint();
 					}
 				}
 			}
 			// System.out.printf("x=%d, y=%d, w=%d, h=%d\n", x, y, width, height);
 		}
 		g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight(), this);
+		repaint();
+	}
 
+	public void updateGraphics(int ballX, int ballY, int player1X, int player1Y, int player2X, int player2Y,
+			boolean p1IsJumping, boolean p1IsPunching, boolean p2IsJumping, boolean p2IsPunching, String p1Powerup,
+			int p1PowerupX, int p1PowerupY, String p2Powerup, int p2PowerupX, int p2PowerupY, String pUpTopMsg,
+			String pUpBotMsg, int p1Hearts, int p2Hearts, boolean p1IsAlive, boolean p2IsAlive, boolean p1IsInvincible,
+			boolean p2IsInvincible, int countdown, int round) {
+		if (ball != null) {
+			ball.setX(ballX);
+			ball.setY(ballY);
+		} else {
+			System.exit(1);
+		}
+		if (players != null) {
+			if (players[0] != null) {
+				players[0].setX(player1X);
+				players[0].setY(player1Y);
+				players[0].setJumping(p1IsJumping);
+				players[0].setPunching(p1IsPunching);
+				players[0].setHearts(p1Hearts);
+				players[0].setAlive(p1IsAlive);
+				players[0].setInvincible(p1IsInvincible);
+			} else {
+				System.exit(1);
+			}
+			if (players[1] != null) {
+				players[1].setX(player2X);
+				players[1].setY(player2Y);
+				players[1].setJumping(p2IsJumping);
+				players[1].setPunching(p2IsPunching);
+				players[1].setHearts(p2Hearts);
+				players[1].setAlive(p2IsAlive);
+				players[1].setInvincible(p2IsInvincible);
+			} else {
+				System.exit(1);
+			}
+		} else {
+			System.exit(1);
+		}
+		if (powerups != null) {
+			if (p1Powerup != null) {
+				if (powerups[0] == null) {
+					powerups[0] = new Powerup(p1PowerupX, p1PowerupY, p1Powerup);
+				} else {
+					powerups[0].setName(p1Powerup);
+					powerups[0].setX(p1PowerupX);
+					powerups[0].setY(p1PowerupY);
+				}
+			} else {
+				powerups[0] = null;
+			}
+			if (p2Powerup != null) {
+				if (powerups[1] == null) {
+					powerups[1] = new Powerup(p2PowerupX, p2PowerupY, p2Powerup);
+				} else {
+					powerups[1].setName(p2Powerup);
+					powerups[1].setX(p2PowerupX);
+					powerups[1].setY(p2PowerupY);
+				}
+			} else {
+				powerups[1] = null;
+			}
+		} else {
+			System.exit(1);
+		}
+		if (pUpTopMsg != null) {
+			pCaptionMsg = pUpTopMsg;
+			System.out.println(pCaptionMsg);
+		} else {
+			pCaptionMsg = null;
+		}
+		if (pUpBotMsg != null) {
+			oCaptionMsg = pUpBotMsg;
+			System.out.println(oCaptionMsg);
+		} else {
+			oCaptionMsg = null;
+		}
+		this.countdown = countdown;
+		this.round = round;
+		repaint();
 	}
 
 	private void gameFinished(Graphics2D g2d) {
@@ -523,35 +616,35 @@ public class Board extends JPanel implements Commons {
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-				System.out.println("Exiting to Menu");
-				System.out.println(gameFrame);
-				gameFrame.setCurrentPanel("menuPanel");
-				players[0].setHearts(0);
-				players[1].setHearts(0);
-			}
-			if (!pressed) {
-				for (Player player : players) {
-					player.keyPressed(e);
-				}
-				pressed = true;
-			}
+			// if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			// System.out.println("Exiting to Menu");
+			// System.out.println(gameFrame);
+			// gameFrame.setCurrentPanel("menuPanel");
+			// players[0].setHearts(0);
+			// players[1].setHearts(0);
+			// }
+			// if (!pressed) {
+			// for (Player player : players) {
+			// player.keyPressed(e);
+			// }
+			// pressed = true;
+			// }
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			pressed = false;
+			// pressed = false;
 		}
 	}
 
 	private class ScheduleTaskForPlayer extends TimerTask {
 		@Override
 		public void run() {
-			if (players[1].isComputer) {
-				players[1].generateMove(ball, ballPeriod);
-			}
-			for (Player player : players)
-				player.move();
+			// if (players[1].isComputer) {
+			// players[1].generateMove(ball, ballPeriod);
+			// }
+			// for (Player player : players)
+			// player.move();
 			repaint();
 			checkCollision(); // Note: checkCollision must be after repaint and it must be assigned to the
 								// Timer with the smallest period
@@ -561,7 +654,7 @@ public class Board extends JPanel implements Commons {
 	private class ScheduleTaskForBall extends TimerTask {
 		@Override
 		public void run() {
-			ball.move();
+			// ball.move();
 			repaint();
 		}
 	}

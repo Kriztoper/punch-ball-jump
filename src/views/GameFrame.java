@@ -1,11 +1,13 @@
 package views;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
 
 import punchballjump.Board;
+import punchballjump.ClientBoard;
 
 public class GameFrame {
 
@@ -45,7 +47,14 @@ public class GameFrame {
 			if (Arrays.asList(cardsPanel.getComponents()).contains(board)) {
 				cardsPanel.remove(board);
 			}
-			board = new Board(this);
+			Frame clientFrame = new Frame();
+			ClientBoard clientBoard = new ClientBoard(this);
+			clientBoard.setBackground(Color.BLACK);
+			clientBoard.setVisible(true);
+			// clientFrame.add(clientBoard);
+			clientFrame.setContentPane(clientBoard);
+			clientFrame.setVisible(true);
+			board = new Board(this, clientBoard);
 			board.setVisible(true);
 			cardsPanel.add(board, "board");
 			cards.show(cardsPanel, panelName);

@@ -230,8 +230,16 @@ public class Player extends Sprite implements Commons {
 		return punchTimer;
 	}
 
+	public void setPunching(boolean punching) {
+		this.punching = punching;
+	}
+
 	public boolean isPunching() {
 		return punching;
+	}
+
+	public void setJumping(boolean jumping) {
+		this.jumping = jumping;
 	}
 
 	public boolean isJumping() {
