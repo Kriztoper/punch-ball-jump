@@ -8,21 +8,23 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import models.Player;
+import punchballjump.Commons;
 
-public class GamePanel extends JPanel implements KeyListener {
+public class GamePanel extends JPanel implements Commons, KeyListener {
 
 	private Player player;
-	
+
 	public GamePanel() {
 		setLayout(null);
 		setBackground(new Color(204, 255, 255));
-		
+		setSize(Commons.WIDTH, Commons.HEIGHT);
+
 		initPlayer();
 	}
-	
+
 	private void initPlayer() {
 		player = new Player();
-		
+
 	}
 
 	@Override
@@ -33,7 +35,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
-		
+
 		if (key == KeyEvent.VK_A) {
 			JOptionPane.showMessageDialog(null, "Hello");
 			System.out.println("Hello World");
@@ -43,7 +45,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
-		
+
 		if (key == KeyEvent.VK_A) {
 			JOptionPane.showMessageDialog(null, "Hello");
 			System.out.println("Hello World");

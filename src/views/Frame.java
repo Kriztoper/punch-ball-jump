@@ -4,16 +4,17 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 
-import utils.Constants;
+import punchballjump.Commons;
 
-public class Frame extends JFrame {
+public class Frame extends JFrame implements Commons {
 
 	public Frame() {
 		setTitle("Punch Ball Jump");
 		setLayout(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(Constants.WIDTH, Constants.HEIGHT);
-		//setLocationRelativeTo(null);
+		setSize(Commons.WIDTH, Commons.HEIGHT);
+		setResizable(false);
+		setLocationRelativeTo(null);
 		setBackground(Color.GREEN);
 	}
 }

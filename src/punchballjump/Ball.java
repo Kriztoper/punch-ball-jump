@@ -1,11 +1,12 @@
 package punchballjump;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
-public class Ball extends Sprite implements Commons {
+public class Ball extends Sprite implements Commons, Serializable {
 	private ArrayList<Point> points;
 	private int pointsIndex;
 	private int direction;
@@ -14,7 +15,7 @@ public class Ball extends Sprite implements Commons {
 		pointsIndex = 0;
 		direction = 1;
 
-		ImageIcon ii = new ImageIcon("images/star.png");
+		ImageIcon ii = new ImageIcon("images/star1.png");
 		image = ii.getImage();
 
 		i_width = image.getWidth(null);
