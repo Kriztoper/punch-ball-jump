@@ -46,6 +46,7 @@ public class GameFrame {
 				cardsPanel.remove(board);
 			}
 			board = new Board(this);
+			board.setVisible(true);
 			cardsPanel.add(board, "board");
 			cards.show(cardsPanel, panelName);
 			board.requestFocus();

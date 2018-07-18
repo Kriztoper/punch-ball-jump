@@ -77,7 +77,7 @@ public class PromptRolePanel extends JPanel implements Commons {
 		return backButton;
 	}
 
-	public void setBackButton() {
+	public void setBackButton(JButton backButton) {
 		this.backButton = backButton;
 	}
 }

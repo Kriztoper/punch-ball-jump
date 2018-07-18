@@ -67,6 +67,7 @@ public class Board extends JPanel implements Commons {
 		String earthName = random.nextBoolean() ? "earth" : "earth2";
 		bg = new ImageIcon("images/" + bgName + ".png");
 		earth = new ImageIcon("images/" + earthName + ".png");
+		repaint();
 
 		// init Powerups only once
 		String[] powerupsArr = { RESTORE, INVINCIBLE, SWAP };
@@ -166,6 +167,7 @@ public class Board extends JPanel implements Commons {
 		ball = new Ball();
 		playerReversing = false;
 		opponentReversing = false;
+		repaint();
 
 		// Prints the values of the lists setup, used for debugging
 		for (Powerup x : playerPowerupsList)
