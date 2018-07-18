@@ -8,8 +8,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import controllers.GameManager;
-import models.ClientData;
-import models.ServerData;
 import punchballjump.Board;
 import views.GameFrame;
 

@@ -1,4 +1,4 @@
-package models;
+package network.entities;
 
 import java.io.Serializable;
 

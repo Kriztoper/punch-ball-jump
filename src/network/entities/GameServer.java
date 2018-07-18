@@ -10,8 +10,6 @@ import javax.swing.JPanel;
 import javax.xml.stream.events.StartDocument;
 
 import controllers.GameManager;
-import models.ClientData;
-import models.ServerData;
 import punchballjump.Board;
 import views.GameFrame;
 
