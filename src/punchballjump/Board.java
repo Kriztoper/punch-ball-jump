@@ -49,7 +49,7 @@ public class Board extends JPanel implements Commons {
 	private Color oCaptionColor;
 	private String oCaptionMsg;
 	private int countdown;
-	private Image bg;
+	private ImageIcon bg;
 	private ImageIcon earth;
 	private int round = 1;
 	private boolean playerTop;
@@ -65,8 +65,9 @@ public class Board extends JPanel implements Commons {
 		Random random = new Random();
 		String bgName = random.nextBoolean() ? "test" : "test2";
 		String earthName = random.nextBoolean() ? "earth" : "earth2";
-		bg = Toolkit.getDefaultToolkit().createImage("images/" + bgName + ".png");
+		bg = new ImageIcon("images/" + bgName + ".png");
 		earth = new ImageIcon("images/" + earthName + ".png");
+		repaint();
 
 		// init Powerups only once
 		String[] powerupsArr = { RESTORE, INVINCIBLE, SWAP };
@@ -91,6 +92,7 @@ public class Board extends JPanel implements Commons {
 		playerHeads.add(new Sprite(5, 10, "images/player1_head.png"));
 		playerHeads.add(new Sprite(600, 10, "images/player2_head.png"));
 
+		repaint();
 		initBoard();
 	}
 
@@ -109,6 +111,8 @@ public class Board extends JPanel implements Commons {
 		scheduleTaskForBall = new ScheduleTaskForBall();
 		timerForBall = new Timer();
 		timerForBall.schedule(scheduleTaskForBall, 3000, ballPeriod);
+
+		repaint();
 	}
 
 	public void initBallTimer(long period, Player player) {
@@ -163,6 +167,7 @@ public class Board extends JPanel implements Commons {
 		ball = new Ball();
 		playerReversing = false;
 		opponentReversing = false;
+		repaint();
 
 		// Prints the values of the lists setup, used for debugging
 		for (Powerup x : playerPowerupsList)
@@ -223,6 +228,8 @@ public class Board extends JPanel implements Commons {
 
 		};
 		timerForCountdown.schedule(timerTaskForCountdown, 0, 1000);
+
+		repaint();
 	}
 
 	@Override
@@ -235,8 +242,14 @@ public class Board extends JPanel implements Commons {
 
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-		g.drawImage(bg, 0, 0, null);
+		// draw background image
+		g2d.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
 
+		// [ESC] Back to Menu
+		g2d.setColor(Color.WHITE);
+		g2d.drawString("[ESC] Back to Menu", 500, 640);
+
+		// draw player heads
 		for (int i = 0; i < playerHeads.size(); i++) {
 			Sprite playerHead = playerHeads.get(i);
 			g2d.drawImage(playerHead.getImage(), playerHead.getX(), playerHead.getY(), playerHead.getWidth(),

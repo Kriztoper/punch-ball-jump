@@ -10,7 +10,6 @@ import utils.Constants;
 
 public class MenuPanel extends JPanel implements Commons {
 
-	private JButton playButton;
 	private JButton howToPlayButton;
 	private JButton creditsButton;
 	private JButton onePlayerButton;
@@ -24,18 +23,15 @@ public class MenuPanel extends JPanel implements Commons {
 
 	public void initPanel() {
 		setLayout(null);
-		setBackground(new Color(100, 149, 237));
+		setBackground(new Color(100, 149, 237)); // TODO: change with new edited menu image bg
 		setSize(Commons.WIDTH, Commons.HEIGHT);
 	}
 
 	public void initComponents() {
-		playButton = new JButton("Play");
-
-		howToPlayButton = new JButton("How to Play");
-
-		creditsButton = new JButton("Credits");
 		onePlayerButton = new JButton("One Player");
 		twoPlayersButton = new JButton("Two Players");
+		howToPlayButton = new JButton("How to Play");
+		creditsButton = new JButton("Credits");
 		onePlayerButton.setBounds(Constants.WIDTH / 2 - 100, 100, 200, 60);
 		twoPlayersButton.setBounds(Constants.WIDTH / 2 - 100, 160, 200, 60);
 		howToPlayButton.setBounds(Constants.WIDTH / 2 - 100, 220, 200, 60);
@@ -43,19 +39,10 @@ public class MenuPanel extends JPanel implements Commons {
 	}
 
 	public void addComponents() {
-		add(playButton);
-		add(howToPlayButton);
-		add(creditsButton);
 		add(onePlayerButton);
 		add(twoPlayersButton);
-	}
-
-	public JButton getPlayButton() {
-		return playButton;
-	}
-
-	public void setPlayButton(JButton playButton) {
-		this.playButton = playButton;
+		add(howToPlayButton);
+		add(creditsButton);
 	}
 
 	public JButton getHowToPlayButton() {

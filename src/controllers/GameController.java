@@ -6,8 +6,9 @@ import java.net.InetAddress;
 
 import network.entities.GameClient;
 import network.entities.GameServer;
+import views.CreditsPanel;
 import views.GameFrame;
-import views.GamePanel;
+import views.HowToPlayPanel;
 import views.MenuPanel;
 import views.PromptRolePanel;
 
@@ -28,7 +29,8 @@ public class GameController {
 
 	public void addButtonListeners() {
 		MenuPanel menuPanel = gameFrame.getMenuPanel();
-		GamePanel gamePanel = gameFrame.getGamePanel();
+		HowToPlayPanel howToPlayPanel = gameFrame.getHowToPlayPanel();
+		CreditsPanel creditsPanel = gameFrame.getCreditsPanel();
 		PromptRolePanel promptRolePanel = gameFrame.getPromptRolePanel();
 
 		menuPanel.getOnePlayerButton().addActionListener(new ActionListener() {
@@ -44,6 +46,22 @@ public class GameController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("promptRolePanel");
+			}
+		});
+
+		menuPanel.getHowToPlayButton().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("howToPlayPanel");
+			}
+		});
+
+		menuPanel.getCreditsButton().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("creditsPanel");
 			}
 		});
 
@@ -76,5 +94,20 @@ public class GameController {
 
 		});
 
+		howToPlayPanel.getBackButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("menuPanel");
+			}
+
+		});
+
+		creditsPanel.getBackButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("menuPanel");
+			}
+
+		});
 	}
 }
