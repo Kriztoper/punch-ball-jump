@@ -3,12 +3,29 @@ package punchballjump;
 import java.awt.Image;
 import java.awt.Rectangle;
 
+import javax.swing.ImageIcon;
+
 public class Sprite {
 	protected int x;
 	protected int y;
 	protected int i_width;
 	protected int i_height;
 	protected Image image;
+
+	public Sprite() {
+
+	}
+
+	public Sprite(int x, int y, String imagePath) {
+		setX(x);
+		setY(y);
+
+		ImageIcon ii = new ImageIcon(imagePath);
+		image = ii.getImage();
+
+		i_width = image.getWidth(null);
+		i_height = image.getHeight(null);
+	}
 
 	public void setX(int x) {
 		this.x = x;
@@ -40,6 +57,13 @@ public class Sprite {
 
 	public Rectangle getRect() {
 		return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
+	}
+
+	public Rectangle getLongBiggerRect(long rectBorder) {
+		int width = image.getWidth(null);
+		int height = image.getHeight(null);
+		return new Rectangle(x - width - (int) rectBorder, y - 3 * height, width * 3 + 2 * (int) rectBorder,
+				height * 7);
 	}
 
 	public Rectangle getBiggerRect() {
