@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 
-import network.entities.GameClient;
-import network.entities.GameServer;
 import views.CreditsPanel;
 import views.GameFrame;
 import views.HowToPlayPanel;
@@ -19,7 +17,6 @@ public class GameController {
 
 	public GameController(GameFrame gameFrame) {
 		this.gameFrame = gameFrame;
-		System.out.println(gameFrame);
 		addButtonListeners();
 	}
 

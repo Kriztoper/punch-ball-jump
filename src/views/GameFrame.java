@@ -1,7 +1,6 @@
 package views;
 
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.net.InetAddress;
 import java.util.Arrays;
 
@@ -11,8 +10,9 @@ import network.entities.GameClient;
 import network.entities.GameServer;
 import punchballjump.Board;
 import punchballjump.ClientBoard;
+import punchballjump.Commons;
 
-public class GameFrame {
+public class GameFrame implements Commons {
 
 	private Frame frame;
 	private CardLayout cards;
@@ -22,6 +22,7 @@ public class GameFrame {
 	private HowToPlayPanel howToPlayPanel;
 	private CreditsPanel creditsPanel;
 	private Board board;
+	private ClientBoard clientBoard;
 
 	public GameFrame() {
 		frame = new Frame();
@@ -50,14 +51,14 @@ public class GameFrame {
 			if (Arrays.asList(cardsPanel.getComponents()).contains(board)) {
 				cardsPanel.remove(board);
 			}
-			Frame clientFrame = new Frame();
-			ClientBoard clientBoard = new ClientBoard(this);
-			clientBoard.setBackground(Color.BLACK);
-			clientBoard.setVisible(true);
-			// clientFrame.add(clientBoard);
-			clientFrame.setContentPane(clientBoard);
-			clientFrame.setVisible(true);
-			board = new Board(this, clientBoard);
+			// Frame clientFrame = new Frame();
+			// ClientBoard clientBoard = new ClientBoard(this);
+			// clientBoard.setBackground(Color.BLACK);
+			// clientBoard.setVisible(true);
+			// // clientFrame.add(clientBoard);
+			// clientFrame.setContentPane(clientBoard);
+			// clientFrame.setVisible(true);
+			board = new Board(this, IS_COMPUTER);// , clientBoard);
 			board.setVisible(true);
 			cardsPanel.add(board, "board");
 			cards.show(cardsPanel, panelName);
@@ -73,8 +74,12 @@ public class GameFrame {
 	}
 
 	public void startGameClient(InetAddress serverIPAddress) {
-
-		GameClient gameClient = new GameClient(serverIPAddress, this);
+		clientBoard = new ClientBoard(this);
+		clientBoard.setVisible(true);
+		cardsPanel.add(clientBoard, "clientBoard");
+		cards.show(cardsPanel, "clientBoard");
+		clientBoard.requestFocus();
+		GameClient gameClient = new GameClient(serverIPAddress, this, clientBoard);
 	}
 
 	public void initPanels() {
@@ -104,5 +109,9 @@ public class GameFrame {
 
 	public JPanel getCardsPanel() {
 		return cardsPanel;
+	}
+
+	public CardLayout getCards() {
+		return cards;
 	}
 }

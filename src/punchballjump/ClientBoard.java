@@ -115,27 +115,27 @@ public class ClientBoard extends JPanel implements Commons {
 		repaint();
 	}
 
-	public void initBallTimer(long period, Player player) {
-		System.out.println("Init ball timer");
-		if (period >= 20) {
-			System.out.println("ballPeriod adjusting to " + period);
-			timerForBall.cancel();
-			timerForBall = new Timer();
-			scheduleTaskForBall = new ScheduleTaskForBall();
-			timerForBall.schedule(scheduleTaskForBall, 0, period);
-		} else {
-			System.out.println(">>>>>>>>>>>>>>>Reseting ballPeriod to 100");
-			timerForBallReset = new Timer();
-			TimerTask scheduleTaskForBallReset = new TimerTask() {
-
-				@Override
-				public void run() {
-					ballPeriod = 100;
-				}
-			};
-			timerForBallReset.schedule(scheduleTaskForBallReset, 20000);
-		}
-	}
+	// public void initBallTimer(long period, Player player) {
+	// System.out.println("Init ball timer");
+	// if (period >= 20) {
+	// System.out.println("ballPeriod adjusting to " + period);
+	// timerForBall.cancel();
+	// timerForBall = new Timer();
+	// scheduleTaskForBall = new ScheduleTaskForBall();
+	// timerForBall.schedule(scheduleTaskForBall, 0, period);
+	// } else {
+	// System.out.println(">>>>>>>>>>>>>>>Reseting ballPeriod to 100");
+	// timerForBallReset = new Timer();
+	// TimerTask scheduleTaskForBallReset = new TimerTask() {
+	//
+	// @Override
+	// public void run() {
+	// ballPeriod = 100;
+	// }
+	// };
+	// timerForBallReset.schedule(scheduleTaskForBallReset, 20000);
+	// }
+	// }
 
 	@Override
 	public void addNotify() {
@@ -533,7 +533,7 @@ public class ClientBoard extends JPanel implements Commons {
 			ball.setX(ballX);
 			ball.setY(ballY);
 		} else {
-			System.exit(1);
+			// System.exit(1);
 		}
 		if (players != null) {
 			if (players[0] != null) {
@@ -545,7 +545,7 @@ public class ClientBoard extends JPanel implements Commons {
 				players[0].setAlive(p1IsAlive);
 				players[0].setInvincible(p1IsInvincible);
 			} else {
-				System.exit(1);
+				// System.exit(1);
 			}
 			if (players[1] != null) {
 				players[1].setX(player2X);
@@ -556,10 +556,10 @@ public class ClientBoard extends JPanel implements Commons {
 				players[1].setAlive(p2IsAlive);
 				players[1].setInvincible(p2IsInvincible);
 			} else {
-				System.exit(1);
+				// System.exit(1);
 			}
 		} else {
-			System.exit(1);
+			// System.exit(1);
 		}
 		if (powerups != null) {
 			if (p1Powerup != null) {
@@ -585,17 +585,17 @@ public class ClientBoard extends JPanel implements Commons {
 				powerups[1] = null;
 			}
 		} else {
-			System.exit(1);
+			// System.exit(1);
 		}
 		if (powUpTopMsg != null) {
 			pCaptionMsg = powUpTopMsg;
-			System.out.println(pCaptionMsg);
+			// System.out.println(pCaptionMsg);
 		} else {
 			pCaptionMsg = null;
 		}
 		if (powUpBotMsg != null) {
 			oCaptionMsg = powUpBotMsg;
-			System.out.println(oCaptionMsg);
+			// System.out.println(oCaptionMsg);
 		} else {
 			oCaptionMsg = null;
 		}
@@ -813,7 +813,7 @@ public class ClientBoard extends JPanel implements Commons {
 					players[0].setPunchDelay(0);
 				}
 				ballPeriod -= 10;
-				initBallTimer(ballPeriod, players[0]);
+				// initBallTimer(ballPeriod, players[0]);
 			}
 			System.out.println("ball perdio => " + ballPeriod);
 		} else if (!ball.getRect().intersects(players[0].getBiggerRect())) {
@@ -835,7 +835,7 @@ public class ClientBoard extends JPanel implements Commons {
 					players[1].setPunchDelay(0);
 				}
 				ballPeriod -= 10;
-				initBallTimer(ballPeriod, players[1]);
+				// initBallTimer(ballPeriod, players[1]);
 			}
 			System.out.println("ball perdio => " + ballPeriod);
 		} else if (!ball.getRect().intersects(players[1].getBiggerRect())) {

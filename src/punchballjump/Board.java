@@ -25,9 +25,9 @@ import views.GameFrame;
 
 public class Board extends JPanel implements Commons {
 	private String message = "Game Over";
-	private Ball ball;
-	private Player[] players;
-	private Powerup[] powerups;
+	public Ball ball;
+	public Player[] players;
+	public Powerup[] powerups;
 	private boolean ingame = true;
 	private boolean playerReversing;
 	private boolean opponentReversing;
@@ -42,25 +42,27 @@ public class Board extends JPanel implements Commons {
 	private boolean pressed = false;
 	private ArrayList<Powerup> playerPowerupsList;
 	private ArrayList<Powerup> opponentPowerupsList;
-	private boolean isPlayerPowerupActivated;
-	private boolean isOpponentPowerupActivated;
+	public boolean isPlayerPowerupActivated;
+	public boolean isOpponentPowerupActivated;
 	private Color pCaptionColor;
-	private String pCaptionMsg;
+	public String pCaptionMsg;
 	private Color oCaptionColor;
-	private String oCaptionMsg;
-	private int countdown;
+	public String oCaptionMsg;
+	public int countdown;
 	private ImageIcon bg;
 	private ImageIcon earth;
-	private int round = 1;
+	public int round = 1;
 	private boolean playerTop;
 	private ArrayList<Sprite> p1Hearts;
 	private ArrayList<Sprite> p2Hearts;
 	private ArrayList<Sprite> playerHeads;
 	private GameFrame gameFrame;
 	private ClientBoard clientBoard;
+	private boolean isComputer;
 
-	public Board(GameFrame gameFrame, ClientBoard clientBoard) {
+	public Board(GameFrame gameFrame, boolean isComputer) {// , ClientBoard clientBoard) {
 		this.gameFrame = gameFrame;
+		this.isComputer = isComputer;
 		this.clientBoard = clientBoard;
 
 		// Init bg and earth images
@@ -159,12 +161,12 @@ public class Board extends JPanel implements Commons {
 		playerTop = playerTop ? false : true;
 		if (playerTop) {
 			players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN, playerTop);
-			players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], IS_NOT_COMPUTER, HARD,
+			players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], isComputer, HARD,
 					!playerTop);
 		} else {
 			players[0] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN,
 					playerTop);
-			players[1] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, OPPONENT, hearts[1], IS_NOT_COMPUTER, HARD, !playerTop);
+			players[1] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, OPPONENT, hearts[1], isComputer, HARD, !playerTop);
 		}
 		ball = new Ball();
 		playerReversing = false;
@@ -297,11 +299,16 @@ public class Board extends JPanel implements Commons {
 			p2PowerupY = powerups[1].getY();
 		}
 
-		clientBoard.updateGraphics(ball.getX(), ball.getY(), players[0].getX(), players[0].getY(), players[1].getX(),
-				players[1].getY(), players[0].isJumping(), players[0].isPunching(), players[1].isJumping(),
-				players[1].isPunching(), p1Powerup, p1PowerupX, p1PowerupY, p2Powerup, p2PowerupX, p2PowerupY,
-				pUpTopMsg, pUpBotMsg, players[0].getHearts(), players[1].getHearts(), players[0].isAlive(),
-				players[1].isAlive(), players[0].isInvincible(), players[1].isInvincible(), countdown, round);
+		// clientBoard.updateGraphics(ball.getX(), ball.getY(), players[0].getX(),
+		// players[0].getY(), players[1].getX(),
+		// players[1].getY(), players[0].isJumping(), players[0].isPunching(),
+		// players[1].isJumping(),
+		// players[1].isPunching(), p1Powerup, p1PowerupX, p1PowerupY, p2Powerup,
+		// p2PowerupX, p2PowerupY,
+		// pUpTopMsg, pUpBotMsg, players[0].getHearts(), players[1].getHearts(),
+		// players[0].isAlive(),
+		// players[1].isAlive(), players[0].isInvincible(), players[1].isInvincible(),
+		// countdown, round);
 		Toolkit.getDefaultToolkit().sync();
 	}
 
@@ -419,7 +426,8 @@ public class Board extends JPanel implements Commons {
 
 				if (!player.isTop()) {
 					BufferedImage image = toBufferedImage(player.isPunching() ? player.getPunchingImage()
-							: (player.isJumping() ? player.getJumpingImage() : player.getImage()));
+							: (player.isJumping() ? player.getJumpingImage()
+									: (player.isInvincible() ? player.getDeadImage() : player.getImage())));
 					double rotationRequired = Math.toRadians(180);
 					double locationX = image.getWidth(null) / 2;
 					double locationY = image.getHeight(null) / 2;
@@ -437,14 +445,26 @@ public class Board extends JPanel implements Commons {
 									player.getHeight(), this);
 						}
 					} else {
-						if (player.getX() < ball.getX()) {
-							// face right
-							g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
-									player.getHeight(), this);
+						if (player.isInvincible()) {
+							if (player.getX() < ball.getX()) {
+								// face right
+								g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
+										-player.getWidth(), player.getHeight(), null);
+							} else {
+								// face left
+								g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
+										player.getHeight(), this);
+							}
 						} else {
-							// face left
-							g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
-									-player.getWidth(), player.getHeight(), null);
+							if (player.getX() < ball.getX()) {
+								// face right
+								g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
+										player.getHeight(), this);
+							} else {
+								// face left
+								g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
+										-player.getWidth(), player.getHeight(), null);
+							}
 						}
 					}
 				} else {
@@ -469,13 +489,26 @@ public class Board extends JPanel implements Commons {
 									-player.getWidth(), player.getHeight(), null);
 						}
 					} else {
-						// stand still
-						if (player.getX() < ball.getX()) {
-							g2d.drawImage(player.getImage(), player.getX() + player.getWidth(), player.getY(),
-									-player.getWidth(), player.getHeight(), null);
+						if (player.isInvincible()) {
+							if (player.getX() < ball.getX()) {
+								// face right
+								g2d.drawImage(player.getDeadImage(), player.getX() + player.getWidth(), player.getY(),
+										-player.getWidth(), player.getHeight(), null);
+							} else {
+								// face left
+								g2d.drawImage(player.getDeadImage(), player.getX(), player.getY(), player.getWidth(),
+										player.getHeight(), this);
+							}
 						} else {
-							g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(),
-									player.getHeight(), this);
+							if (player.getX() < ball.getX()) {
+								// face right
+								g2d.drawImage(player.getImage(), player.getX() + player.getWidth(), player.getY(),
+										-player.getWidth(), player.getHeight(), null);
+							} else {
+								// face left
+								g2d.drawImage(player.getImage(), player.getX(), player.getY(), player.getWidth(),
+										player.getHeight(), this);
+							}
 						}
 					}
 				}
@@ -750,15 +783,15 @@ public class Board extends JPanel implements Commons {
 			opponentReversing = false;
 		}
 	}
-	
+
 	public Ball getBall() {
 		return ball;
 	}
-	
+
 	public Player[] getPlayers() {
 		return players;
 	}
-	
+
 	public Powerup[] getPowerups() {
 		return powerups;
 	}
