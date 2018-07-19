@@ -7,7 +7,6 @@ import java.util.Arrays;
 import javax.swing.JPanel;
 
 import network.entities.GameClient;
-import network.entities.GameServer;
 import punchballjump.Board;
 import punchballjump.ClientBoard;
 import punchballjump.Commons;
@@ -33,7 +32,7 @@ public class GameFrame implements Commons {
 	public MenuPanel getMenuPanel() {
 		return menuPanel;
 	}
-	
+
 	public HowToPlayPanel getHowToPlayPanel() {
 		return howToPlayPanel;
 	}
@@ -70,7 +69,12 @@ public class GameFrame implements Commons {
 	}
 
 	public void startGameServer() {
-		GameServer gameServer = new GameServer(this);
+		board = new Board(this, IS_NOT_COMPUTER);// , clientBoard);
+		board.setVisible(true);
+		cardsPanel.add(board, "board");
+		cards.show(cardsPanel, "board");
+		board.requestFocus();
+		// GameServer gameServer = new GameServer(this);
 	}
 
 	public void startGameClient(InetAddress serverIPAddress) {
