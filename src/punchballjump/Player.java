@@ -178,12 +178,12 @@ public class Player extends Sprite implements Commons {
 
 		if (isTop && getName().equals(PLAYER)) {// && !isComputer) {
 			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
-				System.out.println("Player punch");
+				// System.out.println("Player punch");
 				punching = true;
 				punchTimer = new Timer();
 				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
 			} else if (key == KeyEvent.VK_A && y >= 120 && !isPunching() && !jumping) {
-				System.out.println("Player jump");
+				// System.out.println("Player jump");
 				jumping = true;
 			}
 		}
@@ -210,12 +210,36 @@ public class Player extends Sprite implements Commons {
 		// }
 		else if (!isTop && getName().equals(PLAYER)) {// && !isComputer) {
 			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
-				System.out.println("Player punch");
+				// System.out.println("Player punch");
 				punching = true;
 				punchTimer = new Timer();
 				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
 			} else if (key == KeyEvent.VK_A && y <= 500 && !isPunching() && !jumping) {
-				System.out.println("JUMPIIIIIINGGGGG!!!!!");
+				// System.out.println("JUMPIIIIIINGGGGG!!!!!");
+				jumping = true;
+			}
+		}
+	}
+
+	public void keyPressed(int key) {
+		if (isTop && getName().equals(PLAYER)) {// && !isComputer) {
+			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
+				// System.out.println("Player punch");
+				punching = true;
+				punchTimer = new Timer();
+				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
+			} else if (key == KeyEvent.VK_A && y >= 120 && !isPunching() && !jumping) {
+				// System.out.println("Player jump");
+				jumping = true;
+			}
+		} else if (!isTop && getName().equals(PLAYER)) {// && !isComputer) {
+			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
+				// System.out.println("Player punch");
+				punching = true;
+				punchTimer = new Timer();
+				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
+			} else if (key == KeyEvent.VK_A && y <= 500 && !isPunching() && !jumping) {
+				// System.out.println("JUMPIIIIIINGGGGG!!!!!");
 				jumping = true;
 			}
 		}
@@ -226,7 +250,7 @@ public class Player extends Sprite implements Commons {
 		public void run() {
 			punching = false;
 			punchTimer.cancel();
-			System.out.println("done punching");
+			// System.out.println("done punching");
 
 		}
 	}

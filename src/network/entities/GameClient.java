@@ -28,7 +28,7 @@ public class GameClient implements PeerInterface {
 
 	public void accessServer(InetAddress serverIPAddress) {
 		try {
-			clientBoard = new ClientBoard(gameFrame);
+			clientBoard = new ClientBoard(gameFrame, serverIPAddress);
 			socket = new Socket(serverIPAddress, PORT);
 			isGameOver = false;
 

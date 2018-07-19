@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -12,6 +14,11 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -20,6 +27,7 @@ import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import network.entities.ServerData;
 import views.GameFrame;
 
 public class ClientBoard extends JPanel implements Commons {
@@ -57,8 +65,17 @@ public class ClientBoard extends JPanel implements Commons {
 	private ArrayList<Sprite> playerHeads;
 	private GameFrame gameFrame;
 
-	public ClientBoard(GameFrame gameFrame) {
+	// Client field types
+	private Socket socket;
+	private ObjectOutputStream outputStream;
+	private ObjectInputStream inputStream;
+	private static final int PORT = 2048;
+	private boolean isGameOver;
+	private InetAddress serverIPAddress;
+
+	public ClientBoard(GameFrame gameFrame, InetAddress serverIPAddress) {
 		this.gameFrame = gameFrame;
+		this.serverIPAddress = serverIPAddress;
 
 		// Init bg and earth images
 		Random random = new Random();
@@ -93,7 +110,10 @@ public class ClientBoard extends JPanel implements Commons {
 
 		repaint();
 		initBoard();
-		// gameInit();
+		gameInit();
+
+		Handler handler = new Handler();
+		handler.start();
 	}
 
 	private void initBoard() {
@@ -140,13 +160,12 @@ public class ClientBoard extends JPanel implements Commons {
 	@Override
 	public void addNotify() {
 		super.addNotify();
-		gameInit();
 	}
 
 	private void gameInit() {
 		int[] hearts = new int[2];
 		if (players != null && players[0] != null && players[1] != null) {
-			System.out.println("Players 1 & 2 not null so hearts maintain!");
+			// System.out.println("Players 1 & 2 not null so hearts maintain!");
 			hearts[0] = players[0].getHearts();
 			hearts[1] = players[1].getHearts();
 		} else {
@@ -170,10 +189,10 @@ public class ClientBoard extends JPanel implements Commons {
 		repaint();
 
 		// Prints the values of the lists setup, used for debugging
-		for (Powerup x : playerPowerupsList)
-			System.out.println(x.getName());
-		for (Powerup x : opponentPowerupsList)
-			System.out.println(x.getName());
+		// for (Powerup x : playerPowerupsList)
+		// System.out.println(x.getName());
+		// for (Powerup x : opponentPowerupsList)
+		// System.out.println(x.getName());
 
 		// Assign timer for time when powerups will appear
 		// Random random = new Random();
@@ -675,10 +694,10 @@ public class ClientBoard extends JPanel implements Commons {
 				powerups[0] = null;
 				powerups[1] = null;
 
-				System.out.println("Game Over");
+				// System.out.println("Game Over");
 				// all 5 hearts have been consumed by a player therefore that player loses
 				if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
-					System.out.println("Exiting game!");
+					// System.out.println("Exiting game!");
 					ingame = false;
 					timerForBall.cancel();
 					timerForPlayer.cancel();
@@ -803,7 +822,7 @@ public class ClientBoard extends JPanel implements Commons {
 		if (ball.getRect().intersects(players[0].getRect()) && players[0].isPunching() && !playerReversing) {
 			// ball is hit by punching
 
-			System.out.println("Reversing ball!");
+			// System.out.println("Reversing ball!");
 			playerReversing = true;
 			ball.reverseDirection();
 			if (ballPeriod >= 20) {
@@ -815,7 +834,7 @@ public class ClientBoard extends JPanel implements Commons {
 				ballPeriod -= 10;
 				// initBallTimer(ballPeriod, players[0]);
 			}
-			System.out.println("ball perdio => " + ballPeriod);
+			// System.out.println("ball perdio => " + ballPeriod);
 		} else if (!ball.getRect().intersects(players[0].getBiggerRect())) {
 			// System.out.println("End reversing");
 			playerReversing = false;
@@ -825,7 +844,7 @@ public class ClientBoard extends JPanel implements Commons {
 		if (ball.getRect().intersects(players[1].getRect()) && players[1].isPunching() && !opponentReversing) {
 			// ball is hit by punching
 
-			System.out.println("Reversing ball!");
+			// System.out.println("Reversing ball!");
 			opponentReversing = true;
 			ball.reverseDirection();
 			if (ballPeriod >= 20) {
@@ -837,10 +856,89 @@ public class ClientBoard extends JPanel implements Commons {
 				ballPeriod -= 10;
 				// initBallTimer(ballPeriod, players[1]);
 			}
-			System.out.println("ball perdio => " + ballPeriod);
+			// System.out.println("ball perdio => " + ballPeriod);
 		} else if (!ball.getRect().intersects(players[1].getBiggerRect())) {
 			// System.out.println("End reversing");
 			opponentReversing = false;
+		}
+	}
+
+	private class Handler extends Thread {
+
+		private volatile boolean kPressed = false;
+
+		public boolean isKPressed() {
+			synchronized (Handler.class) {
+				return kPressed;
+			}
+		}
+
+		@Override
+		public void run() {
+			KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+
+				@Override
+				public boolean dispatchKeyEvent(KeyEvent ke) {
+					synchronized (Handler.class) {
+						switch (ke.getID()) {
+						case KeyEvent.KEY_PRESSED:
+							if (ke.getKeyCode() == KeyEvent.VK_K) {
+								kPressed = true;
+							}
+							break;
+
+						case KeyEvent.KEY_RELEASED:
+							if (ke.getKeyCode() == KeyEvent.VK_K) {
+								kPressed = false;
+							}
+							break;
+						}
+						return false;
+					}
+				}
+			});
+
+			try {
+				socket = new Socket(serverIPAddress, PORT);
+				isGameOver = false;
+
+				outputStream = new ObjectOutputStream(socket.getOutputStream());
+				inputStream = new ObjectInputStream(socket.getInputStream());
+
+				while (!isGameOver) {
+					// System.out.println("Send object to server");
+					try {
+						ServerData serverData = (ServerData) inputStream.readObject();
+						updateGraphics(serverData.ballX, serverData.ballY, serverData.player1X, serverData.player1Y,
+								serverData.player2X, serverData.player2Y, serverData.p1IsJumping,
+								serverData.p1IsPunching, serverData.p2IsJumping, serverData.p2IsPunching,
+								serverData.p1Powerup, serverData.p1PowerupX, serverData.p1PowerupY,
+								serverData.p2Powerup, serverData.p2PowerupX, serverData.p2PowerupY,
+								serverData.powUpTopMsg, serverData.powUpBotMsg, serverData.p1Hearts,
+								serverData.p2Hearts, serverData.p1IsAlive, serverData.p2IsAlive,
+								serverData.p1IsInvincible, serverData.p2IsInvincible, serverData.countdown,
+								serverData.round);
+						repaint();
+					} catch (Exception e) {
+					}
+
+					// if (isKPressed()) {
+					// outputStream.writeObject(new ClientData(KeyEvent.VK_K));
+					// outputStream.flush();
+					// }
+				}
+			} catch (IOException e) {
+				System.out.println("Can't connect to server!");
+				e.printStackTrace();
+			} finally {
+				try {
+					System.out.println("Closing socket connection in client!");
+					socket.close();
+				} catch (IOException e) {
+					System.out.println("Can't close client...");
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }
