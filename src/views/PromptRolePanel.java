@@ -2,9 +2,11 @@ package views;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -14,7 +16,7 @@ import punchballjump.Commons;
 
 public class PromptRolePanel extends JPanel implements Commons {
 
-	private JLabel promptLabel;
+	private ImageIcon bg;
 	private JButton serverButton;
 	private JButton clientButton;
 	private JButton backButton;
@@ -38,23 +40,45 @@ public class PromptRolePanel extends JPanel implements Commons {
 	}
 
 	public void initPanel() {
-		setLayout(new FlowLayout());
-		setBackground(new Color(250, 128, 114)); // TODO: change with new edited prompt role image bg
+		setLayout(null);
 		setSize(Commons.WIDTH, Commons.HEIGHT);
+		bg = new ImageIcon("images/PromptRolePanel.png");
 	}
 
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(bg.getImage(), 0, 0, null);
+	}
+	
 	public void initComponents() {
-		promptLabel = new JLabel("Choose role:");
-		backButton = new JButton("Back");
-		setServerButton(new JButton("Server"));
-		setClientButton(new JButton("Client"));
+		backButton = new JButton(new ImageIcon("images/back_button.png"));
+		backButton.setBounds(245, 490, 120, 100);
+		backButton.setRolloverIcon(new ImageIcon("images/back_hoverButton.png"));
+		modifyButton(backButton);
+		
+		serverButton = new JButton(new ImageIcon("images/server_button.png"));
+		serverButton.setBounds(85, 370, 210, 60);
+		serverButton.setRolloverIcon(new ImageIcon("images/server_hoverButton.png"));
+		modifyButton(serverButton);
+		
+		clientButton = new JButton(new ImageIcon("images/client_button.png"));
+		clientButton.setBounds(345, 370, 210, 60);
+		clientButton.setRolloverIcon(new ImageIcon("images/client_hoverButton.png"));
+		modifyButton(clientButton);
 	}
 
 	public void addComponents() {
-		add(promptLabel);
 		add(backButton);
 		add(getServerButton());
 		add(getClientButton());
+	}
+	
+	public void modifyButton(JButton button) {
+		button.setOpaque(false);
+		button.setContentAreaFilled(false);
+		button.setBorderPainted(false);
+		button.setFocusable(false);
 	}
 
 	public JButton getServerButton() {
