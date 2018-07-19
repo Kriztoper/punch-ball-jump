@@ -14,11 +14,11 @@ public class Powerup extends Sprite implements Commons {
 		// assign the corresponding image for the designated powerup
 		String powerupPath = "";
 		if (name.equals(RESTORE)) {
-			powerupPath = "res/sharingan.png";
+			powerupPath = "images/+1heart_powerup.png";
 		} else if (name.equals(INVINCIBLE)) {
-			powerupPath = "res/rinnegan.png";
+			powerupPath = "images/invincible_powerup.png";
 		} else if (name.equals(SWAP)) {
-			powerupPath = "res/byakuugan.png";
+			powerupPath = "images/swap_powerup";
 		}
 
 		ImageIcon ii = new ImageIcon(powerupPath);
