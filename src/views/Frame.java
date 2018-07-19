@@ -9,7 +9,7 @@ import punchballjump.Commons;
 public class Frame extends JFrame implements Commons {
 
 	public Frame() {
-		setTitle("Punch Ball Jump");
+		setTitle("Space Ninja");
 		setLayout(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(Commons.WIDTH, Commons.HEIGHT);

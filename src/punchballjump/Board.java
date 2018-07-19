@@ -427,7 +427,7 @@ public class Board extends JPanel implements Commons {
 				if (!player.isTop()) {
 					BufferedImage image = toBufferedImage(player.isPunching() ? player.getPunchingImage()
 							: (player.isJumping() ? player.getJumpingImage()
-									: (player.isInvincible() ? player.getDeadImage() : player.getImage())));
+									: (player.isInvincible() ? player.getWithShieldImage() : player.getImage())));
 					double rotationRequired = Math.toRadians(180);
 					double locationX = image.getWidth(null) / 2;
 					double locationY = image.getHeight(null) / 2;
@@ -448,12 +448,12 @@ public class Board extends JPanel implements Commons {
 						if (player.isInvincible()) {
 							if (player.getX() < ball.getX()) {
 								// face right
-								g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
-										-player.getWidth(), player.getHeight(), null);
-							} else {
-								// face left
 								g2d.drawImage(op.filter(image, null), player.getX(), player.getY(), player.getWidth(),
 										player.getHeight(), this);
+							} else {
+								// face left
+								g2d.drawImage(op.filter(image, null), player.getX() + player.getWidth(), player.getY(),
+										-player.getWidth(), player.getHeight(), null);
 							}
 						} else {
 							if (player.getX() < ball.getX()) {
@@ -492,12 +492,12 @@ public class Board extends JPanel implements Commons {
 						if (player.isInvincible()) {
 							if (player.getX() < ball.getX()) {
 								// face right
-								g2d.drawImage(player.getDeadImage(), player.getX() + player.getWidth(), player.getY(),
-										-player.getWidth(), player.getHeight(), null);
+								g2d.drawImage(player.getWithShieldImage(), player.getX() + player.getWidth(),
+										player.getY(), -player.getWidth(), player.getHeight(), null);
 							} else {
 								// face left
-								g2d.drawImage(player.getDeadImage(), player.getX(), player.getY(), player.getWidth(),
-										player.getHeight(), this);
+								g2d.drawImage(player.getWithShieldImage(), player.getX(), player.getY(),
+										player.getWidth(), player.getHeight(), this);
 							}
 						} else {
 							if (player.getX() < ball.getX()) {
