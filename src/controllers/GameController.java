@@ -67,8 +67,6 @@ public class GameController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.startGameServer();
-				// ?temp disable networking? new GameServer(new GameManager());
-				// gameManager.start();
 			}
 		});
 
@@ -78,8 +76,6 @@ public class GameController {
 			public void actionPerformed(ActionEvent e) {
 				InetAddress serverIPAddress = promptRolePanel.promptServerIPAddress();
 				gameFrame.startGameClient(serverIPAddress);
-				// ?temp disable networking? new GameClient(serverIPAddress, new GameManager());
-				// gameManager.start();
 			}
 		});
 

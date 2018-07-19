@@ -33,7 +33,7 @@ public class GameFrame implements Commons {
 	public MenuPanel getMenuPanel() {
 		return menuPanel;
 	}
-
+	
 	public HowToPlayPanel getHowToPlayPanel() {
 		return howToPlayPanel;
 	}
