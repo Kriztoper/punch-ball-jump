@@ -40,6 +40,10 @@ public class GameFrame {
 	public CreditsPanel getCreditsPanel() {
 		return creditsPanel;
 	}
+	
+	public GameLevelPanel getGameLevelPanel() {
+		return gameLevelPanel;
+	}
 
 	public void setCurrentPanel(String panelName) {
 		if (panelName.equals("board")) {

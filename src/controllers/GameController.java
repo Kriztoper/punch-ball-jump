@@ -7,6 +7,7 @@ import java.util.Timer;
 
 import views.CreditsPanel;
 import views.GameFrame;
+import views.GameLevelPanel;
 import views.HowToPlayPanel;
 import views.MenuPanel;
 import views.PromptRolePanel;
@@ -31,6 +32,7 @@ public class GameController {
 		HowToPlayPanel howToPlayPanel = gameFrame.getHowToPlayPanel();
 		CreditsPanel creditsPanel = gameFrame.getCreditsPanel();
 		PromptRolePanel promptRolePanel = gameFrame.getPromptRolePanel();
+		GameLevelPanel gameLevelPanel = gameFrame.getGameLevelPanel();
 		
 		menuPanel.getTwoPlayersButton().
 			addActionListener(new ActionListener(){
@@ -124,12 +126,15 @@ public class GameController {
 			}		
 		});
 		
-		promptRolePanel.getPlayButton().
+		gameLevelPanel.getBackButton().
 			addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e){
-					gameFrame.setCurrentPanel("countdownPanel");
-			}
-		});
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					gameFrame.setCurrentPanel("menuPanel");
+				}
+				
+			});
 		
 
 	}

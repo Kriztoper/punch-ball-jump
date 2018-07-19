@@ -17,6 +17,7 @@ public class GameLevelPanel extends JPanel implements Commons {
 	private JButton easyButton;
 	private JButton normalButton;
 	private JButton hardButton;
+	private JButton backButton;
 	
 	public GameLevelPanel() {
 		initPanel();
@@ -34,16 +35,25 @@ public class GameLevelPanel extends JPanel implements Commons {
 		easyButton = new JButton("EASY");
 		normalButton = new JButton("NORMAL");
 		hardButton = new JButton("HARD");
+		backButton = new JButton("BACK");
 	}
 
 	public void addComponents() {
 		add(easyButton);
 		add(normalButton);
 		add(hardButton);
+		add(backButton);
 	}
-
+	
+	public JButton getBackButton() {
+		return this.backButton;
+	}
+	
+	public void setBackButton(JButton backButton) {
+		this.backButton = backButton;
+	}
 	public JButton getEasyButton() {
-		return this.easyButton;
+		return easyButton;
 	}
 	
 	public void setEasyButton(JButton easyButton) {
@@ -51,7 +61,7 @@ public class GameLevelPanel extends JPanel implements Commons {
 	}
 	
 	public JButton getNormalButton() {
-		return this.normalButton;
+		return normalButton;
 	}
 	
 	public void setNormalButton(JButton normalButton) {
@@ -59,7 +69,7 @@ public class GameLevelPanel extends JPanel implements Commons {
 	}
 	
 	public JButton getHardButton() {
-		return this.hardButton;
+		return hardButton;
 	}
 	
 	public void setHardButton(JButton hardButton) {
