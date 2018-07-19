@@ -736,4 +736,9 @@ public class Board extends JPanel implements Commons {
 	public Powerup[] getPowerups() {
 		return powerups;
 	}
+	
+	public String[] getCaptions() {
+		String[] captions = {pCaptionMsg, oCaptionMsg};
+		return captions;
+	}
 }

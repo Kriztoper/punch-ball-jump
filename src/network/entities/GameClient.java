@@ -40,7 +40,7 @@ public class GameClient implements PeerInterface {
 		 		System.out.println("Send object to server");
 		 		outputStream.writeObject(new ClientData(KeyEvent.VK_0));
 		 		ServerData serverData = (ServerData) inputStream.readObject();
-		 		System.out.println("Ball: " + "(" + serverData.getBall()[0] + ", " + serverData.getBall()[1] + ")");
+		 		System.out.println("Ball: " + "(" + serverData.getBallX() + ", " + serverData.getBallY() + ")");
 		 	}
 		 	
 		} catch (IOException e) {

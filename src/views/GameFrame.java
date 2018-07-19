@@ -30,7 +30,7 @@ public class GameFrame {
 	public MenuPanel getMenuPanel() {
 		return menuPanel;
 	}
-
+	
 	public HowToPlayPanel getHowToPlayPanel() {
 		return howToPlayPanel;
 	}
