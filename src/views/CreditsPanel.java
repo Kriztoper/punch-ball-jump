@@ -22,9 +22,9 @@ public class CreditsPanel extends JPanel implements Commons {
 	}
 
 	public void initPanel() {
-		setLayout(new FlowLayout());
+		setLayout(null);
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/test.png"); // TODO: change with new edited credits image bg
+		bg = new ImageIcon("images/CreditsPanel.png"); // TODO: change with new edited credits image bg
 	}
 
 	@Override
@@ -34,11 +34,21 @@ public class CreditsPanel extends JPanel implements Commons {
 	}
 
 	public void initComponents() {
-		setBackButton(new JButton("Back"));
+		backButton = new JButton(new ImageIcon("images/back_button.png"));
+		backButton.setBounds(510, 540, 120, 100);
+		backButton.setRolloverIcon(new ImageIcon("images/back_hoverButton.png"));
+		modifyButton(backButton);
 	}
 
 	public void addComponents() {
 		add(backButton);
+	}
+	
+	public void modifyButton(JButton button) {
+		button.setOpaque(false);
+		button.setContentAreaFilled(false);
+		button.setBorderPainted(false);
+		button.setFocusable(false);
 	}
 
 	public JButton getBackButton() {
