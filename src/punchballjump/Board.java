@@ -15,8 +15,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -79,22 +83,6 @@ public class Board extends JPanel implements Commons {
 		this.isComputer = isComputer;
 		this.clientBoard = clientBoard;
 
-		if (isComputer == IS_NOT_COMPUTER) {
-			listening = true;
-
-			try {
-				serverSocket = new ServerSocket(PORT);
-				client = serverSocket.accept();
-				// System.out.println("New client accepted...");
-			} catch (IOException e) {
-				System.out.println("Socket closed");
-				e.printStackTrace();
-			}
-
-			// Handler handler = new Handler();
-			// handler.start();
-		}
-
 		// Init bg and earth images
 		Random random = new Random();
 		String bgName = random.nextBoolean() ? "test" : "test2";
@@ -130,8 +118,21 @@ public class Board extends JPanel implements Commons {
 		initBoard();
 		gameInit();
 
-		Handler handler = new Handler();
-		handler.start();
+		if (isComputer == IS_NOT_COMPUTER) {
+			listening = true;
+
+			// try {
+			// serverSocket = new ServerSocket(PORT);
+			// client = serverSocket.accept();
+			// // System.out.println("New client accepted...");
+			// } catch (IOException e) {
+			// System.out.println("Socket closed");
+			// e.printStackTrace();
+			// }
+
+			Handler handler = new Handler();
+			handler.start();
+		}
 	}
 
 	private void initBoard() {
@@ -897,62 +898,111 @@ public class Board extends JPanel implements Commons {
 
 		@Override
 		public void run() {
-			try {
-				if (client.isConnected()) {
-					outputStream = new ObjectOutputStream(client.getOutputStream());
 
-					inputStream = new ObjectInputStream(client.getInputStream());
-					while (listening) {
-						// System.out.println("Send to client...");
-						if (getPlayers()[0].getHearts() == 0 || getPlayers()[1].getHearts() == 0) {
-							listening = false;
-						}
+			try (DatagramSocket serverSocket = new DatagramSocket(50000)) {
+				while (listening) {
+					// System.out.println("Send to client...");
+					// if (players[0].getHearts() == 0 || players[1].getHearts() == 0 || !ingame) {
+					// listening = false;
+					// }
 
-						String p1Powerup = null;
-						int p1PowerupX = -1;
-						int p1PowerupY = -1;
-						String p2Powerup = null;
-						int p2PowerupX = -1;
-						int p2PowerupY = -1;
-						String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
-						String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
-						if (powerups[0] != null) {
-							p1Powerup = powerups[0].getName();
-							p1PowerupX = powerups[0].getX();
-							p1PowerupY = powerups[0].getY();
-						}
-						if (powerups[1] != null) {
-							p2Powerup = powerups[1].getName();
-							p2PowerupX = powerups[1].getX();
-							p2PowerupY = powerups[1].getY();
-						}
-
-						outputStream.writeObject(new ServerData(ball.getX(), ball.getY(), players[0].getX(),
-								players[0].getY(), players[1].getX(), players[1].getY(), players[0].isJumping(),
-								players[0].isPunching(), players[1].isJumping(), players[1].isPunching(), p1Powerup,
-								p1PowerupX, p1PowerupY, p2Powerup, p2PowerupX, p2PowerupY, pUpTopMsg, pUpBotMsg,
-								players[0].getHearts(), players[1].getHearts(), players[0].isAlive(),
-								players[1].isAlive(), players[0].isInvincible(), players[1].isInvincible(), countdown,
-								round));
-						outputStream.flush();
-
-						// ClientData clientData;
-						// try {
-						// clientData = (ClientData) inputStream.readObject();
-						// if (clientData != null) {
-						// System.out.println("Client pressed " + clientData.getKeyPressed());
-						// // players[1].keyPressed(clientData.getKeyPressed());
-						// }
-						// } catch (ClassNotFoundException e) {
-						// System.out.println("Exception in reading in server!");
-						// }
+					String p1Powerup = null;
+					int p1PowerupX = -1;
+					int p1PowerupY = -1;
+					String p2Powerup = null;
+					int p2PowerupX = -1;
+					int p2PowerupY = -1;
+					String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
+					String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
+					if (powerups[0] != null) {
+						p1Powerup = powerups[0].getName();
+						p1PowerupX = powerups[0].getX();
+						p1PowerupY = powerups[0].getY();
 					}
-				} else {
-					System.out.println("Client is Disconnected...");
+					if (powerups[1] != null) {
+						p2Powerup = powerups[1].getName();
+						p2PowerupX = powerups[1].getX();
+						p2PowerupY = powerups[1].getY();
+					}
+
+					String data = new ServerData(ball.getX(), ball.getY(), players[0].getX(), players[0].getY(),
+							players[1].getX(), players[1].getY(), players[0].isJumping(), players[0].isPunching(),
+							players[1].isJumping(), players[1].isPunching(), p1Powerup, p1PowerupX, p1PowerupY,
+							p2Powerup, p2PowerupX, p2PowerupY, pUpTopMsg, pUpBotMsg, players[0].getHearts(),
+							players[1].getHearts(), players[0].isAlive(), players[1].isAlive(),
+							players[0].isInvincible(), players[1].isInvincible(), countdown, round)
+									.getCommaSeparatedStringData();
+					DatagramPacket datagramPacket = new DatagramPacket(data.getBytes(), data.length(),
+							InetAddress.getLocalHost(), PORT);
+					serverSocket.send(datagramPacket);
 				}
-			} catch (IOException/* | ClassNotFoundException */ e1) {
-				e1.printStackTrace();
+			} catch (SocketException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+
+			// try {
+			// if (client.isConnected()) {
+			// outputStream = new ObjectOutputStream(client.getOutputStream());
+			//
+			// inputStream = new ObjectInputStream(client.getInputStream());
+			// while (listening) {
+			// // System.out.println("Send to client...");
+			// if (getPlayers()[0].getHearts() == 0 || getPlayers()[1].getHearts() == 0) {
+			// listening = false;
+			// }
+			//
+			// String p1Powerup = null;
+			// int p1PowerupX = -1;
+			// int p1PowerupY = -1;
+			// String p2Powerup = null;
+			// int p2PowerupX = -1;
+			// int p2PowerupY = -1;
+			// String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
+			// String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
+			// if (powerups[0] != null) {
+			// p1Powerup = powerups[0].getName();
+			// p1PowerupX = powerups[0].getX();
+			// p1PowerupY = powerups[0].getY();
+			// }
+			// if (powerups[1] != null) {
+			// p2Powerup = powerups[1].getName();
+			// p2PowerupX = powerups[1].getX();
+			// p2PowerupY = powerups[1].getY();
+			// }
+			//
+			// outputStream.writeObject(new ServerData(ball.getX(), ball.getY(),
+			// players[0].getX(),
+			// players[0].getY(), players[1].getX(), players[1].getY(),
+			// players[0].isJumping(),
+			// players[0].isPunching(), players[1].isJumping(), players[1].isPunching(),
+			// p1Powerup,
+			// p1PowerupX, p1PowerupY, p2Powerup, p2PowerupX, p2PowerupY, pUpTopMsg,
+			// pUpBotMsg,
+			// players[0].getHearts(), players[1].getHearts(), players[0].isAlive(),
+			// players[1].isAlive(), players[0].isInvincible(), players[1].isInvincible(),
+			// countdown,
+			// round));
+			// outputStream.flush();
+			//
+			// // ClientData clientData;
+			// // try {
+			// // clientData = (ClientData) inputStream.readObject();
+			// // if (clientData != null) {
+			// // System.out.println("Client pressed " + clientData.getKeyPressed());
+			// // // players[1].keyPressed(clientData.getKeyPressed());
+			// // }
+			// // } catch (ClassNotFoundException e) {
+			// // System.out.println("Exception in reading in server!");
+			// // }
+			// }
+			// } else {
+			// System.out.println("Client is Disconnected...");
+			// }
+			// } catch (IOException/* | ClassNotFoundException */ e1) {
+			// e1.printStackTrace();
+			// }
 		}
 
 		public void terminate() {

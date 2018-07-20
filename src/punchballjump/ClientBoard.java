@@ -17,8 +17,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -340,12 +343,15 @@ public class ClientBoard extends JPanel implements Commons {
 		}
 
 		// draw player powerups activated caption
-		if (pCaptionMsg != null || oCaptionMsg != null) {// isPlayerPowerupActivated || isOpponentPowerupActivated) {
+		if ((pCaptionMsg != null && !pCaptionMsg.equals("null"))
+				|| (oCaptionMsg != null && !oCaptionMsg.equals("null"))) {// isPlayerPowerupActivated
+																			// ||
+			// isOpponentPowerupActivated) {
 			g2d.setColor(new Color(0f, 0f, 0f, 0.5f));
 			g2d.fillRect(0, 55, Commons.WIDTH, 40);
 			repaint();
 		}
-		if (pCaptionMsg != null) {// isPlayerPowerupActivated) {
+		if (pCaptionMsg != null && !pCaptionMsg.equals("null")) {// isPlayerPowerupActivated) {
 			// g2d.setColor(pCaptionColor);
 			if (pCaptionMsg.equals("+1 Heart")) {
 				g2d.setColor(Color.RED);
@@ -368,7 +374,7 @@ public class ClientBoard extends JPanel implements Commons {
 			// timerForCaption.schedule(timerTaskForCaption, 5000);
 		}
 		// draw opponent powerups activated caption
-		if (oCaptionMsg != null) {// isOpponentPowerupActivated) {
+		if (oCaptionMsg != null && !oCaptionMsg.equals("null")) {// isOpponentPowerupActivated) {
 			// g2d.setColor(oCaptionColor);
 			if (oCaptionMsg.equals("+1 Heart")) {
 				g2d.setColor(Color.RED);
@@ -898,47 +904,73 @@ public class ClientBoard extends JPanel implements Commons {
 				}
 			});
 
-			try {
-				socket = new Socket(serverIPAddress, PORT);
+			try (DatagramSocket clientSocket = new DatagramSocket(PORT)) {
+				byte[] buffer = new byte[65507];
+				clientSocket.setSoTimeout(20000);
 				isGameOver = false;
-
-				outputStream = new ObjectOutputStream(socket.getOutputStream());
-				inputStream = new ObjectInputStream(socket.getInputStream());
-
 				while (!isGameOver) {
-					// System.out.println("Send object to server");
-					try {
-						ServerData serverData = (ServerData) inputStream.readObject();
-						updateGraphics(serverData.ballX, serverData.ballY, serverData.player1X, serverData.player1Y,
-								serverData.player2X, serverData.player2Y, serverData.p1IsJumping,
-								serverData.p1IsPunching, serverData.p2IsJumping, serverData.p2IsPunching,
-								serverData.p1Powerup, serverData.p1PowerupX, serverData.p1PowerupY,
-								serverData.p2Powerup, serverData.p2PowerupX, serverData.p2PowerupY,
-								serverData.powUpTopMsg, serverData.powUpBotMsg, serverData.p1Hearts,
-								serverData.p2Hearts, serverData.p1IsAlive, serverData.p2IsAlive,
-								serverData.p1IsInvincible, serverData.p2IsInvincible, serverData.countdown,
-								serverData.round);
-						repaint();
-					} catch (Exception e) {
-					}
+					DatagramPacket datagramPacket = new DatagramPacket(buffer, 0, buffer.length);
+					clientSocket.receive(datagramPacket);
 
-					// if (isKPressed()) {
-					// outputStream.writeObject(new ClientData(KeyEvent.VK_K));
-					// outputStream.flush();
-					// }
+					String data = new String(datagramPacket.getData());
+					// System.out.println(data);
+					ServerData sd = new ServerData(data);
+					updateGraphics(sd.ballX, sd.ballY, sd.player1X, sd.player1Y, sd.player2X, sd.player2Y,
+							sd.p1IsJumping, sd.p1IsPunching, sd.p2IsJumping, sd.p2IsPunching, sd.p1Powerup,
+							sd.p1PowerupX, sd.p1PowerupY, sd.p2Powerup, sd.p2PowerupX, sd.p2PowerupY, sd.powUpTopMsg,
+							sd.powUpBotMsg, sd.p1Hearts, sd.p2Hearts, sd.p1IsAlive, sd.p2IsAlive, sd.p1IsInvincible,
+							sd.p2IsInvincible, sd.countdown, sd.round);
 				}
+			} catch (SocketException e) {
+				e.printStackTrace();
 			} catch (IOException e) {
-				System.out.println("Can't connect to server!");
 				e.printStackTrace();
 			} finally {
-				try {
-					System.out.println("Closing socket connection in client!");
-					socket.close();
-				} catch (IOException e) {
-					System.out.println("Can't close client...");
-					e.printStackTrace();
-				}
+				System.out.println("Client connection closed.");
 			}
+
+			// try {
+			// socket = new Socket(serverIPAddress, PORT);
+			// isGameOver = false;
+			//
+			// outputStream = new ObjectOutputStream(socket.getOutputStream());
+			// inputStream = new ObjectInputStream(socket.getInputStream());
+			//
+			// while (!isGameOver) {
+			// // System.out.println("Send object to server");
+			// try {
+			// ServerData serverData = (ServerData) inputStream.readObject();
+			// updateGraphics(serverData.ballX, serverData.ballY, serverData.player1X,
+			// serverData.player1Y,
+			// serverData.player2X, serverData.player2Y, serverData.p1IsJumping,
+			// serverData.p1IsPunching, serverData.p2IsJumping, serverData.p2IsPunching,
+			// serverData.p1Powerup, serverData.p1PowerupX, serverData.p1PowerupY,
+			// serverData.p2Powerup, serverData.p2PowerupX, serverData.p2PowerupY,
+			// serverData.powUpTopMsg, serverData.powUpBotMsg, serverData.p1Hearts,
+			// serverData.p2Hearts, serverData.p1IsAlive, serverData.p2IsAlive,
+			// serverData.p1IsInvincible, serverData.p2IsInvincible, serverData.countdown,
+			// serverData.round);
+			// repaint();
+			// } catch (Exception e) {
+			// }
+			//
+			// // if (isKPressed()) {
+			// // outputStream.writeObject(new ClientData(KeyEvent.VK_K));
+			// // outputStream.flush();
+			// // }
+			// }
+			// } catch (IOException e) {
+			// System.out.println("Can't connect to server!");
+			// e.printStackTrace();
+			// } finally {
+			// try {
+			// System.out.println("Closing socket connection in client!");
+			// socket.close();
+			// } catch (IOException e) {
+			// System.out.println("Can't close client...");
+			// e.printStackTrace();
+			// }
+			// }
 		}
 	}
 }
