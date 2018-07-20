@@ -20,7 +20,8 @@ public class PromptRolePanel extends JPanel implements Commons {
 	private JButton serverButton;
 	private JButton clientButton;
 	private JButton backButton;
-
+	private JButton playButton;
+	
 	public PromptRolePanel() {
 		initPanel();
 		initComponents();
@@ -70,6 +71,7 @@ public class PromptRolePanel extends JPanel implements Commons {
 
 	public void addComponents() {
 		add(backButton);
+		add(playButton);
 		add(getServerButton());
 		add(getClientButton());
 	}
@@ -104,4 +106,13 @@ public class PromptRolePanel extends JPanel implements Commons {
 	public void setBackButton(JButton backButton) {
 		this.backButton = backButton;
 	}
+	
+	public JButton getPlayButton() {
+		return playButton;
+	}
+	
+	public void setPlayButton(JButton playButton) {
+		this.playButton = playButton;
+	}
+	
 }

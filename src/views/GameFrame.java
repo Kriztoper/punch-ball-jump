@@ -19,6 +19,7 @@ public class GameFrame implements Commons {
 	private PromptRolePanel promptRolePanel;
 	private HowToPlayPanel howToPlayPanel;
 	private CreditsPanel creditsPanel;
+	private GameLevelPanel gameLevelPanel;
 	private Board board;
 	private ClientBoard clientBoard;
 
@@ -42,6 +43,10 @@ public class GameFrame implements Commons {
 
 	public CreditsPanel getCreditsPanel() {
 		return creditsPanel;
+	}
+	
+	public GameLevelPanel getGameLevelPanel() {
+		return gameLevelPanel;
 	}
 
 	public void setCurrentPanel(String panelName) {
@@ -95,7 +100,8 @@ public class GameFrame implements Commons {
 		creditsPanel = new CreditsPanel();
 
 		promptRolePanel = new PromptRolePanel();
-
+		
+		gameLevelPanel = new GameLevelPanel();
 		cardsPanel = new JPanel();
 		cardsPanel.setLayout(cards);
 
@@ -103,6 +109,7 @@ public class GameFrame implements Commons {
 		cardsPanel.add(howToPlayPanel, "howToPlayPanel");
 		cardsPanel.add(creditsPanel, "creditsPanel");
 		cardsPanel.add(promptRolePanel, "promptRolePanel");
+		cardsPanel.add(gameLevelPanel, "gameLevelPanel");
 		cards.show(cardsPanel, "menuPanel");
 	}
 

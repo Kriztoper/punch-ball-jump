@@ -103,5 +103,4 @@ public class MenuPanel extends JPanel implements Commons {
 	public void setTwoPlayersButton(JButton twoPlayersButton) {
 		this.twoPlayersButton = twoPlayersButton;
 	}
-
 }
