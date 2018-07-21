@@ -28,4 +28,6 @@ public interface Commons {
 	public static final int EASY = 100;
 	public static final int NORMAL = 50;
 	public static final int HARD = 0;
+	public static final int PORT1 = 50000;
+	public static final int PORT2 = 49999;
 }

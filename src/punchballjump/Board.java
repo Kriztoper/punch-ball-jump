@@ -13,13 +13,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,7 +30,6 @@ import network.entities.ServerData;
 import views.GameFrame;
 
 public class Board extends JPanel implements Commons {
-	private String message = "Game Over";
 	public Ball ball;
 	public Player[] players;
 	public Powerup[] powerups;
@@ -67,21 +62,16 @@ public class Board extends JPanel implements Commons {
 	private ArrayList<Sprite> p2Hearts;
 	private ArrayList<Sprite> playerHeads;
 	private GameFrame gameFrame;
-	private ClientBoard clientBoard;
 	private boolean isComputer;
 
 	// Server field types
-	private static final int PORT = 2048;
-	private ServerSocket serverSocket;
-	private Socket client;
-	private ObjectInputStream inputStream;
-	private ObjectOutputStream outputStream;
+	private DatagramSocket serverSocket;
+	private DatagramSocket serverSocketToRcv;
 	private boolean listening;
 
-	public Board(GameFrame gameFrame, boolean isComputer) {// , ClientBoard clientBoard) {
+	public Board(GameFrame gameFrame, boolean isComputer) {
 		this.gameFrame = gameFrame;
 		this.isComputer = isComputer;
-		this.clientBoard = clientBoard;
 
 		// Init bg and earth images
 		Random random = new Random();
@@ -120,16 +110,6 @@ public class Board extends JPanel implements Commons {
 
 		if (isComputer == IS_NOT_COMPUTER) {
 			listening = true;
-
-			// try {
-			// serverSocket = new ServerSocket(PORT);
-			// client = serverSocket.accept();
-			// // System.out.println("New client accepted...");
-			// } catch (IOException e) {
-			// System.out.println("Socket closed");
-			// e.printStackTrace();
-			// }
-
 			Handler handler = new Handler();
 			handler.start();
 		}
@@ -155,15 +135,12 @@ public class Board extends JPanel implements Commons {
 	}
 
 	public void initBallTimer(long period, Player player) {
-		// System.out.println("Init ball timer");
 		if (period >= 20) {
-			// System.out.println("ballPeriod adjusting to " + period);
 			timerForBall.cancel();
 			timerForBall = new Timer();
 			scheduleTaskForBall = new ScheduleTaskForBall();
 			timerForBall.schedule(scheduleTaskForBall, 0, period);
 		} else {
-			// System.out.println(">>>>>>>>>>>>>>>Reseting ballPeriod to 100");
 			timerForBallReset = new Timer();
 			TimerTask scheduleTaskForBallReset = new TimerTask() {
 
@@ -184,7 +161,7 @@ public class Board extends JPanel implements Commons {
 	private void gameInit() {
 		int[] hearts = new int[2];
 		if (players != null && players[0] != null && players[1] != null) {
-			// System.out.println("Players 1 & 2 not null so hearts maintain!");
+			// Players 1 & 2 not null so hearts maintain
 			hearts[0] = players[0].getHearts();
 			hearts[1] = players[1].getHearts();
 		} else {
@@ -226,7 +203,7 @@ public class Board extends JPanel implements Commons {
 		TimerTask timerTaskForPlayerPowerups;
 		TimerTask timerTaskForOpponentPowerups;
 		if (random.nextInt(4) > 0 && !playerPowerupsList.isEmpty()) {
-			// System.out.println("Planting powerups for player");
+			// Planting powerups for player
 			timerTaskForPlayerPowerups = new TimerTask() {
 
 				@Override
@@ -238,7 +215,7 @@ public class Board extends JPanel implements Commons {
 					ThreadLocalRandom.current().nextInt(13, 19) * 1000);
 		}
 		if (random.nextInt(4) > 0 && !opponentPowerupsList.isEmpty()) {
-			// System.out.println("Planting powerups for opponent");
+			// Planting powerups for opponent
 			timerTaskForOpponentPowerups = new TimerTask() {
 
 				@Override
@@ -253,6 +230,7 @@ public class Board extends JPanel implements Commons {
 		isPlayerPowerupActivated = false;
 		isOpponentPowerupActivated = false;
 		countdown = 3;
+
 		Timer timerForCountdown = new Timer();
 		TimerTask timerTaskForCountdown = new TimerTask() {
 
@@ -272,59 +250,6 @@ public class Board extends JPanel implements Commons {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-
-		// try {
-		// if (client != null && client.isConnected()) {
-		// // outputStream = new ObjectOutputStream(client.getOutputStream());
-		//
-		// inputStream = new ObjectInputStream(client.getInputStream());
-		// System.out.println("Send to client...");
-		// if (getPlayers()[0].getHearts() == 0 || getPlayers()[1].getHearts() == 0) {
-		// listening = false;
-		// }
-		//
-		// ClientData clientData = (ClientData) inputStream.readObject();
-		//
-		// if (clientData != null)
-		// System.out.println("Client pressed " + clientData.getKeyPressed());
-		//
-		// String p1Powerup = null;
-		// int p1PowerupX = -1;
-		// int p1PowerupY = -1;
-		// String p2Powerup = null;
-		// int p2PowerupX = -1;
-		// int p2PowerupY = -1;
-		// String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
-		// String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
-		// if (powerups[0] != null) {
-		// p1Powerup = powerups[0].getName();
-		// p1PowerupX = powerups[0].getX();
-		// p1PowerupY = powerups[0].getY();
-		// }
-		// if (powerups[1] != null) {
-		// p2Powerup = powerups[1].getName();
-		// p2PowerupX = powerups[1].getX();
-		// p2PowerupY = powerups[1].getY();
-		// }
-		//
-		// outputStream.writeObject(new ServerData(ball.getX(), ball.getY(),
-		// players[0].getX(), players[0].getY(),
-		// players[1].getX(), players[1].getY(), players[0].isJumping(),
-		// players[0].isPunching(),
-		// players[1].isJumping(), players[1].isPunching(), p1Powerup, p1PowerupX,
-		// p1PowerupY, p2Powerup,
-		// p2PowerupX, p2PowerupY, pUpTopMsg, pUpBotMsg, players[0].getHearts(),
-		// players[1].getHearts(),
-		// players[0].isAlive(), players[1].isAlive(), players[0].isInvincible(),
-		// players[1].isInvincible(), countdown, round));
-		// outputStream.flush();
-		// } else {
-		// // System.out.println("Client is Disconnected...");
-		// }
-		// } catch (IOException | ClassNotFoundException e1) {
-		// e1.printStackTrace();
-		// }
-
 		super.paintComponent(g);
 
 		Graphics2D g2d = (Graphics2D) g;
@@ -367,35 +292,6 @@ public class Board extends JPanel implements Commons {
 			gameFinished(g2d);
 		}
 
-		// String p1Powerup = null;
-		// int p1PowerupX = -1;
-		// int p1PowerupY = -1;
-		// String p2Powerup = null;
-		// int p2PowerupX = -1;
-		// int p2PowerupY = -1;
-		// String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
-		// String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
-		// if (powerups[0] != null) {
-		// p1Powerup = powerups[0].getName();
-		// p1PowerupX = powerups[0].getX();
-		// p1PowerupY = powerups[0].getY();
-		// }
-		// if (powerups[1] != null) {
-		// p2Powerup = powerups[1].getName();
-		// p2PowerupX = powerups[1].getX();
-		// p2PowerupY = powerups[1].getY();
-		// }
-
-		// clientBoard.updateGraphics(ball.getX(), ball.getY(), players[0].getX(),
-		// players[0].getY(), players[1].getX(),
-		// players[1].getY(), players[0].isJumping(), players[0].isPunching(),
-		// players[1].isJumping(),
-		// players[1].isPunching(), p1Powerup, p1PowerupX, p1PowerupY, p2Powerup,
-		// p2PowerupX, p2PowerupY,
-		// pUpTopMsg, pUpBotMsg, players[0].getHearts(), players[1].getHearts(),
-		// players[0].isAlive(),
-		// players[1].isAlive(), players[0].isInvincible(), players[1].isInvincible(),
-		// countdown, round);
 		Toolkit.getDefaultToolkit().sync();
 	}
 
@@ -433,7 +329,6 @@ public class Board extends JPanel implements Commons {
 		}
 
 		// draw player powerups activated caption
-		// TODO: Improve caption design
 		if (isPlayerPowerupActivated || isOpponentPowerupActivated) {
 			g2d.setColor(new Color(0f, 0f, 0f, 0.5f));
 			g2d.fillRect(0, 55, Commons.WIDTH, 40);
@@ -453,7 +348,6 @@ public class Board extends JPanel implements Commons {
 			timerForCaption.schedule(timerTaskForCaption, 5000);
 		}
 		// draw opponent powerups activated caption
-		// TODO: Improve caption design
 		if (isOpponentPowerupActivated) {
 			g2d.setColor(oCaptionColor);
 			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
@@ -491,7 +385,7 @@ public class Board extends JPanel implements Commons {
 			// g2d.fillRect(x, y, width, height);
 			if (player.isAlive()) {
 				if (player.isInvincible()) {
-					// TODO: Display indicator like forcefield if player is invincible
+					// Displays indicator like forcefield if player is invincible
 					int x = player.getSlightlyBiggerRect().x;
 					int y = player.getSlightlyBiggerRect().y;
 					int w = player.getSlightlyBiggerRect().width;
@@ -625,7 +519,6 @@ public class Board extends JPanel implements Commons {
 					}
 				}
 			}
-			// System.out.printf("x=%d, y=%d, w=%d, h=%d\n", x, y, width, height);
 		}
 		g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight(), this);
 
@@ -644,11 +537,10 @@ public class Board extends JPanel implements Commons {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-				// System.out.println("Exiting to Menu");
-				// System.out.println(gameFrame);
 				gameFrame.setCurrentPanel("menuPanel");
 				players[0].setHearts(0);
 				players[1].setHearts(0);
+				listening = false;
 			}
 			if (!pressed) {
 				for (Player player : players) {
@@ -702,14 +594,11 @@ public class Board extends JPanel implements Commons {
 				powerups[0] = null;
 				powerups[1] = null;
 
-				// System.out.println("Game Over");
 				// all 5 hearts have been consumed by a player therefore that player loses
 				if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
-					// System.out.println("Exiting game!");
 					ingame = false;
 					timerForBall.cancel();
 					timerForPlayer.cancel();
-					// TODO: Add code for returning back to menu panel
 				} else {
 					timerForBall.cancel();
 					timerForPlayer.cancel();
@@ -769,6 +658,7 @@ public class Board extends JPanel implements Commons {
 					};
 					timerForInvincibility.schedule(timerTaskForInvincibility, 10000);
 				} else if (powerup.getName().equals(SWAP)) {
+
 					int playerHearts = players[0].getHearts();
 					int opponentHearts = players[1].getHearts();
 					players[0].setHearts(opponentHearts);
@@ -830,7 +720,6 @@ public class Board extends JPanel implements Commons {
 		if (ball.getRect().intersects(players[0].getRect()) && players[0].isPunching() && !playerReversing) {
 			// ball is hit by punching
 
-			// System.out.println("Reversing ball!");
 			playerReversing = true;
 			ball.reverseDirection();
 			if (ballPeriod >= 20) {
@@ -842,9 +731,7 @@ public class Board extends JPanel implements Commons {
 				ballPeriod -= 10;
 				initBallTimer(ballPeriod, players[0]);
 			}
-			// System.out.println("ball perdio => " + ballPeriod);
 		} else if (!ball.getRect().intersects(players[0].getBiggerRect())) {
-			// System.out.println("End reversing");
 			playerReversing = false;
 		}
 
@@ -852,7 +739,6 @@ public class Board extends JPanel implements Commons {
 		if (ball.getRect().intersects(players[1].getRect()) && players[1].isPunching() && !opponentReversing) {
 			// ball is hit by punching
 
-			// System.out.println("Reversing ball!");
 			opponentReversing = true;
 			ball.reverseDirection();
 			if (ballPeriod >= 20) {
@@ -864,9 +750,7 @@ public class Board extends JPanel implements Commons {
 				ballPeriod -= 10;
 				initBallTimer(ballPeriod, players[1]);
 			}
-			// System.out.println("ball perdio => " + ballPeriod);
 		} else if (!ball.getRect().intersects(players[1].getBiggerRect())) {
-			// System.out.println("End reversing");
 			opponentReversing = false;
 		}
 	}
@@ -890,22 +774,23 @@ public class Board extends JPanel implements Commons {
 
 	// Server code
 	private class Handler extends Thread {
-		private boolean terminate;
-
-		public Handler() {
-			terminate = false;
-		}
-
 		@Override
 		public void run() {
-
-			try (DatagramSocket serverSocket = new DatagramSocket(50000)) {
+			try {
+				serverSocket = new DatagramSocket();
+				serverSocketToRcv = new DatagramSocket(PORT2);
 				while (listening) {
-					// System.out.println("Send to client...");
-					// if (players[0].getHearts() == 0 || players[1].getHearts() == 0 || !ingame) {
-					// listening = false;
-					// }
+					// Receive from client
+					byte[] buffer = new byte[4];
+					DatagramPacket datagramPacketToRcv = new DatagramPacket(buffer, buffer.length);
+					serverSocketToRcv.receive(datagramPacketToRcv);
 
+					String key = new String(datagramPacketToRcv.getData());
+					if (key != null && (key.trim().equals("75") || key.trim().equals("76"))) {
+						getPlayers()[1].keyPressed(Integer.parseInt(key.trim()));
+					}
+
+					// send to client
 					String p1Powerup = null;
 					int p1PowerupX = -1;
 					int p1PowerupY = -1;
@@ -933,80 +818,18 @@ public class Board extends JPanel implements Commons {
 							players[0].isInvincible(), players[1].isInvincible(), countdown, round)
 									.getCommaSeparatedStringData();
 					DatagramPacket datagramPacket = new DatagramPacket(data.getBytes(), data.length(),
-							InetAddress.getLocalHost(), PORT);
+							InetAddress.getLocalHost(), PORT1);
 					serverSocket.send(datagramPacket);
 				}
 			} catch (SocketException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				serverSocket.close();
+				serverSocketToRcv.close();
+				System.out.println("Closing server socket connection...");
 			}
-
-			// try {
-			// if (client.isConnected()) {
-			// outputStream = new ObjectOutputStream(client.getOutputStream());
-			//
-			// inputStream = new ObjectInputStream(client.getInputStream());
-			// while (listening) {
-			// // System.out.println("Send to client...");
-			// if (getPlayers()[0].getHearts() == 0 || getPlayers()[1].getHearts() == 0) {
-			// listening = false;
-			// }
-			//
-			// String p1Powerup = null;
-			// int p1PowerupX = -1;
-			// int p1PowerupY = -1;
-			// String p2Powerup = null;
-			// int p2PowerupX = -1;
-			// int p2PowerupY = -1;
-			// String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
-			// String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
-			// if (powerups[0] != null) {
-			// p1Powerup = powerups[0].getName();
-			// p1PowerupX = powerups[0].getX();
-			// p1PowerupY = powerups[0].getY();
-			// }
-			// if (powerups[1] != null) {
-			// p2Powerup = powerups[1].getName();
-			// p2PowerupX = powerups[1].getX();
-			// p2PowerupY = powerups[1].getY();
-			// }
-			//
-			// outputStream.writeObject(new ServerData(ball.getX(), ball.getY(),
-			// players[0].getX(),
-			// players[0].getY(), players[1].getX(), players[1].getY(),
-			// players[0].isJumping(),
-			// players[0].isPunching(), players[1].isJumping(), players[1].isPunching(),
-			// p1Powerup,
-			// p1PowerupX, p1PowerupY, p2Powerup, p2PowerupX, p2PowerupY, pUpTopMsg,
-			// pUpBotMsg,
-			// players[0].getHearts(), players[1].getHearts(), players[0].isAlive(),
-			// players[1].isAlive(), players[0].isInvincible(), players[1].isInvincible(),
-			// countdown,
-			// round));
-			// outputStream.flush();
-			//
-			// // ClientData clientData;
-			// // try {
-			// // clientData = (ClientData) inputStream.readObject();
-			// // if (clientData != null) {
-			// // System.out.println("Client pressed " + clientData.getKeyPressed());
-			// // // players[1].keyPressed(clientData.getKeyPressed());
-			// // }
-			// // } catch (ClassNotFoundException e) {
-			// // System.out.println("Exception in reading in server!");
-			// // }
-			// }
-			// } else {
-			// System.out.println("Client is Disconnected...");
-			// }
-			// } catch (IOException/* | ClassNotFoundException */ e1) {
-			// e1.printStackTrace();
-			// }
-		}
-
-		public void terminate() {
-			terminate = true;
 		}
 	}
 }

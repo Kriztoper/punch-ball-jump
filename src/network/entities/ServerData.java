@@ -36,37 +36,36 @@ public class ServerData implements Serializable {
 	public int round;
 
 	public ServerData(String data) {
-		String[] values = data.split(",");
-		// for (int i = 0; i < values.length; i++) {
-		// System.out.println(values[i]);
-		// }
-		// System.exit(1);
-		ballX = Integer.parseInt(values[0]);
-		ballY = Integer.parseInt(values[1]);
-		player1X = Integer.parseInt(values[2]);
-		player1Y = Integer.parseInt(values[3]);
-		player2X = Integer.parseInt(values[4]);
-		player2Y = Integer.parseInt(values[5]);
-		p1IsJumping = Boolean.valueOf(values[6]);
-		p1IsPunching = Boolean.valueOf(values[7]);
-		p2IsJumping = Boolean.valueOf(values[8]);
-		p2IsPunching = Boolean.valueOf(values[9]);
-		p1Powerup = values[10];
-		p1PowerupX = Integer.parseInt(values[11]);
-		p1PowerupY = Integer.parseInt(values[12]);
-		p2Powerup = values[13];
-		p2PowerupX = Integer.parseInt(values[14]);
-		p2PowerupY = Integer.parseInt(values[15]);
-		powUpTopMsg = values[16];
-		powUpBotMsg = values[17];
-		p1Hearts = Integer.parseInt(values[18]);
-		p2Hearts = Integer.parseInt(values[19]);
-		p1IsAlive = Boolean.valueOf(values[20]);
-		p2IsAlive = Boolean.valueOf(values[21]);
-		p1IsInvincible = Boolean.valueOf(values[22]);
-		p2IsInvincible = Boolean.valueOf(values[23]);
-		countdown = Integer.parseInt(values[24]);
-		round = Integer.parseInt(values[25].trim());
+		try {
+			String[] values = data.split(",");
+			ballX = Integer.parseInt(values[0].trim());
+			ballY = Integer.parseInt(values[1].trim());
+			player1X = Integer.parseInt(values[2].trim());
+			player1Y = Integer.parseInt(values[3].trim());
+			player2X = Integer.parseInt(values[4].trim());
+			player2Y = Integer.parseInt(values[5].trim());
+			p1IsJumping = Boolean.valueOf(values[6].trim());
+			p1IsPunching = Boolean.valueOf(values[7].trim());
+			p2IsJumping = Boolean.valueOf(values[8].trim());
+			p2IsPunching = Boolean.valueOf(values[9].trim());
+			p1Powerup = values[10];
+			p1PowerupX = Integer.parseInt(values[11].trim());
+			p1PowerupY = Integer.parseInt(values[12].trim());
+			p2Powerup = values[13];
+			p2PowerupX = Integer.parseInt(values[14].trim());
+			p2PowerupY = Integer.parseInt(values[15].trim());
+			powUpTopMsg = values[16];
+			powUpBotMsg = values[17];
+			p1Hearts = Integer.parseInt(values[18].trim());
+			p2Hearts = Integer.parseInt(values[19].trim());
+			p1IsAlive = Boolean.valueOf(values[20].trim());
+			p2IsAlive = Boolean.valueOf(values[21].trim());
+			p1IsInvincible = Boolean.valueOf(values[22].trim());
+			p2IsInvincible = Boolean.valueOf(values[23].trim());
+			countdown = Integer.parseInt(values[24].trim());
+			round = Integer.parseInt(values[25].trim());
+		} catch (Exception e) {
+		}
 	}
 
 	public ServerData(int ballX, int ballY, int player1X, int player1Y, int player2X, int player2Y, boolean p1IsJumping,
