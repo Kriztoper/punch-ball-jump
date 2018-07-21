@@ -50,7 +50,8 @@ public class ClientBoard extends JPanel implements Commons {
 	DatagramPacket datagramPacket;
 	private boolean isGameOver;
 	private InetAddress serverIPAddress;
-	Socket socket;
+	DatagramSocket socket;
+	Socket tcpSocket;
 
 	public ClientBoard(GameFrame gameFrame, InetAddress serverIPAddress) {
 		this.gameFrame = gameFrame;
@@ -454,6 +455,9 @@ public class ClientBoard extends JPanel implements Commons {
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					gameFrame.setCurrentPanel("menuPanel");
 					isGameOver = true;
+					if (socket != null) {
+						socket.close();
+					}
 				}
 				pressed = true;
 			}
@@ -470,21 +474,31 @@ public class ClientBoard extends JPanel implements Commons {
 		@Override
 		public void run() {
 			try {
-				// socket = new Socket(serverIPAddress, TCP_PORT);
+				// tcpSocket = new Socket(serverIPAddress, TCP_PORT);
 
-				// if (socket.isConnected()) {
-				clientSocket = new DatagramSocket();
+				// if (tcpSocket.isConnected()) {
+				socket = new DatagramSocket();
+				// clientSocket.connect(serverIPAddress, PORT1);
 				// clientSocketToSend = new DatagramSocket();
 				byte[] buffer;
 				isGameOver = false;
 				while (!isGameOver) {
-					DatagramPacket datagramPacketToSend = new DatagramPacket((key + "").getBytes(), (key + "").length(),
+					// System.out.println("1 server: " + socket.getInetAddress() + " " +
+					// socket.getPort() + " client: "
+					// + socket.getLocalAddress() + " " + socket.getLocalPort());
+					DatagramPacket datagramPacket = new DatagramPacket((key + "").getBytes(), (key + "").length(),
 							serverIPAddress, PORT1);
-					clientSocket.send(datagramPacketToSend);
+					socket.send(datagramPacket);
 
+					// System.out.println("2 server: " + socket.getInetAddress() + " " +
+					// socket.getPort() + " client: "
+					// + socket.getLocalAddress() + " " + socket.getLocalPort());
 					buffer = new byte[65507];
 					datagramPacket = new DatagramPacket(buffer, buffer.length);
-					clientSocket.receive(datagramPacket);
+					socket.receive(datagramPacket);
+					// System.out.println("3 server: " + socket.getInetAddress() + " " +
+					// socket.getPort() + " client: "
+					// + socket.getLocalAddress() + " " + socket.getLocalPort());
 
 					String data = new String(datagramPacket.getData());
 					if (data != null) {
@@ -498,14 +512,17 @@ public class ClientBoard extends JPanel implements Commons {
 							sd.p2IsInvincible, sd.countdown, sd.round);
 				}
 				// }
-			} catch (
-
-			SocketException e) {
+			} catch (SocketException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				clientSocket.close();
+				// try {
+				// tcpSocket.close();
+				// } catch (IOException e) {
+				// e.printStackTrace();
+				// }
+				socket.close();
 				// clientSocketToSend.close();
 				System.out.println("Client connection closed.");
 			}

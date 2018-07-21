@@ -69,6 +69,7 @@ public class Board extends JPanel implements Commons {
 	// Server field types
 	private ServerSocket tcpServerSocket;
 	private Socket client;
+	private DatagramSocket socket;
 	private DatagramSocket serverSocket;
 	private DatagramSocket serverSocketToRcv;
 	private boolean listening;
@@ -790,17 +791,26 @@ public class Board extends JPanel implements Commons {
 				// client = tcpServerSocket.accept();
 
 				// if (client.isConnected()) {
-				serverSocket = new DatagramSocket(PORT1);
+				socket = new DatagramSocket(PORT1);
+				// socket.connect(new InetSocketAddress("192.168.22.12", PORT1).getAddress(),
+				// PORT1);
+				// socket.bind(new InetSocketAddress(socket.getLocalAddress().getHostAddress(),
+				// PORT1));
 				// serverSocketToRcv = new DatagramSocket(PORT1);
 				while (listening) {
+					// System.out.println("1. server: " + socket.getLocalAddress().getHostAddress()
+					// + " "
+					// + socket.getLocalPort() + " 1client: " + socket.getInetAddress() + " " +
+					// socket.getPort());
 					// Receive from client
 					byte[] buffer = new byte[4];
-					DatagramPacket datagramPacketToRcv = new DatagramPacket(buffer, buffer.length);
-					serverSocket.receive(datagramPacketToRcv);
+					DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
+					socket.receive(datagramPacket);
 
-					String key = new String(datagramPacketToRcv.getData());
+					String key = new String(datagramPacket.getData());
+					System.out.println("Received " + key);
 					if (key != null && (key.trim().equals("75") || key.trim().equals("76"))) {
-						System.out.println("Received from client!");
+						// System.out.println("Received from client!");
 						getPlayers()[1].keyPressed(Integer.parseInt(key.trim()));
 					}
 
@@ -831,9 +841,15 @@ public class Board extends JPanel implements Commons {
 							players[1].getHearts(), players[0].isAlive(), players[1].isAlive(),
 							players[0].isInvincible(), players[1].isInvincible(), countdown, round)
 									.getCommaSeparatedStringData();
-					DatagramPacket datagramPacket = new DatagramPacket(data.getBytes(), data.length(),
-							datagramPacketToRcv.getAddress(), datagramPacketToRcv.getPort());
-					serverSocket.send(datagramPacket);
+					// System.out.println("client: " + datagramPacket.getAddress() + " " +
+					// datagramPacket.getPort()
+					// + " server: " + socket.getLocalAddress() + " " + socket.getLocalPort());
+					datagramPacket = new DatagramPacket(data.getBytes(), data.length(), datagramPacket.getAddress(),
+							datagramPacket.getPort());
+					socket.send(datagramPacket);
+					// System.out.println("client: " + datagramPacket.getAddress() + " " +
+					// datagramPacket.getPort()
+					// + " server: " + socket.getLocalAddress() + " " + socket.getLocalPort());
 				}
 				// }
 			} catch (SocketException e) {
@@ -843,10 +859,11 @@ public class Board extends JPanel implements Commons {
 			} finally {
 				// try {
 				// tcpServerSocket.close();
+				// client.close();
 				// } catch (IOException e) {
 				// e.printStackTrace();
 				// }
-				serverSocket.close();
+				socket.close();
 				// serverSocketToRcv.close();
 				System.out.println("Closing server socket connection...");
 			}
