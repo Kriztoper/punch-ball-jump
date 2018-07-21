@@ -176,70 +176,40 @@ public class Player extends Sprite implements Commons {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 
-		if (isTop && getName().equals(PLAYER)) {// && !isComputer) {
+		if (isTop && getName().equals(PLAYER)) {
 			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
-				// System.out.println("Player punch");
 				punching = true;
 				punchTimer = new Timer();
 				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
 			} else if (key == KeyEvent.VK_A && y >= 120 && !isPunching() && !jumping) {
-				// System.out.println("Player jump");
 				jumping = true;
 			}
-		}
-		// else if (!isTop && getName().equals(OPPONENT) && isComputer) {
-		// if (key == KeyEvent.VK_L && !isPunching() && !jumping) {
-		// System.out.println("Opponent punch");
-		// punching = true;
-		// punchTimer = new Timer();
-		// punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
-		// } else if (key == KeyEvent.VK_K && y <= 500 && !isPunching() && !jumping) {
-		// System.out.println("JUMPIIIIIINGGGGG!!!!!");
-		// jumping = true;
-		// }
-		// } else if (isTop && getName().equals(OPPONENT) && isComputer) {
-		// if (key == KeyEvent.VK_L && !isPunching() && !jumping) {
-		// System.out.println("Opponent punch");
-		// punching = true;
-		// punchTimer = new Timer();
-		// punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
-		// } else if (key == KeyEvent.VK_K && y >= 120 && !isPunching() && !jumping) {
-		// System.out.println("Opponent jump");
-		// jumping = true;
-		// }
-		// }
-		else if (!isTop && getName().equals(PLAYER)) {// && !isComputer) {
+		} else if (!isTop && getName().equals(PLAYER)) {
 			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
-				// System.out.println("Player punch");
 				punching = true;
 				punchTimer = new Timer();
 				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
 			} else if (key == KeyEvent.VK_A && y <= 500 && !isPunching() && !jumping) {
-				// System.out.println("JUMPIIIIIINGGGGG!!!!!");
 				jumping = true;
 			}
 		}
 	}
 
 	public void keyPressed(int key) {
-		if (isTop && getName().equals(PLAYER)) {// && !isComputer) {
-			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
-				// System.out.println("Player punch");
+		if (isTop && getName().equals(OPPONENT)) {
+			if (key == KeyEvent.VK_L && !isPunching() && !jumping) {
 				punching = true;
 				punchTimer = new Timer();
 				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
-			} else if (key == KeyEvent.VK_A && y >= 120 && !isPunching() && !jumping) {
-				// System.out.println("Player jump");
+			} else if (key == KeyEvent.VK_K && y >= 120 && !isPunching() && !jumping) {
 				jumping = true;
 			}
-		} else if (!isTop && getName().equals(PLAYER)) {// && !isComputer) {
-			if (key == KeyEvent.VK_S && !isPunching() && !jumping) {
-				// System.out.println("Player punch");
+		} else if (!isTop && getName().equals(OPPONENT)) {
+			if (key == KeyEvent.VK_L && !isPunching() && !jumping) {
 				punching = true;
 				punchTimer = new Timer();
 				punchTimer.schedule(new ScheduleTaskForPunch(), 1000 - punchDelay);
-			} else if (key == KeyEvent.VK_A && y <= 500 && !isPunching() && !jumping) {
-				// System.out.println("JUMPIIIIIINGGGGG!!!!!");
+			} else if (key == KeyEvent.VK_K && y <= 500 && !isPunching() && !jumping) {
 				jumping = true;
 			}
 		}
@@ -250,8 +220,6 @@ public class Player extends Sprite implements Commons {
 		public void run() {
 			punching = false;
 			punchTimer.cancel();
-			// System.out.println("done punching");
-
 		}
 	}
 
