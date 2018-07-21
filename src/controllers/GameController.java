@@ -3,7 +3,6 @@ package controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
-import java.util.Timer;
 
 import views.CreditsPanel;
 import views.GameFrame;
@@ -16,7 +15,7 @@ public class GameController {
 
 	private GameFrame gameFrame;
 	private GameManager gameManager;
-	
+
 	public GameController(GameFrame gameFrame) {
 		this.gameFrame = gameFrame;
 		addButtonListeners();
@@ -32,14 +31,13 @@ public class GameController {
 		CreditsPanel creditsPanel = gameFrame.getCreditsPanel();
 		PromptRolePanel promptRolePanel = gameFrame.getPromptRolePanel();
 		GameLevelPanel gameLevelPanel = gameFrame.getGameLevelPanel();
-		
-		menuPanel.getTwoPlayersButton().
-			addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
-					gameFrame.setCurrentPanel("promptRolePanel");
-			}		
+
+		menuPanel.getTwoPlayersButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("promptRolePanel");
+			}
 		});
-		
 
 		menuPanel.getOnePlayerButton().addActionListener(new ActionListener() {
 
@@ -113,24 +111,22 @@ public class GameController {
 			}
 
 		});
-		
-		promptRolePanel.getBackButton().
-			addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
-					gameFrame.setCurrentPanel("menuPanel");
-			}		
-		});
-		
-		gameLevelPanel.getBackButton().
-			addActionListener(new ActionListener(){
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					gameFrame.setCurrentPanel("menuPanel");
-				}
-				
-			});
-		
+		promptRolePanel.getBackButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("menuPanel");
+			}
+		});
+
+		gameLevelPanel.getBackButton().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setCurrentPanel("menuPanel");
+			}
+
+		});
 
 	}
 }

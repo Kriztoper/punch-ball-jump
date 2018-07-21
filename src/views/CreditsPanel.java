@@ -1,6 +1,5 @@
 package views;
 
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 
 import javax.swing.ImageIcon;
@@ -24,7 +23,7 @@ public class CreditsPanel extends JPanel implements Commons {
 	public void initPanel() {
 		setLayout(null);
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/CreditsPanel.png"); // TODO: change with new edited credits image bg
+		bg = new ImageIcon("images/CreditsPanel.png");
 	}
 
 	@Override
@@ -43,7 +42,7 @@ public class CreditsPanel extends JPanel implements Commons {
 	public void addComponents() {
 		add(backButton);
 	}
-	
+
 	public void modifyButton(JButton button) {
 		button.setOpaque(false);
 		button.setContentAreaFilled(false);
