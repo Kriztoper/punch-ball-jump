@@ -47,6 +47,7 @@ public class ClientBoard extends JPanel implements Commons {
 	// Client field types
 	private DatagramSocket clientSocket;
 	private DatagramSocket clientSocketToSend;
+	DatagramPacket datagramPacket;
 	private boolean isGameOver;
 	private InetAddress serverIPAddress;
 	Socket socket;
@@ -160,16 +161,6 @@ public class ClientBoard extends JPanel implements Commons {
 		if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
 			gameFinished(g2d);
 			repaint();
-		}
-
-		DatagramPacket datagramPacketToSend = new DatagramPacket((key + "").getBytes(), (key + "").length(),
-				serverIPAddress, PORT2);
-		try {
-			if (clientSocketToSend != null) {
-				clientSocketToSend.send(datagramPacketToSend);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
 		Toolkit.getDefaultToolkit().sync();
@@ -479,38 +470,43 @@ public class ClientBoard extends JPanel implements Commons {
 		@Override
 		public void run() {
 			try {
-				socket = new Socket(serverIPAddress, TCP_PORT);
+				// socket = new Socket(serverIPAddress, TCP_PORT);
 
-				if (socket.isConnected()) {
-					clientSocket = new DatagramSocket(PORT1);
-					clientSocketToSend = new DatagramSocket();
-					byte[] buffer;
-					clientSocket.setSoTimeout(20000);
-					isGameOver = false;
-					while (!isGameOver) {
-						buffer = new byte[65507];
-						DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-						clientSocket.receive(datagramPacket);
+				// if (socket.isConnected()) {
+				clientSocket = new DatagramSocket();
+				// clientSocketToSend = new DatagramSocket();
+				byte[] buffer;
+				isGameOver = false;
+				while (!isGameOver) {
+					DatagramPacket datagramPacketToSend = new DatagramPacket((key + "").getBytes(), (key + "").length(),
+							serverIPAddress, PORT1);
+					clientSocket.send(datagramPacketToSend);
 
-						String data = new String(datagramPacket.getData());
-						if (data != null) {
-							System.out.println("Received from server!");
-						}
-						ServerData sd = new ServerData(data);
-						updateGraphics(sd.ballX, sd.ballY, sd.player1X, sd.player1Y, sd.player2X, sd.player2Y,
-								sd.p1IsJumping, sd.p1IsPunching, sd.p2IsJumping, sd.p2IsPunching, sd.p1Powerup,
-								sd.p1PowerupX, sd.p1PowerupY, sd.p2Powerup, sd.p2PowerupX, sd.p2PowerupY,
-								sd.powUpTopMsg, sd.powUpBotMsg, sd.p1Hearts, sd.p2Hearts, sd.p1IsAlive, sd.p2IsAlive,
-								sd.p1IsInvincible, sd.p2IsInvincible, sd.countdown, sd.round);
+					buffer = new byte[65507];
+					datagramPacket = new DatagramPacket(buffer, buffer.length);
+					clientSocket.receive(datagramPacket);
+
+					String data = new String(datagramPacket.getData());
+					if (data != null) {
+						System.out.println("Received from server!");
 					}
+					ServerData sd = new ServerData(data);
+					updateGraphics(sd.ballX, sd.ballY, sd.player1X, sd.player1Y, sd.player2X, sd.player2Y,
+							sd.p1IsJumping, sd.p1IsPunching, sd.p2IsJumping, sd.p2IsPunching, sd.p1Powerup,
+							sd.p1PowerupX, sd.p1PowerupY, sd.p2Powerup, sd.p2PowerupX, sd.p2PowerupY, sd.powUpTopMsg,
+							sd.powUpBotMsg, sd.p1Hearts, sd.p2Hearts, sd.p1IsAlive, sd.p2IsAlive, sd.p1IsInvincible,
+							sd.p2IsInvincible, sd.countdown, sd.round);
 				}
-			} catch (SocketException e) {
+				// }
+			} catch (
+
+			SocketException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
 				clientSocket.close();
-				clientSocketToSend.close();
+				// clientSocketToSend.close();
 				System.out.println("Client connection closed.");
 			}
 		}

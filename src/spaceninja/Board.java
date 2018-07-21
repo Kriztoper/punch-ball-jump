@@ -786,68 +786,68 @@ public class Board extends JPanel implements Commons {
 		@Override
 		public void run() {
 			try {
-				tcpServerSocket = new ServerSocket(TCP_PORT);
-				client = tcpServerSocket.accept();
+				// tcpServerSocket = new ServerSocket(TCP_PORT);
+				// client = tcpServerSocket.accept();
 
-				if (client.isConnected()) {
-					serverSocket = new DatagramSocket();
-					serverSocketToRcv = new DatagramSocket(PORT2);
-					while (listening) {
-						// Receive from client
-						byte[] buffer = new byte[4];
-						DatagramPacket datagramPacketToRcv = new DatagramPacket(buffer, buffer.length);
-						serverSocketToRcv.receive(datagramPacketToRcv);
+				// if (client.isConnected()) {
+				serverSocket = new DatagramSocket(PORT1);
+				// serverSocketToRcv = new DatagramSocket(PORT1);
+				while (listening) {
+					// Receive from client
+					byte[] buffer = new byte[4];
+					DatagramPacket datagramPacketToRcv = new DatagramPacket(buffer, buffer.length);
+					serverSocket.receive(datagramPacketToRcv);
 
-						String key = new String(datagramPacketToRcv.getData());
-						if (key != null && (key.trim().equals("75") || key.trim().equals("76"))) {
-							System.out.println("Received from client!");
-							getPlayers()[1].keyPressed(Integer.parseInt(key.trim()));
-						}
-
-						// send to client
-						String p1Powerup = null;
-						int p1PowerupX = -1;
-						int p1PowerupY = -1;
-						String p2Powerup = null;
-						int p2PowerupX = -1;
-						int p2PowerupY = -1;
-						String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
-						String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
-						if (powerups[0] != null) {
-							p1Powerup = powerups[0].getName();
-							p1PowerupX = powerups[0].getX();
-							p1PowerupY = powerups[0].getY();
-						}
-						if (powerups[1] != null) {
-							p2Powerup = powerups[1].getName();
-							p2PowerupX = powerups[1].getX();
-							p2PowerupY = powerups[1].getY();
-						}
-
-						String data = new ServerData(ball.getX(), ball.getY(), players[0].getX(), players[0].getY(),
-								players[1].getX(), players[1].getY(), players[0].isJumping(), players[0].isPunching(),
-								players[1].isJumping(), players[1].isPunching(), p1Powerup, p1PowerupX, p1PowerupY,
-								p2Powerup, p2PowerupX, p2PowerupY, pUpTopMsg, pUpBotMsg, players[0].getHearts(),
-								players[1].getHearts(), players[0].isAlive(), players[1].isAlive(),
-								players[0].isInvincible(), players[1].isInvincible(), countdown, round)
-										.getCommaSeparatedStringData();
-						DatagramPacket datagramPacket = new DatagramPacket(data.getBytes(), data.length(),
-								client.getInetAddress(), PORT1);
-						serverSocket.send(datagramPacket);
+					String key = new String(datagramPacketToRcv.getData());
+					if (key != null && (key.trim().equals("75") || key.trim().equals("76"))) {
+						System.out.println("Received from client!");
+						getPlayers()[1].keyPressed(Integer.parseInt(key.trim()));
 					}
+
+					// send to client
+					String p1Powerup = null;
+					int p1PowerupX = -1;
+					int p1PowerupY = -1;
+					String p2Powerup = null;
+					int p2PowerupX = -1;
+					int p2PowerupY = -1;
+					String pUpTopMsg = isPlayerPowerupActivated ? pCaptionMsg : null;
+					String pUpBotMsg = isOpponentPowerupActivated ? oCaptionMsg : null;
+					if (powerups[0] != null) {
+						p1Powerup = powerups[0].getName();
+						p1PowerupX = powerups[0].getX();
+						p1PowerupY = powerups[0].getY();
+					}
+					if (powerups[1] != null) {
+						p2Powerup = powerups[1].getName();
+						p2PowerupX = powerups[1].getX();
+						p2PowerupY = powerups[1].getY();
+					}
+
+					String data = new ServerData(ball.getX(), ball.getY(), players[0].getX(), players[0].getY(),
+							players[1].getX(), players[1].getY(), players[0].isJumping(), players[0].isPunching(),
+							players[1].isJumping(), players[1].isPunching(), p1Powerup, p1PowerupX, p1PowerupY,
+							p2Powerup, p2PowerupX, p2PowerupY, pUpTopMsg, pUpBotMsg, players[0].getHearts(),
+							players[1].getHearts(), players[0].isAlive(), players[1].isAlive(),
+							players[0].isInvincible(), players[1].isInvincible(), countdown, round)
+									.getCommaSeparatedStringData();
+					DatagramPacket datagramPacket = new DatagramPacket(data.getBytes(), data.length(),
+							datagramPacketToRcv.getAddress(), datagramPacketToRcv.getPort());
+					serverSocket.send(datagramPacket);
 				}
+				// }
 			} catch (SocketException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				try {
-					tcpServerSocket.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				// try {
+				// tcpServerSocket.close();
+				// } catch (IOException e) {
+				// e.printStackTrace();
+				// }
 				serverSocket.close();
-				serverSocketToRcv.close();
+				// serverSocketToRcv.close();
 				System.out.println("Closing server socket connection...");
 			}
 		}

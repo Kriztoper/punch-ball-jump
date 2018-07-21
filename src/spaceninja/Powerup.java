@@ -18,10 +18,10 @@ public class Powerup extends Sprite implements Commons {
 		} else if (name.equals(INVINCIBLE)) {
 			powerupPath = "images/invincible_powerup.png";
 		} else if (name.equals(SWAP)) {
-			powerupPath = "images/swap_powerup";
+			powerupPath = "images/swap_powerup.png";
 		}
 
-		ImageIcon ii = new ImageIcon(powerupPath);
+		ImageIcon ii = new ImageIcon(getClass().getClassLoader().getResource(powerupPath));
 		image = ii.getImage();
 
 		i_width = image.getWidth(null);
