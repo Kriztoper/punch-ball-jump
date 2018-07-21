@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 
+import punchballjump.Commons;
 import views.CreditsPanel;
 import views.GameFrame;
 import views.GameLevelPanel;
@@ -11,7 +12,7 @@ import views.HowToPlayPanel;
 import views.MenuPanel;
 import views.PromptRolePanel;
 
-public class GameController {
+public class GameController implements Commons {
 
 	private GameFrame gameFrame;
 	private GameManager gameManager;
@@ -40,7 +41,6 @@ public class GameController {
 		});
 
 		menuPanel.getOnePlayerButton().addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("gameLevelPanel");
@@ -48,7 +48,6 @@ public class GameController {
 		});
 
 		menuPanel.getTwoPlayersButton().addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("promptRolePanel");
@@ -56,7 +55,6 @@ public class GameController {
 		});
 
 		menuPanel.getHowToPlayButton().addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("howToPlayPanel");
@@ -64,7 +62,6 @@ public class GameController {
 		});
 
 		menuPanel.getCreditsButton().addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("creditsPanel");
@@ -72,7 +69,6 @@ public class GameController {
 		});
 
 		promptRolePanel.getServerButton().addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.startGameServer();
@@ -80,7 +76,6 @@ public class GameController {
 		});
 
 		promptRolePanel.getClientButton().addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				InetAddress serverIPAddress = promptRolePanel.promptServerIPAddress();
@@ -93,7 +88,6 @@ public class GameController {
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("menuPanel");
 			}
-
 		});
 
 		howToPlayPanel.getBackButton().addActionListener(new ActionListener() {
@@ -101,7 +95,6 @@ public class GameController {
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("menuPanel");
 			}
-
 		});
 
 		creditsPanel.getBackButton().addActionListener(new ActionListener() {
@@ -109,7 +102,6 @@ public class GameController {
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("menuPanel");
 			}
-
 		});
 
 		promptRolePanel.getBackButton().addActionListener(new ActionListener() {
@@ -119,13 +111,35 @@ public class GameController {
 			}
 		});
 
-		gameLevelPanel.getBackButton().addActionListener(new ActionListener() {
+		gameLevelPanel.getEasyButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setDifficulty(EASY);
+				gameFrame.setCurrentPanel("board");
+			}
+		});
 
+		gameLevelPanel.getNormalButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setDifficulty(NORMAL);
+				gameFrame.setCurrentPanel("board");
+			}
+		});
+
+		gameLevelPanel.getHardButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameFrame.setDifficulty(HARD);
+				gameFrame.setCurrentPanel("board");
+			}
+		});
+
+		gameLevelPanel.getBackButton().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameFrame.setCurrentPanel("menuPanel");
 			}
-
 		});
 
 	}

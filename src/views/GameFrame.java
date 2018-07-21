@@ -22,6 +22,7 @@ public class GameFrame implements Commons {
 	private GameLevelPanel gameLevelPanel;
 	private Board board;
 	private ClientBoard clientBoard;
+	private int difficulty;
 
 	public GameFrame() {
 		frame = new Frame();
@@ -61,7 +62,7 @@ public class GameFrame implements Commons {
 			// // clientFrame.add(clientBoard);
 			// clientFrame.setContentPane(clientBoard);
 			// clientFrame.setVisible(true);
-			board = new Board(this, IS_COMPUTER);// , clientBoard);
+			board = new Board(this, IS_COMPUTER, difficulty);// , clientBoard);
 			board.setVisible(true);
 			cardsPanel.add(board, "board");
 			cards.show(cardsPanel, panelName);
@@ -73,7 +74,7 @@ public class GameFrame implements Commons {
 	}
 
 	public void startGameServer() {
-		board = new Board(this, IS_NOT_COMPUTER);// , clientBoard);
+		board = new Board(this, IS_NOT_COMPUTER, HUMAN);// , clientBoard);
 		board.setVisible(true);
 		cardsPanel.add(board, "board");
 		cards.show(cardsPanel, "board");
@@ -123,5 +124,13 @@ public class GameFrame implements Commons {
 
 	public CardLayout getCards() {
 		return cards;
+	}
+
+	public int getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(int difficulty) {
+		this.difficulty = difficulty;
 	}
 }

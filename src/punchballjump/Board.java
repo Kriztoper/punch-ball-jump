@@ -63,15 +63,17 @@ public class Board extends JPanel implements Commons {
 	private ArrayList<Sprite> playerHeads;
 	private GameFrame gameFrame;
 	private boolean isComputer;
+	private int difficulty;
 
 	// Server field types
 	private DatagramSocket serverSocket;
 	private DatagramSocket serverSocketToRcv;
 	private boolean listening;
 
-	public Board(GameFrame gameFrame, boolean isComputer) {
+	public Board(GameFrame gameFrame, boolean isComputer, int difficulty) {
 		this.gameFrame = gameFrame;
 		this.isComputer = isComputer;
+		this.difficulty = difficulty;
 
 		// Init bg and earth images
 		Random random = new Random();
@@ -172,12 +174,13 @@ public class Board extends JPanel implements Commons {
 		playerTop = playerTop ? false : true;
 		if (playerTop) {
 			players[0] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN, playerTop);
-			players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], isComputer, HARD,
+			players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, hearts[1], isComputer, difficulty,
 					!playerTop);
 		} else {
 			players[0] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, PLAYER, hearts[0], IS_NOT_COMPUTER, HUMAN,
 					playerTop);
-			players[1] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, OPPONENT, hearts[1], isComputer, HARD, !playerTop);
+			players[1] = new Player(INIT_PLAYER_X, INIT_PLAYER_Y, OPPONENT, hearts[1], isComputer, difficulty,
+					!playerTop);
 		}
 		ball = new Ball();
 		playerReversing = false;

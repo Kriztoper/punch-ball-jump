@@ -41,7 +41,7 @@ public class GameServer implements PeerInterface, Commons {
 
 		JPanel cardsPanel = gameFrame.getCardsPanel();
 		CardLayout cards = gameFrame.getCards();
-		board = new Board(gameFrame, IS_NOT_COMPUTER);
+		board = new Board(gameFrame, IS_NOT_COMPUTER, HUMAN);
 		board.setVisible(true);
 		cardsPanel.add(board, "board");
 		cards.show(cardsPanel, "board");
