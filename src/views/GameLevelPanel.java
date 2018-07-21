@@ -1,15 +1,9 @@
 package views;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import punchballjump.Commons;
@@ -21,7 +15,7 @@ public class GameLevelPanel extends JPanel implements Commons {
 	private JButton hardButton;
 	private JButton backButton;
 	private ImageIcon bg;
-	
+
 	public GameLevelPanel() {
 		initPanel();
 		initComponents();
@@ -33,7 +27,7 @@ public class GameLevelPanel extends JPanel implements Commons {
 		setSize(Commons.WIDTH, Commons.HEIGHT);
 		bg = new ImageIcon("images/GameLevelPanel.png");
 	}
-	
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -45,17 +39,17 @@ public class GameLevelPanel extends JPanel implements Commons {
 		easyButton.setBounds(85, 210, 185, 185);
 		easyButton.setRolloverIcon(new ImageIcon("images/easy_hoverbutton.png"));
 		modifyButton(easyButton);
-		
+
 		normalButton = new JButton(new ImageIcon("images/normal_button.png"));
 		normalButton.setBounds(240, 210, 185, 185);
 		normalButton.setRolloverIcon(new ImageIcon("images/normal_hoverbutton.png"));
 		modifyButton(normalButton);
-		
+
 		hardButton = new JButton(new ImageIcon("images/hard_button.png"));
 		hardButton.setBounds(395, 210, 185, 185);
 		hardButton.setRolloverIcon(new ImageIcon("images/hard_hoverbutton.png"));
 		modifyButton(hardButton);
-		
+
 		backButton = new JButton(new ImageIcon("images/back_button.png"));
 		backButton.setBounds(245, 460, 120, 100);
 		backButton.setRolloverIcon(new ImageIcon("images/back_hoverButton.png"));
@@ -68,46 +62,44 @@ public class GameLevelPanel extends JPanel implements Commons {
 		add(hardButton);
 		add(backButton);
 	}
-	
+
 	public void modifyButton(JButton button) {
 		button.setOpaque(false);
 		button.setContentAreaFilled(false);
 		button.setBorderPainted(false);
 		button.setFocusable(false);
 	}
-	
+
 	public JButton getBackButton() {
 		return this.backButton;
 	}
-	
+
 	public void setBackButton(JButton backButton) {
 		this.backButton = backButton;
 	}
+
 	public JButton getEasyButton() {
 		return easyButton;
 	}
-	
+
 	public void setEasyButton(JButton easyButton) {
 		this.easyButton = easyButton;
 	}
-	
+
 	public JButton getNormalButton() {
 		return normalButton;
 	}
-	
+
 	public void setNormalButton(JButton normalButton) {
 		this.normalButton = normalButton;
 	}
-	
+
 	public JButton getHardButton() {
 		return hardButton;
 	}
-	
+
 	public void setHardButton(JButton hardButton) {
 		this.hardButton = hardButton;
 	}
-	
-	
-	
-}
 
+}

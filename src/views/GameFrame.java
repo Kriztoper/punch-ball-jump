@@ -44,7 +44,7 @@ public class GameFrame implements Commons {
 	public CreditsPanel getCreditsPanel() {
 		return creditsPanel;
 	}
-	
+
 	public GameLevelPanel getGameLevelPanel() {
 		return gameLevelPanel;
 	}
@@ -100,7 +100,7 @@ public class GameFrame implements Commons {
 		creditsPanel = new CreditsPanel();
 
 		promptRolePanel = new PromptRolePanel();
-		
+
 		gameLevelPanel = new GameLevelPanel();
 		cardsPanel = new JPanel();
 		cardsPanel.setLayout(cards);
