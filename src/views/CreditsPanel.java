@@ -6,7 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import punchballjump.Commons;
+import spaceninja.Commons;
 
 public class CreditsPanel extends JPanel implements Commons {
 
@@ -23,7 +23,7 @@ public class CreditsPanel extends JPanel implements Commons {
 	public void initPanel() {
 		setLayout(null);
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/CreditsPanel.png");
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/CreditsPanel.png"));
 	}
 
 	@Override
@@ -33,9 +33,10 @@ public class CreditsPanel extends JPanel implements Commons {
 	}
 
 	public void initComponents() {
-		backButton = new JButton(new ImageIcon("images/back_button.png"));
+		backButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/back_button.png")));
 		backButton.setBounds(510, 540, 120, 100);
-		backButton.setRolloverIcon(new ImageIcon("images/back_hoverButton.png"));
+		backButton
+				.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/back_hoverButton.png")));
 		modifyButton(backButton);
 	}
 

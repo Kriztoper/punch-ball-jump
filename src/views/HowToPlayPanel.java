@@ -1,13 +1,12 @@
 package views;
 
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import punchballjump.Commons;
+import spaceninja.Commons;
 
 public class HowToPlayPanel extends JPanel implements Commons {
 
@@ -24,7 +23,7 @@ public class HowToPlayPanel extends JPanel implements Commons {
 	public void initPanel() {
 		setLayout(null);
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/HelpPanel.png"); // TODO: change with new edited how to play image bg
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/HelpPanel.png"));
 	}
 
 	@Override
@@ -34,9 +33,10 @@ public class HowToPlayPanel extends JPanel implements Commons {
 	}
 
 	public void initComponents() {
-		backButton = new JButton(new ImageIcon("images/back_button.png"));
+		backButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/back_button.png")));
 		backButton.setBounds(510, 540, 120, 100);
-		backButton.setRolloverIcon(new ImageIcon("images/back_hoverButton.png"));
+		backButton
+				.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/back_hoverButton.png")));
 		modifyButton(backButton);
 	}
 
@@ -50,11 +50,12 @@ public class HowToPlayPanel extends JPanel implements Commons {
 		button.setBorderPainted(false);
 		button.setFocusable(false);
 	}
+
 	public JButton getBackButton() {
 		return backButton;
 	}
 
-//	public void setBackButton(JButton backButton) {
-//		this.backButton = backButton;
-//	}
+	// public void setBackButton(JButton backButton) {
+	// this.backButton = backButton;
+	// }
 }

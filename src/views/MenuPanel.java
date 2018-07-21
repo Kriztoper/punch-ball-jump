@@ -6,7 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import punchballjump.Commons;
+import spaceninja.Commons;
 
 public class MenuPanel extends JPanel implements Commons {
 
@@ -26,7 +26,7 @@ public class MenuPanel extends JPanel implements Commons {
 		setLayout(null);
 		setOpaque(false);
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/MenuPanel.png");
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/MenuPanel.png"));
 		setVisible(true);
 	}
 
@@ -44,24 +44,31 @@ public class MenuPanel extends JPanel implements Commons {
 	}
 
 	public void initComponents() {
-		onePlayerButton = new JButton(new ImageIcon("images/1player_button.png"));
+		onePlayerButton = new JButton(
+				new ImageIcon(getClass().getClassLoader().getResource("images/1player_button.png")));
 		onePlayerButton.setBounds(100, 410, 210, 60);
-		onePlayerButton.setRolloverIcon(new ImageIcon("images/1player_hoverButton.png"));
+		onePlayerButton.setRolloverIcon(
+				new ImageIcon(getClass().getClassLoader().getResource("images/1player_hoverButton.png")));
 		modifyButton(onePlayerButton);
 
-		twoPlayersButton = new JButton(new ImageIcon("images/2players_button.png"));
+		twoPlayersButton = new JButton(
+				new ImageIcon(getClass().getClassLoader().getResource("images/2players_button.png")));
 		twoPlayersButton.setBounds(330, 410, 210, 60);
-		twoPlayersButton.setRolloverIcon(new ImageIcon("images/2players_hoverButton.png"));
+		twoPlayersButton.setRolloverIcon(
+				new ImageIcon(getClass().getClassLoader().getResource("images/2players_hoverButton.png")));
 		modifyButton(twoPlayersButton);
 
-		howToPlayButton = new JButton(new ImageIcon("images/help_button.png"));
+		howToPlayButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/help_button.png")));
 		howToPlayButton.setBounds(100, 470, 210, 60);
-		howToPlayButton.setRolloverIcon(new ImageIcon("images/help_hoverButton.png"));
+		howToPlayButton
+				.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/help_hoverButton.png")));
 		modifyButton(howToPlayButton);
 
-		creditsButton = new JButton(new ImageIcon("images/credits_button.png"));
+		creditsButton = new JButton(
+				new ImageIcon(getClass().getClassLoader().getResource("images/credits_button.png")));
 		creditsButton.setBounds(330, 470, 210, 60);
-		creditsButton.setRolloverIcon(new ImageIcon("images/credits_hoverButton.png"));
+		creditsButton.setRolloverIcon(
+				new ImageIcon(getClass().getClassLoader().getResource("images/credits_hoverButton.png")));
 		modifyButton(creditsButton);
 	}
 

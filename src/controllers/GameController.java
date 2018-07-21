@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 
-import punchballjump.Commons;
+import spaceninja.Commons;
 import views.CreditsPanel;
 import views.GameFrame;
 import views.GameLevelPanel;

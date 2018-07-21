@@ -6,7 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import punchballjump.Commons;
+import spaceninja.Commons;
 
 public class GameLevelPanel extends JPanel implements Commons {
 
@@ -25,7 +25,7 @@ public class GameLevelPanel extends JPanel implements Commons {
 	public void initPanel() {
 		setLayout(null);
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/GameLevelPanel.png");
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/GameLevelPanel.png"));
 	}
 
 	@Override
@@ -35,24 +35,28 @@ public class GameLevelPanel extends JPanel implements Commons {
 	}
 
 	public void initComponents() {
-		easyButton = new JButton(new ImageIcon("images/easy_button.png"));
+		easyButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/easy_button.png")));
 		easyButton.setBounds(85, 210, 185, 185);
-		easyButton.setRolloverIcon(new ImageIcon("images/easy_hoverbutton.png"));
+		easyButton
+				.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/easy_hoverbutton.png")));
 		modifyButton(easyButton);
 
-		normalButton = new JButton(new ImageIcon("images/normal_button.png"));
+		normalButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/normal_button.png")));
 		normalButton.setBounds(240, 210, 185, 185);
-		normalButton.setRolloverIcon(new ImageIcon("images/normal_hoverbutton.png"));
+		normalButton.setRolloverIcon(
+				new ImageIcon(getClass().getClassLoader().getResource("images/normal_hoverbutton.png")));
 		modifyButton(normalButton);
 
-		hardButton = new JButton(new ImageIcon("images/hard_button.png"));
+		hardButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/hard_button.png")));
 		hardButton.setBounds(395, 210, 185, 185);
-		hardButton.setRolloverIcon(new ImageIcon("images/hard_hoverbutton.png"));
+		hardButton
+				.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/hard_hoverbutton.png")));
 		modifyButton(hardButton);
 
-		backButton = new JButton(new ImageIcon("images/back_button.png"));
+		backButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/back_button.png")));
 		backButton.setBounds(245, 460, 120, 100);
-		backButton.setRolloverIcon(new ImageIcon("images/back_hoverButton.png"));
+		backButton
+				.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/back_hoverButton.png")));
 		modifyButton(backButton);
 	}
 

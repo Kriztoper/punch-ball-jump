@@ -10,8 +10,8 @@ import java.net.Socket;
 import javax.swing.JPanel;
 
 import controllers.GameManager;
-import punchballjump.Board;
-import punchballjump.Commons;
+import spaceninja.Board;
+import spaceninja.Commons;
 import views.GameFrame;
 
 public class GameServer implements PeerInterface, Commons {

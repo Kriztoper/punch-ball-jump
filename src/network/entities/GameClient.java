@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import punchballjump.ClientBoard;
+import spaceninja.ClientBoard;
 import views.GameFrame;
 
 public class GameClient implements PeerInterface {

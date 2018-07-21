@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import punchballjump.Commons;
+import spaceninja.Commons;
 
 public class PromptRolePanel extends JPanel implements Commons {
 
@@ -39,7 +39,7 @@ public class PromptRolePanel extends JPanel implements Commons {
 	public void initPanel() {
 		setLayout(null);
 		setSize(Commons.WIDTH, Commons.HEIGHT);
-		bg = new ImageIcon("images/PromptRolePanel.png");
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/PromptRolePanel.png"));
 	}
 
 	@Override
@@ -49,19 +49,22 @@ public class PromptRolePanel extends JPanel implements Commons {
 	}
 
 	public void initComponents() {
-		backButton = new JButton(new ImageIcon("images/back_button.png"));
+		backButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/back_button.png")));
 		backButton.setBounds(245, 490, 120, 100);
-		backButton.setRolloverIcon(new ImageIcon("images/back_hoverButton.png"));
+		backButton
+				.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/back_hoverButton.png")));
 		modifyButton(backButton);
 
-		serverButton = new JButton(new ImageIcon("images/server_button.png"));
+		serverButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/server_button.png")));
 		serverButton.setBounds(85, 370, 210, 60);
-		serverButton.setRolloverIcon(new ImageIcon("images/server_hoverButton.png"));
+		serverButton.setRolloverIcon(
+				new ImageIcon(getClass().getClassLoader().getResource("images/server_hoverButton.png")));
 		modifyButton(serverButton);
 
-		clientButton = new JButton(new ImageIcon("images/client_button.png"));
+		clientButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/client_button.png")));
 		clientButton.setBounds(345, 370, 210, 60);
-		clientButton.setRolloverIcon(new ImageIcon("images/client_hoverButton.png"));
+		clientButton.setRolloverIcon(
+				new ImageIcon(getClass().getClassLoader().getResource("images/client_hoverButton.png")));
 		modifyButton(clientButton);
 	}
 

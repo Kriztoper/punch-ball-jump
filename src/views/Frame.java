@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 
-import punchballjump.Commons;
+import spaceninja.Commons;
 
 public class Frame extends JFrame implements Commons {
 
