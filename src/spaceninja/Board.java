@@ -70,8 +70,6 @@ public class Board extends JPanel implements Commons {
 	private ServerSocket tcpServerSocket;
 	private Socket client;
 	private DatagramSocket socket;
-	private DatagramSocket serverSocket;
-	private DatagramSocket serverSocketToRcv;
 	private boolean listening;
 
 	public Board(GameFrame gameFrame, boolean isComputer, int difficulty) {
@@ -370,9 +368,7 @@ public class Board extends JPanel implements Commons {
 			timerForCaption.schedule(timerTaskForCaption, 5000);
 		}
 
-		for (
-
-		Player player : players) {
+		for (Player player : players) {
 			// draw hearts
 			for (int i = 0; i < player.getHearts(); i++) {
 				Sprite heart = null;
@@ -550,6 +546,9 @@ public class Board extends JPanel implements Commons {
 				players[0].setHearts(0);
 				players[1].setHearts(0);
 				listening = false;
+				if (socket != null && !socket.isClosed()) {
+					socket.close();
+				}
 			}
 			if (!pressed) {
 				for (Player player : players) {
@@ -797,7 +796,7 @@ public class Board extends JPanel implements Commons {
 				// socket.bind(new InetSocketAddress(socket.getLocalAddress().getHostAddress(),
 				// PORT1));
 				// serverSocketToRcv = new DatagramSocket(PORT1);
-				while (listening) {
+				while (listening && !socket.isClosed()) {
 					// System.out.println("1. server: " + socket.getLocalAddress().getHostAddress()
 					// + " "
 					// + socket.getLocalPort() + " 1client: " + socket.getInetAddress() + " " +
@@ -805,10 +804,12 @@ public class Board extends JPanel implements Commons {
 					// Receive from client
 					byte[] buffer = new byte[4];
 					DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-					socket.receive(datagramPacket);
+					if (!socket.isClosed()) {
+						socket.receive(datagramPacket);
+					}
 
 					String key = new String(datagramPacket.getData());
-					System.out.println("Received " + key);
+					// System.out.println("Received " + key);
 					if (key != null && (key.trim().equals("75") || key.trim().equals("76"))) {
 						// System.out.println("Received from client!");
 						getPlayers()[1].keyPressed(Integer.parseInt(key.trim()));
@@ -846,14 +847,16 @@ public class Board extends JPanel implements Commons {
 					// + " server: " + socket.getLocalAddress() + " " + socket.getLocalPort());
 					datagramPacket = new DatagramPacket(data.getBytes(), data.length(), datagramPacket.getAddress(),
 							datagramPacket.getPort());
-					socket.send(datagramPacket);
+					if (!socket.isClosed()) {
+						socket.send(datagramPacket);
+					}
 					// System.out.println("client: " + datagramPacket.getAddress() + " " +
 					// datagramPacket.getPort()
 					// + " server: " + socket.getLocalAddress() + " " + socket.getLocalPort());
 				}
 				// }
 			} catch (SocketException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {

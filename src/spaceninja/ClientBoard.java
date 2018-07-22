@@ -45,8 +45,6 @@ public class ClientBoard extends JPanel implements Commons {
 	private int key;
 
 	// Client field types
-	private DatagramSocket clientSocket;
-	private DatagramSocket clientSocketToSend;
 	DatagramPacket datagramPacket;
 	private boolean isGameOver;
 	private InetAddress serverIPAddress;
@@ -110,6 +108,10 @@ public class ClientBoard extends JPanel implements Commons {
 		players[1] = new Player(INIT_OPPONENT_X, INIT_OPPONENT_Y, OPPONENT, 5, IS_NOT_COMPUTER, HUMAN, false);
 		ball = new Ball();
 		key = -1;
+		powerups[0] = null;
+		powerups[1] = null;
+		pCaptionMsg = null;
+		oCaptionMsg = null;
 		repaint();
 	}
 
@@ -164,11 +166,13 @@ public class ClientBoard extends JPanel implements Commons {
 			repaint();
 		}
 
-		if (socket != null) {
+		if (socket != null && !socket.isClosed()) {
 			DatagramPacket datagramPacket = new DatagramPacket((key + "").getBytes(), (key + "").length(),
 					serverIPAddress, PORT1);
 			try {
-				socket.send(datagramPacket);
+				if (!socket.isClosed()) {
+					socket.send(datagramPacket);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -465,7 +469,7 @@ public class ClientBoard extends JPanel implements Commons {
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					gameFrame.setCurrentPanel("menuPanel");
 					isGameOver = true;
-					if (socket != null) {
+					if (socket != null && !socket.isClosed()) {
 						socket.close();
 					}
 				}
@@ -492,7 +496,7 @@ public class ClientBoard extends JPanel implements Commons {
 				// clientSocketToSend = new DatagramSocket();
 				byte[] buffer;
 				isGameOver = false;
-				while (!isGameOver) {
+				while (!isGameOver && !socket.isClosed()) {
 					// System.out.println("1 server: " + socket.getInetAddress() + " " +
 					// socket.getPort() + " client: "
 					// + socket.getLocalAddress() + " " + socket.getLocalPort());
@@ -502,15 +506,17 @@ public class ClientBoard extends JPanel implements Commons {
 					// + socket.getLocalAddress() + " " + socket.getLocalPort());
 					buffer = new byte[65507];
 					datagramPacket = new DatagramPacket(buffer, buffer.length);
-					socket.receive(datagramPacket);
+					if (!socket.isClosed()) {
+						socket.receive(datagramPacket);
+					}
 					// System.out.println("3 server: " + socket.getInetAddress() + " " +
 					// socket.getPort() + " client: "
 					// + socket.getLocalAddress() + " " + socket.getLocalPort());
 
 					String data = new String(datagramPacket.getData());
-					if (data != null) {
-						System.out.println("Received from server!");
-					}
+					// if (data != null) {
+					// System.out.println("Received from server!");
+					// }
 					ServerData sd = new ServerData(data);
 					updateGraphics(sd.ballX, sd.ballY, sd.player1X, sd.player1Y, sd.player2X, sd.player2Y,
 							sd.p1IsJumping, sd.p1IsPunching, sd.p2IsJumping, sd.p2IsPunching, sd.p1Powerup,
@@ -520,7 +526,7 @@ public class ClientBoard extends JPanel implements Commons {
 				}
 				// }
 			} catch (SocketException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
