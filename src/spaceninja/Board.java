@@ -79,10 +79,10 @@ public class Board extends JPanel implements Commons {
 
 		// Init bg and earth images
 		Random random = new Random();
-		String bgName = random.nextBoolean() ? "test" : "test2";
-		String earthName = random.nextBoolean() ? "earth" : "earth2";
-		bg = new ImageIcon(getClass().getClassLoader().getResource("images/" + bgName + ".png"));
-		earth = new ImageIcon(getClass().getClassLoader().getResource("images/" + earthName + ".png"));
+//		String bgName = random.nextBoolean() ? "test" : "test2";
+//		String earthName = random.nextBoolean() ? "earth" : "earth2";
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/test2.png"));//" + bgName + ".png"));
+		earth = new ImageIcon(getClass().getClassLoader().getResource("images/earth2.png"));// + earthName + ".png"));
 		repaint();
 
 		// init Powerups only once
