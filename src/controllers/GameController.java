@@ -15,7 +15,6 @@ import views.PromptRolePanel;
 public class GameController implements Commons {
 
 	private GameFrame gameFrame;
-	private GameManager gameManager;
 
 	public GameController(GameFrame gameFrame) {
 		this.gameFrame = gameFrame;

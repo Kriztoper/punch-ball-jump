@@ -1,6 +1,8 @@
 package views;
 
 import java.awt.CardLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.util.Arrays;
 
@@ -26,6 +28,19 @@ public class GameFrame implements Commons {
 
 	public GameFrame() {
 		frame = new Frame();
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (board != null && board.isVisible() && board.socket != null) {
+					System.out.println("Server socket closed before exit!");
+					board.socket.close();
+				}
+				if (clientBoard != null && clientBoard.isVisible() && clientBoard.socket != null) {
+					System.out.println("Client socket closed before exit!");
+					clientBoard.socket.close();
+				}
+			}
+		});
 		initPanels();
 		frame.setContentPane(cardsPanel);
 	}

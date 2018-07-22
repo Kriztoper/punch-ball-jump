@@ -48,7 +48,7 @@ public class ClientBoard extends JPanel implements Commons {
 	DatagramPacket datagramPacket;
 	private boolean isGameOver;
 	private InetAddress serverIPAddress;
-	DatagramSocket socket;
+	public DatagramSocket socket;
 	Socket tcpSocket;
 
 	public ClientBoard(GameFrame gameFrame, InetAddress serverIPAddress) {
@@ -57,10 +57,10 @@ public class ClientBoard extends JPanel implements Commons {
 
 		// Init bg and earth images
 		Random random = new Random();
-//		String bgName = random.nextBoolean() ? "test" : "test2";
-//		String earthName = random.nextBoolean() ? "earth" : "earth2";
-		bg = new ImageIcon(getClass().getClassLoader().getResource("images/test2.png"));//" + bgName + ".png"));
-		earth = new ImageIcon(getClass().getClassLoader().getResource("images/earth2.png"));//" + earthName + ".png"));
+		// String bgName = random.nextBoolean() ? "test" : "test2";
+		// String earthName = random.nextBoolean() ? "earth" : "earth2";
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/test2.png"));// " + bgName + ".png"));
+		earth = new ImageIcon(getClass().getClassLoader().getResource("images/earth2.png"));// " + earthName + ".png"));
 		repaint();
 
 		// init Powerups only once
@@ -216,18 +216,17 @@ public class ClientBoard extends JPanel implements Commons {
 		}
 
 		// draw player powerups activated caption
-		if ((pCaptionMsg != null && !pCaptionMsg.equals("null"))
-				|| (oCaptionMsg != null && !oCaptionMsg.equals("null"))) {
+		if (pCaptionMsg != null || oCaptionMsg != null) {
 			g2d.setColor(new Color(0f, 0f, 0f, 0.5f));
 			g2d.fillRect(0, 55, Commons.WIDTH, 40);
 			repaint();
 		}
-		if (pCaptionMsg != null && !pCaptionMsg.equals("null")) {
+		if (pCaptionMsg != null) {
 			if (pCaptionMsg.equals("+1 Heart")) {
 				g2d.setColor(Color.RED);
 			} else if (pCaptionMsg.equals("INVINCIBLE for 10 sec")) {
 				g2d.setColor(Color.GREEN);
-			} else if (pCaptionMsg.equals("Swap Hearts")) {
+			} else if (pCaptionMsg.equals("Swap hearts")) {
 				g2d.setColor(Color.YELLOW);
 			}
 			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
@@ -235,12 +234,12 @@ public class ClientBoard extends JPanel implements Commons {
 			repaint();
 		}
 		// draw opponent powerups activated caption
-		if (oCaptionMsg != null && !oCaptionMsg.equals("null")) {
+		if (oCaptionMsg != null) {
 			if (oCaptionMsg.equals("+1 Heart")) {
 				g2d.setColor(Color.RED);
 			} else if (oCaptionMsg.equals("INVINCIBLE for 10 sec")) {
 				g2d.setColor(Color.GREEN);
-			} else if (oCaptionMsg.equals("Swap Hearts")) {
+			} else if (oCaptionMsg.equals("Swap hearts")) {
 				g2d.setColor(Color.YELLOW);
 			}
 			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
@@ -409,35 +408,23 @@ public class ClientBoard extends JPanel implements Commons {
 			}
 		}
 		if (powerups != null) {
-			if (p1Powerup != null) {
-				if (powerups[0] == null) {
-					powerups[0] = new Powerup(p1PowerupX, p1PowerupY, p1Powerup);
-				} else {
-					powerups[0].setName(p1Powerup);
-					powerups[0].setX(p1PowerupX);
-					powerups[0].setY(p1PowerupY);
-				}
+			if (p1Powerup != null && !p1Powerup.equals("null")) {
+				powerups[0] = new Powerup(p1PowerupX, p1PowerupY, p1Powerup);
 			} else {
 				powerups[0] = null;
 			}
-			if (p2Powerup != null) {
-				if (powerups[1] == null) {
-					powerups[1] = new Powerup(p2PowerupX, p2PowerupY, p2Powerup);
-				} else {
-					powerups[1].setName(p2Powerup);
-					powerups[1].setX(p2PowerupX);
-					powerups[1].setY(p2PowerupY);
-				}
+			if (p2Powerup != null && !p2Powerup.equals("null")) {
+				powerups[1] = new Powerup(p2PowerupX, p2PowerupY, p2Powerup);
 			} else {
 				powerups[1] = null;
 			}
 		}
-		if (powUpTopMsg != null) {
+		if (powUpTopMsg != null && !powUpTopMsg.equals("null")) {
 			pCaptionMsg = powUpTopMsg;
 		} else {
 			pCaptionMsg = null;
 		}
-		if (powUpBotMsg != null) {
+		if (powUpBotMsg != null && !powUpBotMsg.equals("null")) {
 			oCaptionMsg = powUpBotMsg;
 		} else {
 			oCaptionMsg = null;

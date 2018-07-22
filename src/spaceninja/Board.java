@@ -69,7 +69,7 @@ public class Board extends JPanel implements Commons {
 	// Server field types
 	private ServerSocket tcpServerSocket;
 	private Socket client;
-	private DatagramSocket socket;
+	public DatagramSocket socket;
 	private boolean listening;
 
 	public Board(GameFrame gameFrame, boolean isComputer, int difficulty) {
