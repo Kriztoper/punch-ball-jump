@@ -164,6 +164,16 @@ public class ClientBoard extends JPanel implements Commons {
 			repaint();
 		}
 
+		if (socket != null) {
+			DatagramPacket datagramPacket = new DatagramPacket((key + "").getBytes(), (key + "").length(),
+					serverIPAddress, PORT1);
+			try {
+				socket.send(datagramPacket);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		Toolkit.getDefaultToolkit().sync();
 	}
 
@@ -486,9 +496,6 @@ public class ClientBoard extends JPanel implements Commons {
 					// System.out.println("1 server: " + socket.getInetAddress() + " " +
 					// socket.getPort() + " client: "
 					// + socket.getLocalAddress() + " " + socket.getLocalPort());
-					DatagramPacket datagramPacket = new DatagramPacket((key + "").getBytes(), (key + "").length(),
-							serverIPAddress, PORT1);
-					socket.send(datagramPacket);
 
 					// System.out.println("2 server: " + socket.getInetAddress() + " " +
 					// socket.getPort() + " client: "
