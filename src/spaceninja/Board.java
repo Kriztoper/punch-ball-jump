@@ -284,13 +284,13 @@ public class Board extends JPanel implements Commons {
 		// countdown
 		if (countdown > 0) {
 			g.setColor(Color.RED);
-			g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
+			g.setFont(new Font("Open Sans", Font.PLAIN, 64));
 			g.drawString("ROUND " + round, 160, 350);
 			g.setColor(new Color(0f, 0f, 0f, .25f));
 			g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
 		} else if (countdown == 0) {
 			g.setColor(Color.RED);
-			g.setFont(new Font("TimesRoman", Font.PLAIN, 64));
+			g.setFont(new Font("Open Sans", Font.PLAIN, 64));
 			g.drawString("START!", 210, 350);
 		}
 		if (!ingame) {
@@ -340,7 +340,7 @@ public class Board extends JPanel implements Commons {
 		}
 		if (isPlayerPowerupActivated) {
 			g2d.setColor(pCaptionColor);
-			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+			g2d.setFont(new Font("Open Sans", Font.PLAIN, 20));
 			g2d.drawString(pCaptionMsg, 30, 80);
 			Timer timerForCaption = new Timer();
 			TimerTask timerTaskForCaption = new TimerTask() {
@@ -355,7 +355,7 @@ public class Board extends JPanel implements Commons {
 		// draw opponent powerups activated caption
 		if (isOpponentPowerupActivated) {
 			g2d.setColor(oCaptionColor);
-			g2d.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+			g2d.setFont(new Font("Open Sans", Font.PLAIN, 20));
 			g2d.drawString(oCaptionMsg, 400, 80);
 			Timer timerForCaption = new Timer();
 			TimerTask timerTaskForCaption = new TimerTask() {
@@ -532,7 +532,7 @@ public class Board extends JPanel implements Commons {
 	private void gameFinished(Graphics2D g2d) {
 		int winner = players[0].getHearts() <= 0 ? 2 : 1;
 		g2d.setColor(Color.RED);
-		g2d.setFont(new Font("TimesRoman", Font.PLAIN, 64));
+		g2d.setFont(new Font("Open Sans", Font.PLAIN, 64));
 		g2d.drawString("PLAYER " + winner + " WINS!", 50, 350);
 		g2d.setColor(new Color(0f, 0f, 0f, .25f));
 		g2d.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
