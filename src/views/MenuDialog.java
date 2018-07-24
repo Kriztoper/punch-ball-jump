@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class MenuDialog extends JDialog {
 
@@ -16,37 +18,43 @@ public class MenuDialog extends JDialog {
 	private JButton yesButton;
 	private JButton noButton;
 	private JLabel iconLabel;
+	private ImageIcon bg;
+	private JPanel panel;
 
 	public MenuDialog() {
 		setResizable(false);
-		setLayout(null);
 		setUndecorated(true);
-		setSize(200, 200);
+		setSize(420, 400);
 		setLocationRelativeTo(null);
 		setVisible(false);
-		setBackground(new Color(8,31,39));
 		
-		jLabel = new JLabel("Return to Main Menu?");
-		jLabel.setBounds(24, 63, 151, 21);
-		jLabel.setFont(new Font("Open Sans", Font.PLAIN, 14));
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/menudialog.png"));
+		panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(bg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+		};
+		panel.setLayout(null);
+		panel.setSize(420, 400);
+	
 		yesButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/yes_button.png")));
-		yesButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/yes_hoverButton.png")));
-		yesButton.setBounds(48, 114, 50, 30);
+		yesButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/yes_hoverbutton.png")));
+		yesButton.setBounds(130, 180, 155, 40);
 		modifyButton(yesButton);
 		
-		noButton = new JButton("NO");
 		noButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/no_button.png")));
-		noButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/no_hoverButton.png")));
-		noButton.setBounds(104, 114, 50, 30);
+		noButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/no_hoverbutton.png")));
+		noButton.setBounds(130, 230, 155, 40);
 		modifyButton(noButton);
 		
-		iconLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("images/small_jar_icon.png")));
-		add(iconLabel);
-		add(jLabel);
-		add(yesButton);
-		add(noButton);
+		panel.add(yesButton);
+		panel.add(noButton);
+		add(panel);
 	}
-
+	
+	
 	public void modifyButton(JButton button) {
 		button.setOpaque(false);
 		button.setContentAreaFilled(false);
