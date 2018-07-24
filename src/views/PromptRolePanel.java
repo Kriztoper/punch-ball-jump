@@ -32,7 +32,6 @@ public class PromptRolePanel extends JPanel implements Commons {
 			try {
 				return (InetAddress.getByName(ipAddress));
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
 			}
 		}
 

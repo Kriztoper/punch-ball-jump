@@ -553,12 +553,11 @@ public class Board extends JPanel implements Commons {
 			if (!isPaused) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					isPaused = true;
-					gameFrame.menuDialog.setVisible(true);
-					gameFrame.menuDialog.requestFocus();
 					gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
 
 						@Override
 						public void actionPerformed(ActionEvent e) {
+							gameFrame.menuDialog.setModal(false);
 							gameFrame.menuDialog.setVisible(false);
 							dialogResult = 1;
 							gameFrame.setCurrentPanel("menuPanel");
@@ -578,6 +577,9 @@ public class Board extends JPanel implements Commons {
 							isPaused = false;
 						}
 					});
+					gameFrame.menuDialog.setModal(true);
+					gameFrame.menuDialog.setVisible(true);
+					gameFrame.menuDialog.requestFocus();
 				}
 				if (!pressed) {
 					for (Player player : players) {

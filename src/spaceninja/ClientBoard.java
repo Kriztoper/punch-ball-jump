@@ -464,12 +464,11 @@ public class ClientBoard extends JPanel implements Commons {
 						key = e.getKeyCode();
 					} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 						isPaused = true;
-						gameFrame.menuDialog.setVisible(true);
-						gameFrame.menuDialog.requestFocus();
 						gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
 
 							@Override
 							public void actionPerformed(ActionEvent e) {
+								gameFrame.menuDialog.setModal(false);
 								gameFrame.menuDialog.setVisible(false);
 								gameFrame.setCurrentPanel("menuPanel");
 								isGameOver = true;
@@ -486,6 +485,9 @@ public class ClientBoard extends JPanel implements Commons {
 								isPaused = false;
 							}
 						});
+						gameFrame.menuDialog.setModal(true);
+						gameFrame.menuDialog.setVisible(true);
+						gameFrame.menuDialog.requestFocus();
 					}
 					pressed = true;
 				}
