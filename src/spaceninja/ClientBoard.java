@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import network.entities.ServerData;
@@ -43,6 +44,7 @@ public class ClientBoard extends JPanel implements Commons {
 	private ArrayList<Sprite> playerHeads;
 	private GameFrame gameFrame;
 	private int key;
+	public boolean isPaused;
 
 	// Client field types
 	DatagramPacket datagramPacket;
@@ -112,73 +114,76 @@ public class ClientBoard extends JPanel implements Commons {
 		powerups[1] = null;
 		pCaptionMsg = null;
 		oCaptionMsg = null;
+		isPaused = false;
 		repaint();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+		if (!isPaused) {
+			super.paintComponent(g);
 
-		Graphics2D g2d = (Graphics2D) g;
+			Graphics2D g2d = (Graphics2D) g;
 
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-		// draw background image
-		g2d.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
-		repaint();
-
-		// [ESC] Back to Menu
-		g2d.setColor(Color.WHITE);
-		g2d.drawString("[ESC] Back to Menu", 500, 640);
-		repaint();
-
-		// draw player heads
-		for (int i = 0; i < playerHeads.size(); i++) {
-			Sprite playerHead = playerHeads.get(i);
-			g2d.drawImage(playerHead.getImage(), playerHead.getX(), playerHead.getY(), playerHead.getWidth(),
-					playerHead.getHeight(), this);
+			// draw background image
+			g2d.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
 			repaint();
-		}
 
-		// draw Earth at the middle
-		g2d.drawImage(earth.getImage(), 160, 170, earth.getIconWidth(), earth.getIconHeight(), this);
-		repaint();
+			// [ESC] Back to Menu
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("[ESC] Back to Menu", 500, 640);
+			repaint();
 
-		drawObjects(g2d);
-		// countdown
-		if (countdown > 0) {
-			g.setColor(Color.RED);
-			g.setFont(new Font("Open Sans", Font.PLAIN, 64));
-			g.drawString("ROUND " + round, 160, 350);
-			g.setColor(new Color(0f, 0f, 0f, .25f));
-			g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
-			repaint();
-		} else if (countdown == 0) {
-			g.setColor(Color.RED);
-			g.setFont(new Font("Open Sans", Font.PLAIN, 64));
-			g.drawString("START!", 210, 350);
-			repaint();
-		}
-		if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
-			gameFinished(g2d);
-			repaint();
-		}
-
-		if (socket != null && !socket.isClosed()) {
-			DatagramPacket datagramPacket = new DatagramPacket((key + "").getBytes(), (key + "").length(),
-					serverIPAddress, PORT1);
-			try {
-				if (!socket.isClosed()) {
-					socket.send(datagramPacket);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			// draw player heads
+			for (int i = 0; i < playerHeads.size(); i++) {
+				Sprite playerHead = playerHeads.get(i);
+				g2d.drawImage(playerHead.getImage(), playerHead.getX(), playerHead.getY(), playerHead.getWidth(),
+						playerHead.getHeight(), this);
+				repaint();
 			}
-		}
 
-		Toolkit.getDefaultToolkit().sync();
+			// draw Earth at the middle
+			g2d.drawImage(earth.getImage(), 160, 170, earth.getIconWidth(), earth.getIconHeight(), this);
+			repaint();
+
+			drawObjects(g2d);
+			// countdown
+			if (countdown > 0) {
+				g.setColor(Color.RED);
+				g.setFont(new Font("Open Sans", Font.PLAIN, 64));
+				g.drawString("ROUND " + round, 160, 350);
+				g.setColor(new Color(0f, 0f, 0f, .25f));
+				g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
+				repaint();
+			} else if (countdown == 0) {
+				g.setColor(Color.RED);
+				g.setFont(new Font("Open Sans", Font.PLAIN, 64));
+				g.drawString("START!", 210, 350);
+				repaint();
+			}
+			if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
+				gameFinished(g2d);
+				repaint();
+			}
+
+			if (socket != null && !socket.isClosed()) {
+				DatagramPacket datagramPacket = new DatagramPacket((key + "").getBytes(), (key + "").length(),
+						serverIPAddress, PORT1);
+				try {
+					if (!socket.isClosed()) {
+						socket.send(datagramPacket);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			Toolkit.getDefaultToolkit().sync();
+		}
 	}
 
 	/**
@@ -382,7 +387,7 @@ public class ClientBoard extends JPanel implements Commons {
 			boolean p1IsJumping, boolean p1IsPunching, boolean p2IsJumping, boolean p2IsPunching, String p1Powerup,
 			int p1PowerupX, int p1PowerupY, String p2Powerup, int p2PowerupX, int p2PowerupY, String powUpTopMsg,
 			String powUpBotMsg, int p1Hearts, int p2Hearts, boolean p1IsAlive, boolean p2IsAlive,
-			boolean p1IsInvincible, boolean p2IsInvincible, int countdown, int round) {
+			boolean p1IsInvincible, boolean p2IsInvincible, int countdown, int round, boolean isPaused) {
 		if (ball != null) {
 			ball.setX(ballX);
 			ball.setY(ballY);
@@ -431,6 +436,7 @@ public class ClientBoard extends JPanel implements Commons {
 		}
 		this.countdown = countdown;
 		this.round = round;
+		this.isPaused = isPaused;
 		repaint();
 	}
 
@@ -446,28 +452,45 @@ public class ClientBoard extends JPanel implements Commons {
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (!pressed) {
-				if (e.getKeyCode() == KeyEvent.VK_K) {
-					// K Pressed!
-					key = e.getKeyCode();
-				} else if (e.getKeyCode() == KeyEvent.VK_L) {
-					// L Pressed!
-					key = e.getKeyCode();
-				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					gameFrame.setCurrentPanel("menuPanel");
-					isGameOver = true;
-					if (socket != null && !socket.isClosed()) {
-						socket.close();
+			if (!isPaused) {
+				if (!pressed) {
+					if (e.getKeyCode() == KeyEvent.VK_K) {
+						// K Pressed!
+						key = e.getKeyCode();
+					} else if (e.getKeyCode() == KeyEvent.VK_L) {
+						// L Pressed!
+						key = e.getKeyCode();
+					} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						isPaused = true;
+						int dialogResult = -1;
+						if (JOptionPane.WHEN_FOCUSED != JOptionPane.WHEN_IN_FOCUSED_WINDOW) {
+							dialogResult = JOptionPane.showConfirmDialog(null, "Return to Main Menu?", "Warning",
+									JOptionPane.YES_NO_OPTION);
+						}
+						isPaused = false;
+						if (dialogResult == JOptionPane.YES_OPTION) {
+							gameFrame.setCurrentPanel("menuPanel");
+							isGameOver = true;
+							if (socket != null && !socket.isClosed()) {
+								socket.close();
+							}
+						}
 					}
+					pressed = true;
 				}
-				pressed = true;
 			}
 		}
 
 		@Override
+		public void keyTyped(KeyEvent e) {
+		}
+
+		@Override
 		public void keyReleased(KeyEvent e) {
-			key = -1;
-			pressed = false;
+			if (!isPaused) {
+				key = -1;
+				pressed = false;
+			}
 		}
 	}
 
@@ -509,7 +532,7 @@ public class ClientBoard extends JPanel implements Commons {
 							sd.p1IsJumping, sd.p1IsPunching, sd.p2IsJumping, sd.p2IsPunching, sd.p1Powerup,
 							sd.p1PowerupX, sd.p1PowerupY, sd.p2Powerup, sd.p2PowerupX, sd.p2PowerupY, sd.powUpTopMsg,
 							sd.powUpBotMsg, sd.p1Hearts, sd.p2Hearts, sd.p1IsAlive, sd.p2IsAlive, sd.p1IsInvincible,
-							sd.p2IsInvincible, sd.countdown, sd.round);
+							sd.p2IsInvincible, sd.countdown, sd.round, sd.isPaused);
 				}
 				// }
 			} catch (SocketException e) {

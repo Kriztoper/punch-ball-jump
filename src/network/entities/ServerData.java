@@ -3,9 +3,6 @@ package network.entities;
 import java.io.Serializable;
 
 public class ServerData implements Serializable {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public int ballX;
@@ -34,6 +31,7 @@ public class ServerData implements Serializable {
 	public boolean p2IsInvincible;
 	public int countdown;
 	public int round;
+	public boolean isPaused;
 
 	public ServerData(String data) {
 		try {
@@ -64,6 +62,7 @@ public class ServerData implements Serializable {
 			p2IsInvincible = Boolean.valueOf(values[23].trim());
 			countdown = Integer.parseInt(values[24].trim());
 			round = Integer.parseInt(values[25].trim());
+			isPaused = Boolean.valueOf(values[26].trim());
 		} catch (Exception e) {
 		}
 	}
@@ -72,7 +71,7 @@ public class ServerData implements Serializable {
 			boolean p1IsPunching, boolean p2IsJumping, boolean p2IsPunching, String p1Powerup, int p1PowerupX,
 			int p1PowerupY, String p2Powerup, int p2PowerupX, int p2PowerupY, String powUpTopMsg, String powUpBotMsg,
 			int p1Hearts, int p2Hearts, boolean p1IsAlive, boolean p2IsAlive, boolean p1IsInvincible,
-			boolean p2IsInvincible, int countdown, int round) {
+			boolean p2IsInvincible, int countdown, int round, boolean isPaused) {
 		this.ballX = ballX;
 		this.ballY = ballY;
 		this.player1X = player1X;
@@ -99,6 +98,7 @@ public class ServerData implements Serializable {
 		this.p2IsInvincible = p2IsInvincible;
 		this.countdown = countdown;
 		this.round = round;
+		this.isPaused = isPaused;
 	}
 
 	public String getCommaSeparatedStringData() {
@@ -106,6 +106,6 @@ public class ServerData implements Serializable {
 				+ p1IsJumping + "," + p1IsPunching + "," + p2IsJumping + "," + p2IsPunching + "," + p1Powerup + ","
 				+ p1PowerupX + "," + p1PowerupY + "," + p2Powerup + "," + p2PowerupX + "," + p2PowerupY + ","
 				+ powUpTopMsg + "," + powUpBotMsg + "," + p1Hearts + "," + p2Hearts + "," + p1IsAlive + "," + p2IsAlive
-				+ "," + p1IsInvincible + "," + p2IsInvincible + "," + countdown + "," + round;
+				+ "," + p1IsInvincible + "," + p2IsInvincible + "," + countdown + "," + round + "," + isPaused;
 	}
 }

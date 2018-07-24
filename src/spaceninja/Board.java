@@ -25,6 +25,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import network.entities.ServerData;
@@ -65,6 +66,7 @@ public class Board extends JPanel implements Commons {
 	private GameFrame gameFrame;
 	private boolean isComputer;
 	private int difficulty;
+	public boolean isPaused;
 
 	// Server field types
 	private ServerSocket tcpServerSocket;
@@ -79,9 +81,9 @@ public class Board extends JPanel implements Commons {
 
 		// Init bg and earth images
 		Random random = new Random();
-//		String bgName = random.nextBoolean() ? "test" : "test2";
-//		String earthName = random.nextBoolean() ? "earth" : "earth2";
-		bg = new ImageIcon(getClass().getClassLoader().getResource("images/test2.png"));//" + bgName + ".png"));
+		// String bgName = random.nextBoolean() ? "test" : "test2";
+		// String earthName = random.nextBoolean() ? "earth" : "earth2";
+		bg = new ImageIcon(getClass().getClassLoader().getResource("images/test2.png"));// " + bgName + ".png"));
 		earth = new ImageIcon(getClass().getClassLoader().getResource("images/earth2.png"));// + earthName + ".png"));
 		repaint();
 
@@ -139,21 +141,23 @@ public class Board extends JPanel implements Commons {
 	}
 
 	public void initBallTimer(long period, Player player) {
-		if (period >= 20) {
-			timerForBall.cancel();
-			timerForBall = new Timer();
-			scheduleTaskForBall = new ScheduleTaskForBall();
-			timerForBall.schedule(scheduleTaskForBall, 0, period);
-		} else {
-			timerForBallReset = new Timer();
-			TimerTask scheduleTaskForBallReset = new TimerTask() {
+		if (!isPaused) {
+			if (period >= 20) {
+				timerForBall.cancel();
+				timerForBall = new Timer();
+				scheduleTaskForBall = new ScheduleTaskForBall();
+				timerForBall.schedule(scheduleTaskForBall, 0, period);
+			} else {
+				timerForBallReset = new Timer();
+				TimerTask scheduleTaskForBallReset = new TimerTask() {
 
-				@Override
-				public void run() {
-					ballPeriod = 100;
-				}
-			};
-			timerForBallReset.schedule(scheduleTaskForBallReset, 20000);
+					@Override
+					public void run() {
+						ballPeriod = 100;
+					}
+				};
+				timerForBallReset.schedule(scheduleTaskForBallReset, 20000);
+			}
 		}
 	}
 
@@ -250,54 +254,57 @@ public class Board extends JPanel implements Commons {
 		};
 		timerForCountdown.schedule(timerTaskForCountdown, 0, 1000);
 
+		isPaused = false;
 		repaint();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+		if (!isPaused) {
+			super.paintComponent(g);
 
-		Graphics2D g2d = (Graphics2D) g;
+			Graphics2D g2d = (Graphics2D) g;
 
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-		// draw background image
-		g2d.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
+			// draw background image
+			g2d.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
 
-		// [ESC] Back to Menu
-		g2d.setColor(Color.WHITE);
-		g2d.drawString("[ESC] Back to Menu", 500, 640);
+			// [ESC] Back to Menu
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("[ESC] Back to Menu", 500, 640);
 
-		// draw player heads
-		for (int i = 0; i < playerHeads.size(); i++) {
-			Sprite playerHead = playerHeads.get(i);
-			g2d.drawImage(playerHead.getImage(), playerHead.getX(), playerHead.getY(), playerHead.getWidth(),
-					playerHead.getHeight(), this);
+			// draw player heads
+			for (int i = 0; i < playerHeads.size(); i++) {
+				Sprite playerHead = playerHeads.get(i);
+				g2d.drawImage(playerHead.getImage(), playerHead.getX(), playerHead.getY(), playerHead.getWidth(),
+						playerHead.getHeight(), this);
+			}
+
+			// draw Earth at the middle
+			g2d.drawImage(earth.getImage(), 160, 170, earth.getIconWidth(), earth.getIconHeight(), this);
+
+			drawObjects(g2d);
+			// countdown
+			if (countdown > 0) {
+				g.setColor(Color.RED);
+				g.setFont(new Font("Open Sans", Font.PLAIN, 64));
+				g.drawString("ROUND " + round, 160, 350);
+				g.setColor(new Color(0f, 0f, 0f, .25f));
+				g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
+			} else if (countdown == 0) {
+				g.setColor(Color.RED);
+				g.setFont(new Font("Open Sans", Font.PLAIN, 64));
+				g.drawString("START!", 210, 350);
+			}
+			if (!ingame) {
+				gameFinished(g2d);
+			}
+
+			Toolkit.getDefaultToolkit().sync();
 		}
-
-		// draw Earth at the middle
-		g2d.drawImage(earth.getImage(), 160, 170, earth.getIconWidth(), earth.getIconHeight(), this);
-
-		drawObjects(g2d);
-		// countdown
-		if (countdown > 0) {
-			g.setColor(Color.RED);
-			g.setFont(new Font("Open Sans", Font.PLAIN, 64));
-			g.drawString("ROUND " + round, 160, 350);
-			g.setColor(new Color(0f, 0f, 0f, .25f));
-			g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
-		} else if (countdown == 0) {
-			g.setColor(Color.RED);
-			g.setFont(new Font("Open Sans", Font.PLAIN, 64));
-			g.drawString("START!", 210, 350);
-		}
-		if (!ingame) {
-			gameFinished(g2d);
-		}
-
-		Toolkit.getDefaultToolkit().sync();
 	}
 
 	/**
@@ -541,48 +548,69 @@ public class Board extends JPanel implements Commons {
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-				gameFrame.setCurrentPanel("menuPanel");
-				players[0].setHearts(0);
-				players[1].setHearts(0);
-				listening = false;
-				if (socket != null && !socket.isClosed()) {
-					socket.close();
+			if (!isPaused) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					isPaused = true;
+					int dialogResult = -1;
+					if (JOptionPane.WHEN_FOCUSED != JOptionPane.WHEN_IN_FOCUSED_WINDOW) {
+						dialogResult = JOptionPane.showConfirmDialog(null, "Return to Main Menu?", "Warning",
+								JOptionPane.YES_NO_OPTION);
+					}
+					isPaused = false;
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						gameFrame.setCurrentPanel("menuPanel");
+						players[0].setHearts(0);
+						players[1].setHearts(0);
+						listening = false;
+						if (socket != null && !socket.isClosed()) {
+							socket.close();
+						}
+					}
 				}
-			}
-			if (!pressed) {
-				for (Player player : players) {
-					player.keyPressed(e);
+				if (!pressed) {
+					for (Player player : players) {
+						player.keyPressed(e);
+					}
+					pressed = true;
 				}
-				pressed = true;
 			}
 		}
 
 		@Override
+		public void keyTyped(KeyEvent e) {
+		}
+
+		@Override
 		public void keyReleased(KeyEvent e) {
-			pressed = false;
+			if (!isPaused) {
+				pressed = false;
+			}
 		}
 	}
 
 	private class ScheduleTaskForPlayer extends TimerTask {
 		@Override
 		public void run() {
-			if (players[1].isComputer) {
-				players[1].generateMove(ball, ballPeriod);
+			if (!isPaused) {
+				if (players[1].isComputer) {
+					players[1].generateMove(ball, ballPeriod);
+				}
+				for (Player player : players)
+					player.move();
+				repaint();
+				checkCollision(); // Note: checkCollision must be after repaint and it must be assigned to the
+									// Timer with the smallest period
 			}
-			for (Player player : players)
-				player.move();
-			repaint();
-			checkCollision(); // Note: checkCollision must be after repaint and it must be assigned to the
-								// Timer with the smallest period
 		}
 	}
 
 	private class ScheduleTaskForBall extends TimerTask {
 		@Override
 		public void run() {
-			ball.move();
-			repaint();
+			if (!isPaused) {
+				ball.move();
+				repaint();
+			}
 		}
 	}
 
@@ -840,7 +868,7 @@ public class Board extends JPanel implements Commons {
 							players[1].isJumping(), players[1].isPunching(), p1Powerup, p1PowerupX, p1PowerupY,
 							p2Powerup, p2PowerupX, p2PowerupY, pUpTopMsg, pUpBotMsg, players[0].getHearts(),
 							players[1].getHearts(), players[0].isAlive(), players[1].isAlive(),
-							players[0].isInvincible(), players[1].isInvincible(), countdown, round)
+							players[0].isInvincible(), players[1].isInvincible(), countdown, round, isPaused)
 									.getCommaSeparatedStringData();
 					// System.out.println("client: " + datagramPacket.getAddress() + " " +
 					// datagramPacket.getPort()
