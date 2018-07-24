@@ -2,6 +2,7 @@ package views;
 
 import java.awt.FlowLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -11,6 +12,7 @@ public class MenuDialog extends JDialog {
 	private JLabel jLabel;
 	private JButton yesButton;
 	private JButton noButton;
+	private JLabel iconLabel;
 
 	public MenuDialog() {
 		setResizable(false);
@@ -22,6 +24,8 @@ public class MenuDialog extends JDialog {
 		jLabel = new JLabel("Return to Main Menu?");
 		yesButton = new JButton("YES");
 		noButton = new JButton("NO");
+		iconLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("images/small_jar_icon.png")));
+		add(iconLabel);
 		add(jLabel);
 		add(yesButton);
 		add(noButton);
