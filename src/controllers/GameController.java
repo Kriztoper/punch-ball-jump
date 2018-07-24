@@ -78,7 +78,11 @@ public class GameController implements Commons {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				InetAddress serverIPAddress = promptRolePanel.promptServerIPAddress();
-				gameFrame.startGameClient(serverIPAddress);
+				if (serverIPAddress == null) {
+					gameFrame.setCurrentPanel("promptRolePanel");
+				} else {
+					gameFrame.startGameClient(serverIPAddress);
+				}
 			}
 		});
 

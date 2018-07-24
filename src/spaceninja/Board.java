@@ -554,6 +554,7 @@ public class Board extends JPanel implements Commons {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					isPaused = true;
 					gameFrame.menuDialog.setVisible(true);
+					gameFrame.menuDialog.requestFocus();
 					gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
 
 						@Override

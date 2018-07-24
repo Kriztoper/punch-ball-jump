@@ -465,6 +465,7 @@ public class ClientBoard extends JPanel implements Commons {
 					} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 						isPaused = true;
 						gameFrame.menuDialog.setVisible(true);
+						gameFrame.menuDialog.requestFocus();
 						gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
 
 							@Override

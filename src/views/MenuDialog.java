@@ -13,6 +13,7 @@ public class MenuDialog extends JDialog {
 	private JButton noButton;
 
 	public MenuDialog() {
+		setResizable(false);
 		setUndecorated(true);
 		setLayout(new FlowLayout());
 		setSize(200, 200);
