@@ -17,8 +17,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -68,11 +66,10 @@ public class Board extends JPanel implements Commons {
 	private boolean isComputer;
 	private int difficulty;
 	public boolean isPaused;
+	public boolean clientIsPaused;
 	public int dialogResult;
 
 	// Server field types
-	private ServerSocket tcpServerSocket;
-	private Socket client;
 	public DatagramSocket socket;
 	private boolean listening;
 
@@ -143,7 +140,7 @@ public class Board extends JPanel implements Commons {
 	}
 
 	public void initBallTimer(long period, Player player) {
-		if (!isPaused) {
+		if (!isPaused && !clientIsPaused) {
 			if (period >= 20) {
 				timerForBall.cancel();
 				timerForBall = new Timer();
@@ -257,12 +254,13 @@ public class Board extends JPanel implements Commons {
 		timerForCountdown.schedule(timerTaskForCountdown, 0, 1000);
 
 		isPaused = false;
+		clientIsPaused = false;
 		repaint();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		if (!isPaused) {
+		if (!isPaused && !clientIsPaused) {
 			super.paintComponent(g);
 
 			Graphics2D g2d = (Graphics2D) g;
@@ -550,37 +548,39 @@ public class Board extends JPanel implements Commons {
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (!isPaused) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					isPaused = true;
-					gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				isPaused = true;
+				gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
 
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							gameFrame.menuDialog.setModal(false);
-							gameFrame.menuDialog.setVisible(false);
-							dialogResult = 1;
-							gameFrame.setCurrentPanel("menuPanel");
-							players[0].setHearts(0);
-							players[1].setHearts(0);
-							listening = false;
-							if (socket != null && !socket.isClosed()) {
-								socket.close();
-							}
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						gameFrame.menuDialog.setModal(false);
+						gameFrame.menuDialog.setVisible(false);
+						gameFrame.menuDialog.dispose();
+						dialogResult = 1;
+						gameFrame.setCurrentPanel("menuPanel");
+						players[0].setHearts(0);
+						players[1].setHearts(0);
+						listening = false;
+						if (socket != null && !socket.isClosed()) {
+							socket.close();
 						}
-					});
-					gameFrame.menuDialog.getNoButton().addActionListener(new ActionListener() {
+					}
+				});
+				gameFrame.menuDialog.getNoButton().addActionListener(new ActionListener() {
 
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							gameFrame.menuDialog.setVisible(false);
-							isPaused = false;
-						}
-					});
-					gameFrame.menuDialog.setModal(true);
-					gameFrame.menuDialog.setVisible(true);
-					gameFrame.menuDialog.requestFocus();
-				}
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						gameFrame.menuDialog.setModal(false);
+						gameFrame.menuDialog.setVisible(false);
+						gameFrame.menuDialog.dispose();
+						isPaused = false;
+					}
+				});
+				gameFrame.menuDialog.setVisible(true);
+				gameFrame.menuDialog.requestFocus();
+			}
+			if (!isPaused && !clientIsPaused) {
 				if (!pressed) {
 					for (Player player : players) {
 						player.keyPressed(e);
@@ -591,12 +591,8 @@ public class Board extends JPanel implements Commons {
 		}
 
 		@Override
-		public void keyTyped(KeyEvent e) {
-		}
-
-		@Override
 		public void keyReleased(KeyEvent e) {
-			if (!isPaused) {
+			if (!isPaused && !clientIsPaused) {
 				pressed = false;
 			}
 		}
@@ -605,7 +601,7 @@ public class Board extends JPanel implements Commons {
 	private class ScheduleTaskForPlayer extends TimerTask {
 		@Override
 		public void run() {
-			if (!isPaused) {
+			if (!isPaused && !clientIsPaused) {
 				if (players[1].isComputer) {
 					players[1].generateMove(ball, ballPeriod);
 				}
@@ -621,7 +617,7 @@ public class Board extends JPanel implements Commons {
 	private class ScheduleTaskForBall extends TimerTask {
 		@Override
 		public void run() {
-			if (!isPaused) {
+			if (!isPaused && !clientIsPaused) {
 				ball.move();
 				repaint();
 			}
@@ -714,8 +710,7 @@ public class Board extends JPanel implements Commons {
 					players[0].setHearts(opponentHearts);
 					players[1].setHearts(playerHearts);
 				}
-			} else if (powerups[1] != null && player.getRect().intersects(powerups[1].getRect())) { // bot
-																									// powerups
+			} else if (powerups[1] != null && player.getRect().intersects(powerups[1].getRect())) { // bot powerups
 				if (player.getName().equals(PLAYER)) {
 					isPlayerPowerupActivated = true;
 					if (powerups[1].getName().equals(RESTORE)) {
@@ -828,33 +823,18 @@ public class Board extends JPanel implements Commons {
 		@Override
 		public void run() {
 			try {
-				// tcpServerSocket = new ServerSocket(TCP_PORT);
-				// client = tcpServerSocket.accept();
-
-				// if (client.isConnected()) {
 				socket = new DatagramSocket(PORT1);
-				// socket.connect(new InetSocketAddress("192.168.22.12", PORT1).getAddress(),
-				// PORT1);
-				// socket.bind(new InetSocketAddress(socket.getLocalAddress().getHostAddress(),
-				// PORT1));
-				// serverSocketToRcv = new DatagramSocket(PORT1);
 				while (listening && !socket.isClosed()) {
-					// System.out.println("1. server: " + socket.getLocalAddress().getHostAddress()
-					// + " "
-					// + socket.getLocalPort() + " 1client: " + socket.getInetAddress() + " " +
-					// socket.getPort());
-					// Receive from client
-					byte[] buffer = new byte[4];
+					byte[] buffer = new byte[14];
 					DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
 					if (!socket.isClosed()) {
 						socket.receive(datagramPacket);
 					}
 
-					String key = new String(datagramPacket.getData());
-					// System.out.println("Received " + key);
-					if (key != null && (key.trim().equals("75") || key.trim().equals("76"))) {
-						// System.out.println("Received from client!");
-						getPlayers()[1].keyPressed(Integer.parseInt(key.trim()));
+					String[] recData = new String(datagramPacket.getData()).split(",");
+					clientIsPaused = Boolean.parseBoolean(recData[1].trim());
+					if (recData[0] != null && (recData[0].trim().equals("75") || recData[0].trim().equals("76"))) {
+						getPlayers()[1].keyPressed(Integer.parseInt(recData[0].trim()));
 					}
 
 					// send to client
@@ -884,32 +864,17 @@ public class Board extends JPanel implements Commons {
 							players[1].getHearts(), players[0].isAlive(), players[1].isAlive(),
 							players[0].isInvincible(), players[1].isInvincible(), countdown, round, isPaused)
 									.getCommaSeparatedStringData();
-					// System.out.println("client: " + datagramPacket.getAddress() + " " +
-					// datagramPacket.getPort()
-					// + " server: " + socket.getLocalAddress() + " " + socket.getLocalPort());
 					datagramPacket = new DatagramPacket(data.getBytes(), data.length(), datagramPacket.getAddress(),
 							datagramPacket.getPort());
 					if (!socket.isClosed()) {
 						socket.send(datagramPacket);
 					}
-					// System.out.println("client: " + datagramPacket.getAddress() + " " +
-					// datagramPacket.getPort()
-					// + " server: " + socket.getLocalAddress() + " " + socket.getLocalPort());
 				}
-				// }
 			} catch (SocketException e) {
-				// e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				// try {
-				// tcpServerSocket.close();
-				// client.close();
-				// } catch (IOException e) {
-				// e.printStackTrace();
-				// }
 				socket.close();
-				// serverSocketToRcv.close();
 				System.out.println("Closing server socket connection...");
 			}
 		}

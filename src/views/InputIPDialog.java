@@ -1,6 +1,5 @@
 package views;
 
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,37 +18,37 @@ public class InputIPDialog extends JDialog {
 	private JButton cancelButton;
 	private String ip;
 
-	public InputIPDialog() {
-		// setModal(true);
+	public InputIPDialog(Frame frame) {
 		getContentPane().setLayout(null);
 		setResizable(false);
 		setUndecorated(true);
 		setSize(300, 200);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(frame);
 		setVisible(false);
 		jLabel = new JLabel("Enter Server IP Address:");
 		jLabel.setFont(new Font("Open Sans", Font.PLAIN, 14));
 		jLabel.setBounds(60, 38, 200, 14);
-		
+
 		jTextField = new JTextField(20);
 		jTextField.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		jTextField.setBounds(60, 63, 190, 30);
-		
+
 		okButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/ok_button.png")));
 		okButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/ok_hoverButton.png")));
 		okButton.setBounds(60, 126, 80, 30);
 		modifyButton(okButton);
-		
+
 		cancelButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/cancel_button.png")));
-		cancelButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/cancel_hoverButton.png")));
+		cancelButton.setRolloverIcon(
+				new ImageIcon(getClass().getClassLoader().getResource("images/cancel_hoverButton.png")));
 		cancelButton.setBounds(170, 126, 80, 30);
 		modifyButton(cancelButton);
-		
+
 		getContentPane().add(jLabel);
 		getContentPane().add(jTextField);
 		getContentPane().add(okButton);
 		getContentPane().add(cancelButton);
-		
+
 		ip = "";
 	}
 
@@ -86,7 +85,7 @@ public class InputIPDialog extends JDialog {
 		button.setBorderPainted(false);
 		button.setFocusable(false);
 	}
-	
+
 	public JButton getOkButton() {
 		return okButton;
 	}

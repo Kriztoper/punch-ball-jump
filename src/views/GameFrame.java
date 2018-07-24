@@ -30,7 +30,7 @@ public class GameFrame implements Commons {
 	public MenuDialog menuDialog;
 
 	public GameFrame() {
-		menuDialog = new MenuDialog();
+		menuDialog = new MenuDialog(frame);
 		frame = new Frame();
 		java.net.URL url = ClassLoader.getSystemResource("images/jar_icon.png");
 		Toolkit kit = Toolkit.getDefaultToolkit();
@@ -121,7 +121,7 @@ public class GameFrame implements Commons {
 
 		creditsPanel = new CreditsPanel();
 
-		promptRolePanel = new PromptRolePanel();
+		promptRolePanel = new PromptRolePanel(frame);
 
 		gameLevelPanel = new GameLevelPanel();
 		cardsPanel = new JPanel();

@@ -1,9 +1,7 @@
 package views;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -17,15 +15,17 @@ public class MenuDialog extends JDialog {
 	private JButton noButton;
 	private JLabel iconLabel;
 
-	public MenuDialog() {
+	public MenuDialog(Frame frame) {
+		super(frame);
+		setModal(true);
 		setResizable(false);
 		setLayout(null);
 		setUndecorated(true);
 		setSize(200, 200);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(frame);
 		setVisible(false);
-		setBackground(new Color(8,31,39));
-		
+		setBackground(new Color(8, 31, 39));
+
 		jLabel = new JLabel("Return to Main Menu?");
 		jLabel.setBounds(24, 63, 151, 21);
 		jLabel.setFont(new Font("Open Sans", Font.PLAIN, 14));
@@ -33,18 +33,23 @@ public class MenuDialog extends JDialog {
 		yesButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/yes_hoverButton.png")));
 		yesButton.setBounds(48, 114, 50, 30);
 		modifyButton(yesButton);
-		
+
 		noButton = new JButton("NO");
 		noButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/no_button.png")));
 		noButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/no_hoverButton.png")));
 		noButton.setBounds(104, 114, 50, 30);
 		modifyButton(noButton);
-		
+
 		iconLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("images/small_jar_icon.png")));
 		add(iconLabel);
 		add(jLabel);
 		add(yesButton);
 		add(noButton);
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
 	}
 
 	public void modifyButton(JButton button) {
@@ -53,7 +58,7 @@ public class MenuDialog extends JDialog {
 		button.setBorderPainted(false);
 		button.setFocusable(false);
 	}
-	
+
 	public JButton getYesButton() {
 		return yesButton;
 	}

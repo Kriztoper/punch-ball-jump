@@ -18,8 +18,8 @@ public class PromptRolePanel extends JPanel implements Commons {
 	private JButton backButton;
 	public InputIPDialog inputIPDialog;
 
-	public PromptRolePanel() {
-		inputIPDialog = new InputIPDialog();
+	public PromptRolePanel(Frame frame) {
+		inputIPDialog = new InputIPDialog(frame);
 		initPanel();
 		initComponents();
 		addComponents();
