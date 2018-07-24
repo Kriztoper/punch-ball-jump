@@ -15,8 +15,11 @@ public class MenuDialog extends JDialog {
 	private JLabel jLabel;
 	private JButton yesButton;
 	private JButton noButton;
-	
+	private JLabel iconLabel;
+
 	public MenuDialog() {
+		setResizable(false);
+		setLayout(null);
 		setUndecorated(true);
 		setSize(200, 200);
 		setLocationRelativeTo(null);
@@ -25,7 +28,7 @@ public class MenuDialog extends JDialog {
 		
 		jLabel = new JLabel("Return to Main Menu?");
 		jLabel.setBounds(24, 63, 151, 21);
-		jLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
+		jLabel.setFont(new Font("Open Sans", Font.PLAIN, 14));
 		yesButton = new JButton(new ImageIcon(getClass().getClassLoader().getResource("images/yes_button.png")));
 		yesButton.setRolloverIcon(new ImageIcon(getClass().getClassLoader().getResource("images/yes_hoverButton.png")));
 		yesButton.setBounds(48, 114, 50, 30);
@@ -37,10 +40,11 @@ public class MenuDialog extends JDialog {
 		noButton.setBounds(104, 114, 50, 30);
 		modifyButton(noButton);
 		
-		getContentPane().setLayout(null);
-		getContentPane().add(jLabel);
-		getContentPane().add(yesButton);
-		getContentPane().add(noButton);
+		iconLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("images/small_jar_icon.png")));
+		add(iconLabel);
+		add(jLabel);
+		add(yesButton);
+		add(noButton);
 	}
 
 	public void modifyButton(JButton button) {

@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import spaceninja.Commons;
@@ -17,20 +16,24 @@ public class PromptRolePanel extends JPanel implements Commons {
 	private JButton serverButton;
 	private JButton clientButton;
 	private JButton backButton;
+	public InputIPDialog inputIPDialog;
 
 	public PromptRolePanel() {
+		inputIPDialog = new InputIPDialog();
 		initPanel();
 		initComponents();
 		addComponents();
 	}
 
 	public InetAddress promptServerIPAddress() {
-		String ipAddress = JOptionPane.showInputDialog(this, "Enter Server IP Address: ");
+		String ipAddress = inputIPDialog.getIPAddress();
 
-		try {
-			return (InetAddress.getByName(ipAddress));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
+		if (ipAddress != null && !ipAddress.equals("")) {
+			try {
+				return (InetAddress.getByName(ipAddress));
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return null;
