@@ -1,6 +1,8 @@
 package views;
 
 import java.awt.CardLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
@@ -28,6 +30,10 @@ public class GameFrame implements Commons {
 
 	public GameFrame() {
 		frame = new Frame();
+		java.net.URL url = ClassLoader.getSystemResource("images/jar_icon.png");
+		Toolkit kit = Toolkit.getDefaultToolkit();
+		Image img = kit.createImage(url);
+		frame.setIconImage(img);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
