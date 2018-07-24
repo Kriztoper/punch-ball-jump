@@ -46,6 +46,7 @@ public class ClientBoard extends JPanel implements Commons {
 	private GameFrame gameFrame;
 	private int key;
 	public boolean isPaused;
+	public boolean serverIsPaused;
 	public int dialogResult;
 
 	// Client field types
@@ -117,12 +118,13 @@ public class ClientBoard extends JPanel implements Commons {
 		pCaptionMsg = null;
 		oCaptionMsg = null;
 		isPaused = false;
+		serverIsPaused = false;
 		repaint();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		if (!isPaused) {
+		if (!isPaused && !serverIsPaused) {
 			super.paintComponent(g);
 
 			Graphics2D g2d = (Graphics2D) g;
@@ -157,14 +159,14 @@ public class ClientBoard extends JPanel implements Commons {
 			if (countdown > 0) {
 				g.setColor(Color.RED);
 				g.setFont(new Font("Open Sans", Font.PLAIN, 64));
-				g.drawString("ROUND " + round, 160, 350);
+				g.drawString("ROUND " + round, 180, 350);
 				g.setColor(new Color(0f, 0f, 0f, .25f));
 				g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
 				repaint();
 			} else if (countdown == 0) {
 				g.setColor(Color.RED);
 				g.setFont(new Font("Open Sans", Font.PLAIN, 64));
-				g.drawString("START!", 210, 350);
+				g.drawString("START!", 230, 350);
 				repaint();
 			}
 			if (players[0].getHearts() <= 0 || players[1].getHearts() <= 0) {
@@ -172,19 +174,21 @@ public class ClientBoard extends JPanel implements Commons {
 				repaint();
 			}
 
-			if (socket != null && !socket.isClosed()) {
-				DatagramPacket datagramPacket = new DatagramPacket((key + "").getBytes(), (key + "").length(),
-						serverIPAddress, PORT1);
-				try {
-					if (!socket.isClosed()) {
-						socket.send(datagramPacket);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
 			Toolkit.getDefaultToolkit().sync();
+		}
+
+		if (socket != null && !socket.isClosed()) {
+			String stringToSend = key + "," + Boolean.toString(isPaused);
+			// System.out.println(stringToSend);
+			DatagramPacket datagramPacket = new DatagramPacket(stringToSend.getBytes(), stringToSend.length(),
+					serverIPAddress, PORT1);
+			try {
+				if (!socket.isClosed()) {
+					socket.send(datagramPacket);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -389,7 +393,7 @@ public class ClientBoard extends JPanel implements Commons {
 			boolean p1IsJumping, boolean p1IsPunching, boolean p2IsJumping, boolean p2IsPunching, String p1Powerup,
 			int p1PowerupX, int p1PowerupY, String p2Powerup, int p2PowerupX, int p2PowerupY, String powUpTopMsg,
 			String powUpBotMsg, int p1Hearts, int p2Hearts, boolean p1IsAlive, boolean p2IsAlive,
-			boolean p1IsInvincible, boolean p2IsInvincible, int countdown, int round, boolean isPaused) {
+			boolean p1IsInvincible, boolean p2IsInvincible, int countdown, int round, boolean serverIsPaused) {
 		if (ball != null) {
 			ball.setX(ballX);
 			ball.setY(ballY);
@@ -438,7 +442,7 @@ public class ClientBoard extends JPanel implements Commons {
 		}
 		this.countdown = countdown;
 		this.round = round;
-		this.isPaused = isPaused;
+		this.serverIsPaused = serverIsPaused;
 		repaint();
 	}
 
@@ -446,7 +450,7 @@ public class ClientBoard extends JPanel implements Commons {
 		int winner = players[0].getHearts() <= 0 ? 2 : 1;
 		g2d.setColor(Color.RED);
 		g2d.setFont(new Font("Open Sans", Font.PLAIN, 64));
-		g2d.drawString("PLAYER " + winner + " WINS!", 50, 350);
+		g2d.drawString("PLAYER " + winner + " WINS!", 90, 350);
 		g2d.setColor(new Color(0f, 0f, 0f, .25f));
 		g2d.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
 	}
@@ -454,7 +458,35 @@ public class ClientBoard extends JPanel implements Commons {
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (!isPaused) {
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				isPaused = true;
+				gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						gameFrame.menuDialog.setModal(false);
+						gameFrame.menuDialog.setVisible(false);
+						gameFrame.setCurrentPanel("menuPanel");
+						isGameOver = true;
+						if (socket != null && !socket.isClosed()) {
+							socket.close();
+						}
+					}
+				});
+				gameFrame.menuDialog.getNoButton().addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						gameFrame.menuDialog.setModal(false);
+						gameFrame.menuDialog.setVisible(false);
+						gameFrame.menuDialog.dispose();
+						isPaused = false;
+					}
+				});
+				gameFrame.menuDialog.setVisible(true);
+				gameFrame.menuDialog.requestFocus();
+			}
+			if (!isPaused && !serverIsPaused) {
 				if (!pressed) {
 					if (e.getKeyCode() == KeyEvent.VK_K) {
 						// K Pressed!
@@ -462,30 +494,6 @@ public class ClientBoard extends JPanel implements Commons {
 					} else if (e.getKeyCode() == KeyEvent.VK_L) {
 						// L Pressed!
 						key = e.getKeyCode();
-					} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-						isPaused = true;
-						gameFrame.menuDialog.setVisible(true);
-						gameFrame.menuDialog.requestFocus();
-						gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
-
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								gameFrame.menuDialog.setVisible(false);
-								gameFrame.setCurrentPanel("menuPanel");
-								isGameOver = true;
-								if (socket != null && !socket.isClosed()) {
-									socket.close();
-								}
-							}
-						});
-						gameFrame.menuDialog.getNoButton().addActionListener(new ActionListener() {
-
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								gameFrame.menuDialog.setVisible(false);
-								isPaused = false;
-							}
-						});
 					}
 					pressed = true;
 				}
@@ -493,12 +501,8 @@ public class ClientBoard extends JPanel implements Commons {
 		}
 
 		@Override
-		public void keyTyped(KeyEvent e) {
-		}
-
-		@Override
 		public void keyReleased(KeyEvent e) {
-			if (!isPaused) {
+			if (!isPaused && !serverIsPaused) {
 				key = -1;
 				pressed = false;
 			}
@@ -509,35 +513,17 @@ public class ClientBoard extends JPanel implements Commons {
 		@Override
 		public void run() {
 			try {
-				// tcpSocket = new Socket(serverIPAddress, TCP_PORT);
-
-				// if (tcpSocket.isConnected()) {
 				socket = new DatagramSocket();
-				// clientSocket.connect(serverIPAddress, PORT1);
-				// clientSocketToSend = new DatagramSocket();
 				byte[] buffer;
 				isGameOver = false;
 				while (!isGameOver && !socket.isClosed()) {
-					// System.out.println("1 server: " + socket.getInetAddress() + " " +
-					// socket.getPort() + " client: "
-					// + socket.getLocalAddress() + " " + socket.getLocalPort());
-
-					// System.out.println("2 server: " + socket.getInetAddress() + " " +
-					// socket.getPort() + " client: "
-					// + socket.getLocalAddress() + " " + socket.getLocalPort());
 					buffer = new byte[65507];
 					datagramPacket = new DatagramPacket(buffer, buffer.length);
 					if (!socket.isClosed()) {
 						socket.receive(datagramPacket);
 					}
-					// System.out.println("3 server: " + socket.getInetAddress() + " " +
-					// socket.getPort() + " client: "
-					// + socket.getLocalAddress() + " " + socket.getLocalPort());
 
 					String data = new String(datagramPacket.getData());
-					// if (data != null) {
-					// System.out.println("Received from server!");
-					// }
 					ServerData sd = new ServerData(data);
 					updateGraphics(sd.ballX, sd.ballY, sd.player1X, sd.player1Y, sd.player2X, sd.player2Y,
 							sd.p1IsJumping, sd.p1IsPunching, sd.p2IsJumping, sd.p2IsPunching, sd.p1Powerup,
@@ -545,19 +531,11 @@ public class ClientBoard extends JPanel implements Commons {
 							sd.powUpBotMsg, sd.p1Hearts, sd.p2Hearts, sd.p1IsAlive, sd.p2IsAlive, sd.p1IsInvincible,
 							sd.p2IsInvincible, sd.countdown, sd.round, sd.isPaused);
 				}
-				// }
 			} catch (SocketException e) {
-				// e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				// try {
-				// tcpSocket.close();
-				// } catch (IOException e) {
-				// e.printStackTrace();
-				// }
 				socket.close();
-				// clientSocketToSend.close();
 				System.out.println("Client connection closed.");
 			}
 		}

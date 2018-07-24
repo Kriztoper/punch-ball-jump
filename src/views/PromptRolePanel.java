@@ -18,8 +18,8 @@ public class PromptRolePanel extends JPanel implements Commons {
 	private JButton backButton;
 	public InputIPDialog inputIPDialog;
 
-	public PromptRolePanel() {
-		inputIPDialog = new InputIPDialog();
+	public PromptRolePanel(Frame frame) {
+		inputIPDialog = new InputIPDialog(frame);
 		initPanel();
 		initComponents();
 		addComponents();
@@ -32,7 +32,6 @@ public class PromptRolePanel extends JPanel implements Commons {
 			try {
 				return (InetAddress.getByName(ipAddress));
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
 			}
 		}
 
