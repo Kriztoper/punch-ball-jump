@@ -27,8 +27,10 @@ public class GameFrame implements Commons {
 	private Board board;
 	private ClientBoard clientBoard;
 	private int difficulty;
+	public MenuDialog menuDialog;
 
 	public GameFrame() {
+		menuDialog = new MenuDialog();
 		frame = new Frame();
 		java.net.URL url = ClassLoader.getSystemResource("images/jar_icon.png");
 		Toolkit kit = Toolkit.getDefaultToolkit();

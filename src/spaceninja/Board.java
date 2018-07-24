@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
@@ -25,7 +27,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import network.entities.ServerData;
@@ -67,6 +68,7 @@ public class Board extends JPanel implements Commons {
 	private boolean isComputer;
 	private int difficulty;
 	public boolean isPaused;
+	public int dialogResult;
 
 	// Server field types
 	private ServerSocket tcpServerSocket;
@@ -291,13 +293,13 @@ public class Board extends JPanel implements Commons {
 			if (countdown > 0) {
 				g.setColor(Color.RED);
 				g.setFont(new Font("Open Sans", Font.PLAIN, 64));
-				g.drawString("ROUND " + round, 160, 350);
+				g.drawString("ROUND " + round, 180, 350);
 				g.setColor(new Color(0f, 0f, 0f, .25f));
 				g.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
 			} else if (countdown == 0) {
 				g.setColor(Color.RED);
 				g.setFont(new Font("Open Sans", Font.PLAIN, 64));
-				g.drawString("START!", 210, 350);
+				g.drawString("START!", 230, 350);
 			}
 			if (!ingame) {
 				gameFinished(g2d);
@@ -540,7 +542,7 @@ public class Board extends JPanel implements Commons {
 		int winner = players[0].getHearts() <= 0 ? 2 : 1;
 		g2d.setColor(Color.RED);
 		g2d.setFont(new Font("Open Sans", Font.PLAIN, 64));
-		g2d.drawString("PLAYER " + winner + " WINS!", 50, 350);
+		g2d.drawString("PLAYER " + winner + " WINS!", 90, 350);
 		g2d.setColor(new Color(0f, 0f, 0f, .25f));
 		g2d.fillRect(0, 0, Commons.WIDTH, Commons.HEIGHT);
 	}
@@ -551,21 +553,30 @@ public class Board extends JPanel implements Commons {
 			if (!isPaused) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					isPaused = true;
-					int dialogResult = -1;
-					if (JOptionPane.WHEN_FOCUSED != JOptionPane.WHEN_IN_FOCUSED_WINDOW) {
-						dialogResult = JOptionPane.showConfirmDialog(null, "Return to Main Menu?", "Warning",
-								JOptionPane.YES_NO_OPTION);
-					}
-					isPaused = false;
-					if (dialogResult == JOptionPane.YES_OPTION) {
-						gameFrame.setCurrentPanel("menuPanel");
-						players[0].setHearts(0);
-						players[1].setHearts(0);
-						listening = false;
-						if (socket != null && !socket.isClosed()) {
-							socket.close();
+					gameFrame.menuDialog.setVisible(true);
+					gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							gameFrame.menuDialog.setVisible(false);
+							dialogResult = 1;
+							gameFrame.setCurrentPanel("menuPanel");
+							players[0].setHearts(0);
+							players[1].setHearts(0);
+							listening = false;
+							if (socket != null && !socket.isClosed()) {
+								socket.close();
+							}
 						}
-					}
+					});
+					gameFrame.menuDialog.getNoButton().addActionListener(new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							gameFrame.menuDialog.setVisible(false);
+							isPaused = false;
+						}
+					});
 				}
 				if (!pressed) {
 					for (Player player : players) {

@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
@@ -22,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import network.entities.ServerData;
@@ -45,6 +46,7 @@ public class ClientBoard extends JPanel implements Commons {
 	private GameFrame gameFrame;
 	private int key;
 	public boolean isPaused;
+	public int dialogResult;
 
 	// Client field types
 	DatagramPacket datagramPacket;
@@ -462,19 +464,27 @@ public class ClientBoard extends JPanel implements Commons {
 						key = e.getKeyCode();
 					} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 						isPaused = true;
-						int dialogResult = -1;
-						if (JOptionPane.WHEN_FOCUSED != JOptionPane.WHEN_IN_FOCUSED_WINDOW) {
-							dialogResult = JOptionPane.showConfirmDialog(null, "Return to Main Menu?", "Warning",
-									JOptionPane.YES_NO_OPTION);
-						}
-						isPaused = false;
-						if (dialogResult == JOptionPane.YES_OPTION) {
-							gameFrame.setCurrentPanel("menuPanel");
-							isGameOver = true;
-							if (socket != null && !socket.isClosed()) {
-								socket.close();
+						gameFrame.menuDialog.setVisible(true);
+						gameFrame.menuDialog.getYesButton().addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								gameFrame.menuDialog.setVisible(false);
+								gameFrame.setCurrentPanel("menuPanel");
+								isGameOver = true;
+								if (socket != null && !socket.isClosed()) {
+									socket.close();
+								}
 							}
-						}
+						});
+						gameFrame.menuDialog.getNoButton().addActionListener(new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								gameFrame.menuDialog.setVisible(false);
+								isPaused = false;
+							}
+						});
 					}
 					pressed = true;
 				}
